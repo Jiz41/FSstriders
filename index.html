@@ -5,61 +5,48 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root { --k-color: #e60012; --txt-color: #fff; }
-        body { background: #111; color: #fff; font-family: "Helvetica Neue", Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        body { background: #111; color: #fff; font-family: "Helvetica Neue", Arial, "Hiragino Sans", sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
         
-        /* カード本体：背景の多層化 */
         #card-wrap { 
-            width: 850px; height: 550px; border: 6px solid #000; overflow: hidden; position: relative; color: #000; 
-            display: grid; grid-template-columns: 100px 1fr; box-shadow: 0 20px 60px rgba(0,0,0,0.9);
-            /* 層1: 新聞風の網掛けテクスチャ */
-            background-color: #fcfcfc;
-            background-image: radial-gradient(#ddd 0.5px, transparent 0.5px);
-            background-size: 4px 4px;
+            width: 850px; height: 580px; border: 6px solid #000; overflow: hidden; position: relative; color: #000; 
+            display: grid; grid-template-columns: 100px 1fr; box-shadow: 0 30px 80px rgba(0,0,0,1);
+            background-color: #f8f8f8;
+            background-image: radial-gradient(#ccc 0.5px, transparent 0.5px);
+            background-size: 5px 5px;
         }
 
-        .lane-box { background: var(--k-color); color: var(--txt-color); display: flex; align-items: center; justify-content: center; font-size: 85px; font-weight: 900; border-right: 6px solid #000; z-index: 20; position: relative; }
-
-        /* メインエリア */
-        .main-content { position: relative; display: grid; grid-template-rows: 140px 1fr 100px; z-index: 5; }
+        .lane-box { background: var(--k-color); color: var(--txt-color); display: flex; align-items: center; justify-content: center; font-size: 90px; font-weight: 900; border-right: 6px solid #000; z-index: 20; transition: background 0.3s; }
+        .main-content { position: relative; display: grid; grid-template-rows: 140px 1fr 110px; z-index: 5; }
         
-        /* 意匠：バンクの曲線とスピードライン */
-        .bank-design {
-            position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1; pointer-events: none;
-            background: 
-                linear-gradient(135deg, transparent 80%, rgba(0,0,0,0.05) 100%),
-                radial-gradient(circle at 100% 100%, var(--k-color) 0%, transparent 40%);
-            opacity: 0.15;
-        }
+        .bank-design { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1; pointer-events: none;
+            background: radial-gradient(circle at 100% 100%, var(--k-color) 0%, transparent 50%); opacity: 0.12; }
+        .silhouette-svg { position: absolute; right: -30px; bottom: 100px; width: 450px; opacity: 0.15; fill: var(--k-color); z-index: 2; transform: skewX(-5deg); }
 
-        .silhouette-svg { position: absolute; right: -20px; bottom: 80px; width: 420px; opacity: 0.15; fill: var(--k-color); z-index: 2; transform: rotate(-3deg); }
-
-        /* 各エリア：可読性のための背景 */
-        .header { display: flex; align-items: center; padding: 0 30px; border-bottom: 5px solid #000; z-index: 10; gap: 20px; background: rgba(255,255,255,0.7); backdrop-filter: blur(2px); }
-        .icon-frame { width: 95px; height: 95px; border-radius: 50%; border: 6px solid var(--k-color); overflow: hidden; background: #eee; flex-shrink: 0; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .header { display: flex; align-items: center; padding: 0 30px; border-bottom: 5px solid #000; z-index: 10; gap: 20px; background: rgba(255,255,255,0.8); }
+        .icon-frame { width: 100px; height: 100px; border-radius: 50%; border: 6px solid var(--k-color); overflow: hidden; background: #eee; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
         .icon-frame img { width: 100%; height: 100%; object-fit: cover; }
-        .name-area h1 { margin: 0; font-size: 44px; font-weight: 900; line-height: 1.1; letter-spacing: -1px; }
-        .sub-info { font-size: 14px; font-weight: bold; color: #444; margin-top: 5px; display: flex; gap: 15px; }
+        .name-area h1 { margin: 0; font-size: 46px; font-weight: 900; line-height: 1; letter-spacing: -2px; }
+        .sub-info { font-size: 13px; font-weight: bold; color: #333; margin-top: 8px; display: flex; gap: 12px; }
 
-        .data-grid { padding: 25px 35px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; z-index: 10; background: rgba(255,255,255,0.4); }
-        .item { border-left: 6px solid var(--k-color); padding-left: 15px; }
-        .label { font-size: 11px; color: #666; font-weight: 800; letter-spacing: 1px; }
-        .val { font-size: 19px; font-weight: 800; color: #000; margin-top: 3px; }
+        .data-grid { padding: 20px 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; z-index: 10; }
+        .category-label { grid-column: span 2; font-size: 14px; font-weight: 900; color: #fff; background: #000; padding: 2px 10px; margin-top: 5px; }
+        .item { border-left: 6px solid var(--k-color); padding-left: 12px; }
+        .label { font-size: 10px; color: #777; font-weight: 800; }
+        .val { font-size: 18px; font-weight: 900; color: #000; }
 
-        .footer-comment { border-top: 4px double #000; padding: 15px 35px; z-index: 10; background: rgba(255,255,255,0.85); font-size: 19px; font-weight: 900; line-height: 1.5; color: #222; overflow: hidden; }
+        .footer-comment { border-top: 5px solid #000; padding: 15px 30px; z-index: 10; background: #fff; font-size: 18px; font-weight: 900; line-height: 1.4; color: #000; }
 
-        /* パネルエリア */
-        .panel { width: 850px; margin-top: 25px; background: #222; padding: 30px; border-radius: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border: 1px solid #444; }
-        .input-group { display: flex; flex-direction: column; gap: 12px; }
+        .panel { width: 850px; margin-top: 25px; background: #1a1a1a; padding: 30px; border-radius: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border: 2px solid #333; }
+        .input-group { display: flex; flex-direction: column; gap: 10px; }
         .lane-selector { grid-column: span 2; display: grid; grid-template-columns: repeat(9, 1fr); gap: 6px; }
-        .c-btn { height: 42px; cursor: pointer; border: 1px solid #fff; font-weight: bold; display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: 0.2s; }
-        .c-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(255,255,255,0.2); }
-        .time-checks { display: flex; flex-wrap: wrap; gap: 12px; background: #333; padding: 10px; border-radius: 6px; }
-        .time-checks label { color: #fff; font-size: 13px; display: flex; align-items: center; gap: 6px; cursor: pointer; }
-        label { font-size: 12px; font-weight: bold; color: #aaa; }
-        input, select, textarea { padding: 12px; border-radius: 6px; border: none; background: #444; color: #fff; font-size: 14px; outline: none; }
-        input:focus { background: #555; box-shadow: 0 0 0 2px var(--k-color); }
-        textarea { height: 80px; resize: none; }
-        .save-btn { grid-column: span 2; padding: 20px; background: #e60012; color: #fff; border: none; font-weight: 900; cursor: pointer; border-radius: 8px; font-size: 20px; box-shadow: 0 8px 20px rgba(230,0,18,0.4); margin-top: 10px; }
+        .c-btn { height: 40px; cursor: pointer; border: 1px solid #444; font-weight: bold; display: flex; align-items: center; justify-content: center; border-radius: 4px; color: #fff; font-size: 16px; }
+        .check-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; background: #333; padding: 10px; border-radius: 6px; }
+        .check-grid label { color: #fff; font-size: 12px; display: flex; align-items: center; gap: 5px; cursor: pointer; }
+        label.g-title { font-size: 12px; font-weight: 900; color: var(--k-color); text-transform: uppercase; margin-top: 5px; }
+        input, select, textarea { padding: 10px; border-radius: 4px; border: none; background: #2a2a2a; color: #fff; font-size: 14px; outline: none; }
+        textarea { height: 70px; resize: none; grid-column: span 2; }
+        .save-btn { grid-column: span 2; padding: 20px; background: #e60012; color: #fff; border: none; font-weight: 900; cursor: pointer; border-radius: 8px; font-size: 20px; transition: 0.2s; }
+        .save-btn:hover { background: #ff1a1a; transform: translateY(-2px); }
     </style>
 </head>
 <body>
@@ -75,19 +62,24 @@
             <div class="name-area">
                 <h1 id="out-name">お名前を入力してください</h1>
                 <div class="sub-info">
-                    <span id="out-exp">競輪歴: ---</span>
-                    <span id="out-sns1"></span>
-                    <span id="out-sns2"></span>
+                    <span id="out-exp">競輪歴: ---</span> / <span id="out-sns1"></span> / <span id="out-sns2"></span>
                 </div>
             </div>
         </div>
+
         <div class="data-grid">
+            <div class="category-label">戦術 & 属性 (STRATEGY)</div>
             <div class="item"><span class="label">好きな脚質</span><div class="val" id="out-style">---</div></div>
             <div class="item"><span class="label">推しライン</span><div class="val" id="out-line">---</div></div>
             <div class="item"><span class="label">推し選手</span><div class="val" id="out-fav">---</div></div>
-            <div class="item"><span class="label">主戦場 / 買い方</span><div class="val" id="out-battle">---</div></div>
-            <div class="item" style="grid-column: span 2;"><span class="label">活動時間帯</span><div class="val" id="out-time">---</div></div>
+            <div class="item"><span class="label">主戦場 (BANK)</span><div class="val" id="out-bank">---</div></div>
+            <div class="item" style="grid-column: span 2;"><span class="label">車券戦術 (STYLE)</span><div class="val" id="out-bet">---</div></div>
+
+            <div class="category-label">戦域 (TARGET RACES)</div>
+            <div class="item"><span class="label">時間帯 (TIME)</span><div class="val" id="out-time">---</div></div>
+            <div class="item"><span class="label">格 (GRADE)</span><div class="val" id="out-grade">---</div></div>
         </div>
+
         <div class="footer-comment" id="out-comment">...よろしくお願いします</div>
     </div>
 </div>
@@ -98,50 +90,47 @@
         <div class="c-btn" style="background:#000; color:#fff" onclick="chgLane(2,'#000','#fff')">2</div>
         <div class="c-btn" style="background:#f00; color:#fff" onclick="chgLane(3,'#f00','#fff')">3</div>
         <div class="c-btn" style="background:#00f; color:#fff" onclick="chgLane(4,'#00f','#fff')">4</div>
-        <div class="c-btn" style="background:#ff0; color:#000" onclick="chgLane(5,'#ff0','#000')">5</div>
+        <div class="c-btn" style="background:#dcb000; color:#000" onclick="chgLane(5,'#dcb000','#000')">5</div>
         <div class="c-btn" style="background:#080; color:#fff" onclick="chgLane(6,'#080','#fff')">6</div>
         <div class="c-btn" style="background:#f80; color:#fff" onclick="chgLane(7,'#f80','#fff')">7</div>
         <div class="c-btn" style="background:#fbc; color:#000" onclick="chgLane(8,'#fbc','#000')">8</div>
         <div class="c-btn" style="background:#808; color:#fff" onclick="chgLane(9,'#808','#fff')">9</div>
     </div>
     <div class="input-group">
-        <label>基本情報</label>
-        <input type="file" accept="image/*" onchange="loadImg(e)">
+        <label class="g-title">基本 & SNS</label>
+        <input type="file" accept="image/*" onchange="loadImg(event)">
         <select id="in-g" onchange="upd()"><option value="?">性別</option><option value="♂">男性</option><option value="♀">女性</option></select>
         <input type="text" id="in-n" placeholder="お名前" oninput="upd()">
-        <input type="text" id="in-exp" placeholder="競輪歴（例：5年）" oninput="upd()">
-        <label>活動時間帯 (複数可)</label>
-        <div class="time-checks">
-            <label><input type="checkbox" value="モーニング" onchange="upd()">朝</label>
-            <label><input type="checkbox" value="デイ" onchange="upd()">昼</label>
-            <label><input type="checkbox" value="ナイター" onchange="upd()">夜</label>
-            <label><input type="checkbox" value="ミッドナイト" onchange="upd()">深夜</label>
-        </div>
+        <input type="text" id="in-exp" placeholder="競輪歴（例：3年）" oninput="upd()">
+        <div style="display:flex; gap:5px;"><select id="in-s1-p" onchange="upd()" style="width:80px;"><option value="X">X</option><option value="Discord">Disc</option><option value="TIP">TIP</option></select><input type="text" id="in-s1-i" placeholder="ID" oninput="upd()" style="flex:1;"></div>
+        <div style="display:flex; gap:5px;"><select id="in-s2-p" onchange="upd()" style="width:80px;"><option value="Discord">Disc</option><option value="X">X</option><option value="WT">WT</option></select><input type="text" id="in-s2-i" placeholder="ID" oninput="upd()" style="flex:1;"></div>
+        <label class="g-title">戦術</label>
+        <input type="text" id="in-bank" placeholder="好きなバンク" oninput="upd()">
+        <input type="text" id="in-bet" placeholder="車券の買い方" oninput="upd()">
     </div>
     <div class="input-group">
-        <label>SNS 1 & 2</label>
-        <div style="display:flex; gap:5px;"><select id="in-s1-p" onchange="upd()"><option value="X">X</option><option value="Discord">Discord</option><option value="TIP">TIP</option><option value="WT">WT</option></select><input type="text" id="in-s1-i" placeholder="ID" oninput="upd()" style="flex:1;"></div>
-        <div style="display:flex; gap:5px;"><select id="in-s2-p" onchange="upd()"><option value="Discord">Discord</option><option value="X">X</option><option value="TIP">TIP</option><option value="WT">WT</option></select><input type="text" id="in-s2-i" placeholder="ID" oninput="upd()" style="flex:1;"></div>
-        <label>属性情報</label>
-        <select id="in-style" onchange="upd()"><option value="---">脚質</option><option value="逃げ">逃げ</option><option value="捲り">捲り</option><option value="追い込み">追い込み</option><option value="両">両</option></select>
+        <label class="g-title">戦域 (時間 & グレード)</label>
+        <div class="check-grid" id="time-grp">
+            <label><input type="checkbox" value="モーニング" onchange="upd()">モーニング</label><label><input type="checkbox" value="デイ" onchange="upd()">デイ</label>
+            <label><input type="checkbox" value="ナイター" onchange="upd()">ナイター</label><label><input type="checkbox" value="ミッド" onchange="upd()">ミッド</label>
+        </div>
+        <div class="check-grid" id="grade-grp">
+            <label><input type="checkbox" value="GP" onchange="upd()">GP</label><label><input type="checkbox" value="G1" onchange="upd()">G1</label>
+            <label><input type="checkbox" value="G2" onchange="upd()">G2</label><label><input type="checkbox" value="G3" onchange="upd()">G3</label>
+            <label><input type="checkbox" value="F1" onchange="upd()">F1</label><label><input type="checkbox" value="F2" onchange="upd()">F2</label>
+        </div>
+        <label class="g-title">属性</label>
+        <select id="in-style" onchange="upd()"><option value="---">脚質</option><option value="逃げ">逃げ</option><option value="捲り">捲り</option><option value="追込">追込</option><option value="両">両</option></select>
         <select id="in-line" onchange="upd()"><option value="---">推しライン</option><option value="北日本">北日本</option><option value="関東">関東</option><option value="南関">南関</option><option value="中部">中部</option><option value="近畿">近畿</option><option value="中国">中国</option><option value="四国">四国</option><option value="九州">九州</option></select>
         <input type="text" id="in-fav" placeholder="推し選手" oninput="upd()">
-        <input type="text" id="in-battle" placeholder="主戦場 / 買い方" oninput="upd()">
     </div>
-    <div class="input-group" style="grid-column: span 2;">
-        <label>一言コメント</label>
-        <textarea id="in-com" placeholder="意気込みを入力してください..." oninput="upd()"></textarea>
-    </div>
-    <button class="save-btn" onclick="save()">画像を生成して保存するじゃ！！🫵</button>
+    <textarea id="in-com" placeholder="短評（自己紹介）を入力してください..." oninput="upd()"></textarea>
+    <button class="save-btn" onclick="save()">戦域プロファイルを保存するじゃ！！🫵</button>
 </div>
 
 <script>
     let isManualName = false;
-    function chgLane(no, bg, txt) {
-        document.documentElement.style.setProperty('--k-color', bg);
-        document.documentElement.style.setProperty('--txt-color', txt);
-        document.getElementById('out-no').innerText = no;
-    }
+    function chgLane(no, bg, txt) { document.documentElement.style.setProperty('--k-color', bg); document.documentElement.style.setProperty('--txt-color', txt); document.getElementById('out-no').innerText = no; }
     function loadImg(e) { document.getElementById('preview').src = URL.createObjectURL(e.target.files[0]); }
     function upd() {
         const g = document.getElementById('in-g').value, nInput = document.getElementById('in-n');
@@ -149,29 +138,20 @@
         if (!isManualName && g !== "?") nInput.value = (g === "♂" ? "John Doe" : "Jane Doe");
         document.getElementById('out-name').innerText = nInput.value || "お名前を入力してください";
         document.getElementById('out-exp').innerText = "競輪歴: " + (document.getElementById('in-exp').value || "---");
-        const s1p = document.getElementById('in-s1-p').value, s1i = document.getElementById('in-s1-i').value;
-        const s2p = document.getElementById('in-s2-p').value, s2i = document.getElementById('in-s2-i').value;
-        document.getElementById('out-sns1').innerText = s1i ? s1p + ": " + s1i : "";
-        document.getElementById('out-sns2').innerText = s2i ? s2p + ": " + s2i : "";
+        document.getElementById('out-sns1').innerText = document.getElementById('in-s1-i').value ? document.getElementById('in-s1-p').value + ":" + document.getElementById('in-s1-i').value : "";
+        document.getElementById('out-sns2').innerText = document.getElementById('in-s2-i').value ? document.getElementById('in-s2-p').value + ":" + document.getElementById('in-s2-i').value : "";
         document.getElementById('out-style').innerText = document.getElementById('in-style').value;
         document.getElementById('out-line').innerText = document.getElementById('in-line').value;
+        document.getElementById('out-bank').innerText = document.getElementById('in-bank').value || "---";
+        document.getElementById('out-bet').innerText = document.getElementById('in-bet').value || "---";
         document.getElementById('out-fav').innerText = document.getElementById('in-fav').value || "---";
-        document.getElementById('out-battle').innerText = document.getElementById('in-battle').value || "---";
         document.getElementById('out-comment').innerText = document.getElementById('in-com').value || "...よろしくお願いします";
-        const times = Array.from(document.querySelectorAll('.time-checks input:checked')).map(c => c.value);
-        document.getElementById('out-time').innerText = times.length ? times.join(' / ') : "---";
+        const ts = Array.from(document.querySelectorAll('#time-grp input:checked')).map(c => c.value);
+        document.getElementById('out-time').innerText = ts.length ? ts.join('/') : "---";
+        const gs = Array.from(document.querySelectorAll('#grade-grp input:checked')).map(c => c.value);
+        document.getElementById('out-grade').innerText = gs.length ? gs.join('/') : "---";
     }
-    function save() {
-        const btn = document.querySelector('.save-btn');
-        btn.innerText = "生成中...";
-        html2canvas(document.querySelector("#card-wrap"), { scale: 3, useCORS: true }).then(canvas => {
-            const link = document.createElement('a');
-            link.download = 'keirin-identity-premium.png';
-            link.href = canvas.toDataURL();
-            link.click();
-            btn.innerText = "画像を生成して保存するじゃ！！🫵";
-        });
-    }
+    function save() { html2canvas(document.querySelector("#card-wrap"), { scale: 3, useCORS: true }).then(canvas => { const link = document.createElement('a'); link.download = 'keirin-target-races.png'; link.href = canvas.toDataURL(); link.click(); }); }
 </script>
 </body>
 </html>
