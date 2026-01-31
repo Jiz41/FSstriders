@@ -8,16 +8,16 @@
         :root { --k-color: #e60012; --txt-color: #fff; }
         body { background: #000; color: #fff; font-family: sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
-        /* プレビューエリア：見切れを絶対に許さない動的計算用 */
+        /* プレビューエリア */
         .card-container { width: 100%; height: 40vh; background: #000; display: flex; justify-content: center; align-items: center; flex-shrink: 0; border-bottom: 2px solid #333; overflow: hidden; position: relative; }
         #card-wrap { width: 850px; height: 580px; border: 4px solid #000; overflow: hidden; position: relative; color: #000; display: grid; grid-template-columns: 100px 1fr; background: #ffffff; flex-shrink: 0; transform-origin: center; }
 
-        /* 意匠：ゴースト現象防止のソリッド指定 */
+        /* 意匠 */
         .bg-design { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
         .bank-line { position: absolute; top: 0; right: 0; width: 100%; height: 100%; background: #f2f2f2; clip-path: polygon(40% 0, 100% 0, 100% 100%, 0% 100%); }
         .dot-pattern { position: absolute; inset: 0; background-image: radial-gradient(#ddd 1.5px, transparent 1.5px); background-size: 12px 12px; }
 
-        /* カードコンテンツ */
+        /* コンテンツ */
         .lane-box { background: var(--k-color); color: var(--txt-color); display: flex; align-items: center; justify-content: center; font-size: 85px; font-weight: 900; border-right: 4px solid #000; z-index: 10; position: relative; }
         .main-content { display: grid; grid-template-rows: 135px 1fr 95px; z-index: 5; position: relative; }
         .header { display: flex; align-items: center; padding: 0 30px; border-bottom: 4px solid #000; gap: 20px; background: rgba(255,255,255,0.5); }
@@ -25,8 +25,6 @@
         .icon-frame img { width: 100%; height: 100%; object-fit: cover; }
         .name-area h1 { margin: 0; font-size: 46px; font-weight: 900; color: #000; }
         .sub-info { font-size: 16px; font-weight: 800; color: #333; margin-top: 5px; display: flex; gap: 15px; }
-        
-        /* 性別アイコン：白背景でも見えるよう灰色(#666)に固定 */
         .gender-mark { color: #666; font-weight: 900; }
 
         .data-grid { padding: 20px 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -42,11 +40,27 @@
         .input-block { display: flex; flex-direction: column; gap: 12px; padding: 18px; background: #1a1a1a; border-radius: 12px; border: 1px solid #333; }
         label.g-title { font-size: 13px; font-weight: 900; color: var(--k-color); border-left: 5px solid var(--k-color); padding-left: 10px; }
         input, select, textarea { padding: 14px; border-radius: 8px; border: 1px solid #444; background: #222; color: #fff; font-size: 16px; width: 100%; box-sizing: border-box; }
-        .check-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; background: #222; padding: 15px; border-radius: 8px; }
-        .check-grid label { display: flex; align-items: center; justify-content: flex-start; color: #fff; font-size: 13px; font-weight: 900; cursor: pointer; }
-        .save-btn { padding: 22px; background: #e60012; color: #fff; border: none; font-weight: 900; cursor: pointer; border-radius: 15px; font-size: 20px; margin-bottom: 20px; }
+        
+        /* 【修正：チェックボックス整列】 */
+        .check-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: #222; padding: 12px; border-radius: 8px; }
+        .check-grid label { 
+            display: flex; 
+            align-items: center; 
+            color: #fff; 
+            font-size: 13px; 
+            font-weight: 900; 
+            cursor: pointer; 
+            line-height: 1;
+        }
+        .check-grid input[type="checkbox"] { 
+            width: 18px; 
+            height: 18px; 
+            margin: 0 8px 0 0; 
+            flex-shrink: 0; 
+            cursor: pointer;
+        }
 
-        /* フッターセクション：控えめなデザイン */
+        .save-btn { padding: 22px; background: #e60012; color: #fff; border: none; font-weight: 900; cursor: pointer; border-radius: 15px; font-size: 20px; margin-bottom: 20px; }
         .footer-info { margin-bottom: 60px; border-top: 1px solid #333; padding-top: 20px; display: flex; flex-direction: column; gap: 15px; }
         .simple-link-area { font-size: 15px; font-weight: 900; color: #ccc; }
         .simple-link-area a { color: var(--k-color); text-decoration: none; border-bottom: 1px solid var(--k-color); }
@@ -112,7 +126,7 @@
 
     <div class="input-block">
         <label class="g-title">戦術 & 推し</label>
-        <select id="in-style" onchange="upd()"><option value="---">脚質を選択</option><option value="逃げ">逃げ</option><option value="捲り">捲り</option><option value="差し">差し</option><option value="マーク">マーク</option></select>
+        <select id="in-style" onchange="upd()"><option value="---">好きな脚質を選択</option><option value="逃げ">逃げ</option><option value="捲り">捲り</option><option value="差し">差し</option><option value="マーク">マーク</option></select>
         <input type="text" id="in-fav" placeholder="推し選手" oninput="upd()">
         <input type="text" id="in-line" placeholder="推しライン" oninput="upd()">
         <input type="text" id="in-bank" placeholder="好きなバンク" oninput="upd()">
@@ -121,7 +135,7 @@
     <div class="input-block">
         <label class="g-title">主戦域 & グレード</label>
         <div class="check-grid" id="time-grp">
-            <label><input type="checkbox" value="朝" onchange="upd()">朝</label><label><input type="checkbox" value="昼" onchange="upd()">昼</label><label><input type="checkbox" value="夜" onchange="upd()">夜</label><label><input type="checkbox" value="深" onchange="upd()">深</label>
+            <label><input type="checkbox" value="モーニング" onchange="upd()">モーニング</label><label><input type="checkbox" value="デイ" onchange="upd()">デイ</label><label><input type="checkbox" value="ナイター" onchange="upd()">ナイター</label><label><input type="checkbox" value="ミッドナイト" onchange="upd()">ミッドナイト</label>
         </div>
         <div class="check-grid" id="grade-grp">
             <label><input type="checkbox" value="GP" onchange="upd()">GP</label><label><input type="checkbox" value="G1" onchange="upd()">G1</label><label><input type="checkbox" value="G2" onchange="upd()">G2</label><label><input type="checkbox" value="G3" onchange="upd()">G3</label><label><input type="checkbox" value="F1" onchange="upd()">F1</label><label><input type="checkbox" value="F2" onchange="upd()">F2</label>
