@@ -29,8 +29,33 @@
         .item { border-left: 6px solid var(--k-color); padding-left: 12px; }
         .label { font-size: 11px; color: #444; font-weight: 900; display: block; }
         .val { font-size: 19px; font-weight: 900; color: #000; }
-        .footer-comment { border-top: 4px solid #000; padding: 15px 30px; background: #fff; font-size: 21px; font-weight: 900; color: #000; display: flex; align-items: center; }
-        .copyright { position: absolute; bottom: 8px; right: 12px; font-size: 11px; font-weight: bold; color: #bbb; z-index: 20; }
+        /* CSSの .footer-comment 部分を以下に差し替え */
+.footer-comment { 
+    border-top: 4px solid #000; 
+    padding: 15px 30px; 
+    background: #fff; 
+    font-size: 21px; 
+    font-weight: 900; 
+    color: #000; 
+    display: block;        /* flexからblockに変更して改行を許容 */
+    word-wrap: break-word; /* 長い単語でも強制的に折り返し */
+    overflow-wrap: break-word; 
+    line-height: 1.4;      /* 改行した時の行間を調整 */
+    height: auto;          /* 高さを内容に合わせる */
+    min-height: 60px;      /* 最低限の高さは維持 */
+}
+
+/* ついでに、右下の著作権表記が文字に被らないよう調整 */
+.copyright { 
+    position: absolute; 
+    bottom: 8px; 
+    right: 12px; 
+    font-size: 11px; 
+    font-weight: bold; 
+    color: rgba(0,0,0,0.3); /* 少し透過させて重なっても読めるように */
+    z-index: 20; 
+    pointer-events: none;   /* 操作の邪魔をしない */
+}
 
         .panel { width: 100%; flex-grow: 1; overflow-y: auto; background: #111; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px; }
         .input-block { display: flex; flex-direction: column; gap: 12px; padding: 18px; background: #1a1a1a; border-radius: 12px; border: 1px solid #333; }
