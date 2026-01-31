@@ -1,19 +1,176 @@
-<!doctype html>
-<html>
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<title>My static Space</title>
-		<link rel="stylesheet" href="style.css" />
-	</head>
-	<body>
-		<div class="card">
-			<h1>Welcome to your static Space!</h1>
-			<p>You can modify this app directly by editing <i>index.html</i> in the Files and versions tab.</p>
-			<p>
-				Also don't forget to check the
-				<a href="https://huggingface.co/docs/hub/spaces" target="_blank">Spaces documentation</a>.
-			</p>
-		</div>
-	</body>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>競輪自己紹介カードメーカー</title>
+    <style>
+        :root {
+            --keirin-color: #FF0000; /* デフォルト3枠赤 */
+            --text-color: #ffffff;
+            --bg-dark: #1a1a1a;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #333;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* カード本体 16:9 */
+        #card {
+            width: 800px;
+            height: 450px;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #333 100%);
+            border: 8px solid var(--keirin-color);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* 選手のシルエット（仮） */
+        .silhouette {
+            position: absolute;
+            left: -50px;
+            bottom: -20px;
+            width: 400px;
+            height: 400px;
+            background: var(--keirin-color);
+            mask-image: url('https://dummyimage.com/400x400/000/fff&text=SILHOUETTE'); /* ここを本物のシルエット画像に */
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            opacity: 0.3;
+            z-index: 1;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+
+        .info-section h2 {
+            border-bottom: 2px solid var(--keirin-color);
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .grid-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            background: rgba(255,255,255,0.1);
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--keirin-color);
+            font-size: 0.8em;
+        }
+
+        /* 操作パネル */
+        #controls {
+            margin-top: 20px;
+            background: #eee;
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            width: 800px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .color-btns {
+            display: flex;
+            gap: 5px;
+        }
+
+        .color-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #999;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="card">
+        <div class="silhouette"></div>
+        <div class="card-content">
+            <div class="left-col">
+                <h1 id="out-name" style="margin:0; font-size: 2.5em;">ケン</h1>
+                <p id="out-gender">♂</p>
+                <p>競輪歴: <span id="out-history">10年</span></p>
+                <div class="info-section">
+                    <h2>推し選手</h2>
+                    <p id="out-favorite-player">脇本 雄太</p>
+                </div>
+            </div>
+            <div class="right-col">
+                <div class="info-section">
+                    <h2>脚質・ライン</h2>
+                    <div id="out-style" class="grid-box">
+                        <span class="tag">捲り</span><span class="tag">近畿ライン</span>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <h2>主戦場</h2>
+                    <div id="out-battle" class="grid-box">
+                        <span class="tag">ナイター</span><span class="tag">GⅠ</span>
+                    </div>
+                </div>
+                <div class="info-section">
+                    <h2>自由記入</h2>
+                    <p id="out-free" style="font-size: 0.9em;">展開予想が生きがいです。よろしくお願いします。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="controls">
+        <div>
+            <h3>1. 色を選ぶ（車番カラー）</h3>
+            <div class="color-btns">
+                <div class="color-btn" style="background:#fff" onclick="updateColor('#fff', '#000')"></div>
+                <div class="color-btn" style="background:#000" onclick="updateColor('#000', '#fff')"></div>
+                <div class="color-btn" style="background:#f00" onclick="updateColor('#f00', '#fff')"></div>
+                <div class="color-btn" style="background:#00f" onclick="updateColor('#00f', '#fff')"></div>
+                <div class="color-btn" style="background:#ff0" onclick="updateColor('#ff0', '#000')"></div>
+                <div class="color-btn" style="background:#008000" onclick="updateColor('#008000', '#fff')"></div>
+                <div class="color-btn" style="background:#ffa500" onclick="updateColor('#ffa500', '#fff')"></div>
+                <div class="color-btn" style="background:#ffc0cb" onclick="updateColor('#ffc0cb', '#000')"></div>
+                <div class="color-btn" style="background:#800080" onclick="updateColor('#800080', '#fff')"></div>
+            </div>
+        </div>
+        <div>
+            <h3>2. 内容を入力</h3>
+            名前: <input type="text" oninput="document.getElementById('out-name').innerText = this.value" placeholder="ケン"><br>
+            推し選手: <input type="text" oninput="document.getElementById('out-favorite-player').innerText = this.value">
+        </div>
+    </div>
+
+    <script>
+        function updateColor(color, text) {
+            document.documentElement.style.setProperty('--keirin-color', color);
+            // 白や黄色の時は背景を少し暗くするなどの微調整
+            if(color === '#fff' || color === '#ff0' || color === '#ffc0cb') {
+                document.getElementById('card').style.color = '#fff'; // 文字色は白を維持しつつ、影等で調整
+            }
+        }
+    </script>
+</body>
 </html>
