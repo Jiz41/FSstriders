@@ -8,59 +8,52 @@
         :root { --k-color: #e60012; --txt-color: #fff; }
         body { background: #000; color: #fff; font-family: sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
-        /* プレビューエリア：侵食を許さない独立空間 */
+        /* プレビュー：完全に独立した上部固定エリア */
         .card-container { 
-            width: 100%; background: #000; display: flex; justify-content: center; align-items: center; 
-            padding: 15px 0; flex-shrink: 0; border-bottom: 2px solid #333; box-sizing: border-box;
+            width: 100%; height: 38vh; background: #000; display: flex; justify-content: center; align-items: center; 
+            flex-shrink: 0; border-bottom: 3px solid #444; overflow: hidden;
         }
         #card-wrap { 
-            width: 850px; height: 580px; border: 6px solid #000; overflow: hidden; position: relative; color: #000; 
+            width: 850px; height: 580px; border: 4px solid #000; overflow: hidden; position: relative; color: #000; 
             display: grid; grid-template-columns: 100px 1fr; background-color: #f8f8f8; 
-            background-image: radial-gradient(#ccc 0.5px, transparent 0.5px); background-size: 5px 5px; transform-origin: top center; 
+            background-image: radial-gradient(#ccc 0.5px, transparent 0.5px); background-size: 5px 5px; 
+            flex-shrink: 0; /* サイズ崩れ防止 */
         }
 
-        /* 内部デザインパーツ */
-        .lane-box { background: var(--k-color); color: var(--txt-color); display: flex; align-items: center; justify-content: center; font-size: 90px; font-weight: 900; border-right: 6px solid #000; }
-        .main-content { position: relative; display: grid; grid-template-rows: 140px 1fr 110px; }
-        .header { display: flex; align-items: center; padding: 0 30px; border-bottom: 5px solid #000; gap: 20px; background: rgba(255,255,255,0.8); }
-        .icon-frame { width: 100px; height: 100px; border-radius: 50%; border: 6px solid var(--k-color); overflow: hidden; background: #eee; flex-shrink: 0; }
+        /* カード内部のデザイン（1000000800.pngの惨状を修復） */
+        .lane-box { background: var(--k-color); color: var(--txt-color); display: flex; align-items: center; justify-content: center; font-size: 80px; font-weight: 900; border-right: 4px solid #000; }
+        .main-content { display: grid; grid-template-rows: 130px 1fr 100px; }
+        .header { display: flex; align-items: center; padding: 0 25px; border-bottom: 4px solid #000; gap: 15px; background: rgba(255,255,255,0.9); }
+        .icon-frame { width: 90px; height: 90px; border-radius: 50%; border: 5px solid var(--k-color); overflow: hidden; flex-shrink: 0; }
         .icon-frame img { width: 100%; height: 100%; object-fit: cover; }
-        .name-area h1 { margin: 0; font-size: 46px; font-weight: 900; line-height: 1; letter-spacing: -2px; }
-        .sub-info { font-size: 13px; font-weight: bold; color: #333; margin-top: 8px; display: flex; gap: 12px; }
-        .data-grid { padding: 20px 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .category-label { grid-column: span 2; font-size: 14px; font-weight: 900; color: #fff; background: #000; padding: 2px 10px; }
-        .item { border-left: 6px solid var(--k-color); padding-left: 12px; }
-        .label { font-size: 10px; color: #777; font-weight: 800; }
-        .val { font-size: 18px; font-weight: 900; color: #000; }
-        .footer-comment { border-top: 5px solid #000; padding: 15px 30px; background: #fff; font-size: 18px; font-weight: 900; position: relative; }
-        .copyright { position: absolute; bottom: 5px; right: 10px; font-size: 10px; font-weight: bold; color: #aaa; }
+        .name-area h1 { margin: 0; font-size: 42px; font-weight: 900; }
+        .data-grid { padding: 15px 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .category-label { grid-column: span 2; font-size: 13px; font-weight: 900; color: #fff; background: #000; padding: 2px 10px; margin-bottom: 5px; }
+        .item { border-left: 5px solid var(--k-color); padding-left: 10px; }
+        .label { font-size: 10px; color: #666; font-weight: 800; display: block; }
+        .val { font-size: 16px; font-weight: 900; color: #000; }
+        .footer-comment { border-top: 4px solid #000; padding: 12px 25px; background: #fff; font-size: 18px; font-weight: 800; }
 
-        /* 操作パネル：スクロールの規律 */
+        /* 入力パネル：余白の規律 */
         .panel { 
-            width: 100%; flex-grow: 1; overflow-y: auto; background: #1a1a1a; padding: 20px; 
-            box-sizing: border-box; display: flex; flex-direction: column; gap: 15px; 
+            width: 100%; flex-grow: 1; overflow-y: auto; background: #111; padding: 25px 20px; 
+            box-sizing: border-box; display: flex; flex-direction: column; gap: 20px; /* 全体の間隔を広げた */
         }
-        .lane-selector { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; }
-        .c-btn { height: 35px; cursor: pointer; border: 1px solid #444; font-weight: 900; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 12px; color: #fff; }
+        .input-block { display: flex; flex-direction: column; gap: 12px; margin-bottom: 10px; }
         
-        .check-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: #2a2a2a; padding: 15px; border-radius: 8px; }
-        .check-grid label { display: flex; align-items: center; color: #fff; font-size: 13px; font-weight: bold; cursor: pointer; white-space: nowrap; }
-        .check-grid input { width: 18px; height: 18px; margin-right: 8px; flex-shrink: 0; }
+        .check-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: #222; padding: 15px; border-radius: 8px; }
+        .check-grid label { display: flex; align-items: center; color: #fff; font-size: 13px; cursor: pointer; }
+        .check-grid input { width: 18px; height: 18px; margin-right: 8px; }
         
-        label.g-title { font-size: 12px; font-weight: 900; color: var(--k-color); border-left: 3px solid var(--k-color); padding-left: 8px; margin-top: 5px; }
-        input, select, textarea { padding: 12px; border-radius: 6px; border: none; background: #2a2a2a; color: #fff; font-size: 16px; width: 100%; box-sizing: border-box; }
-        .save-btn { padding: 20px; background: #e60012; color: #fff; border: none; font-weight: 900; cursor: pointer; border-radius: 12px; font-size: 18px; margin-bottom: 40px; }
+        label.g-title { font-size: 12px; font-weight: 900; color: var(--k-color); border-left: 4px solid var(--k-color); padding-left: 10px; margin-bottom: 5px; }
+        input, select, textarea { padding: 14px; border-radius: 8px; border: 1px solid #333; background: #222; color: #fff; font-size: 16px; width: 100%; box-sizing: border-box; }
+        
+        .save-btn { padding: 20px; background: #e60012; color: #fff; border: none; font-weight: 900; cursor: pointer; border-radius: 12px; font-size: 18px; margin: 20px 0 50px 0; }
 
-        /* レスポンシブ：縦画面 */
-        @media screen and (orientation: portrait) {
-            .card-container { height: 35vh; }
-            .panel { height: 65vh; }
-        }
-
-        /* レスポンシブ：横画面 */
+        /* 横画面 */
         @media screen and (orientation: landscape) {
             body { flex-direction: row; }
-            .card-container { width: 50%; height: 100vh; border-bottom: none; border-right: 2px solid #333; }
+            .card-container { width: 50%; height: 100vh; border-bottom: none; border-right: 3px solid #444; }
             .panel { width: 50%; height: 100vh; }
         }
     </style>
@@ -87,55 +80,55 @@
             </div>
             <div class="footer-comment">
                 <span id="out-comment">...よろしくお願いします</span>
-                <div class="copyright">(C)Mushyn Reagan</div>
             </div>
         </div>
     </div>
 </div>
 
 <div class="panel">
-    <div class="lane-selector">
-        <div class="c-btn" style="background:#fff; color:#000" onclick="chgLane(1,'#fff','#000')">1</div>
-        <div class="c-btn" style="background:#000; color:#fff" onclick="chgLane(2,'#000','#fff')">2</div>
-        <div class="c-btn" style="background:#f00; color:#fff" onclick="chgLane(3,'#f00','#fff')">3</div>
-        <div class="c-btn" style="background:#00f; color:#fff" onclick="chgLane(4,'#00f','#fff')">4</div>
-        <div class="c-btn" style="background:#dcb000; color:#000" onclick="chgLane(5,'#dcb000','#000')">5</div>
-        <div class="c-btn" style="background:#080; color:#fff" onclick="chgLane(6,'#080','#fff')">6</div>
-        <div class="c-btn" style="background:#f80; color:#fff" onclick="chgLane(7,'#f80','#fff')">7</div>
-        <div class="c-btn" style="background:#fbc; color:#000" onclick="chgLane(8,'#fbc','#000')">8</div>
-        <div class="c-btn" style="background:#808; color:#fff" onclick="chgLane(9,'#808','#fff')">9</div>
+    <div class="input-block">
+        <label class="g-title">色選択</label>
+        <div class="lane-selector">
+            <div class="c-btn" style="background:#fff; color:#000" onclick="chgLane(1,'#fff','#000')">1</div>
+            <div class="c-btn" style="background:#000; color:#fff" onclick="chgLane(2,'#000','#fff')">2</div>
+            <div class="c-btn" style="background:#f00; color:#fff" onclick="chgLane(3,'#f00','#fff')">3</div>
+            <div class="c-btn" style="background:#00f; color:#fff" onclick="chgLane(4,'#00f','#fff')">4</div>
+            <div class="c-btn" style="background:#dcb000; color:#000" onclick="chgLane(5,'#dcb000','#000')">5</div>
+            <div class="c-btn" style="background:#080; color:#fff" onclick="chgLane(6,'#080','#fff')">6</div>
+            <div class="c-btn" style="background:#f80; color:#fff" onclick="chgLane(7,'#f80','#fff')">7</div>
+            <div class="c-btn" style="background:#fbc; color:#000" onclick="chgLane(8,'#fbc','#000')">8</div>
+            <div class="c-btn" style="background:#808; color:#fff" onclick="chgLane(9,'#808','#fff')">9</div>
+        </div>
     </div>
     
-    <div class="input-group">
-        <label class="g-title">基本</label>
-        <input type="file" accept="image/*" onchange="loadImg(event)">
-        <input type="text" id="in-n" placeholder="お名前" oninput="upd()">
+    <div class="input-block">
+        <label class="g-title">プロフィール</label>
+        <input type="file" accept="image/*" onchange="loadImg(event)" style="margin-bottom:8px;">
+        <input type="text" id="in-n" placeholder="お名前" oninput="upd()" style="margin-bottom:8px;">
         <input type="text" id="in-exp" placeholder="競輪歴" oninput="upd()">
-        <div style="display:flex; gap:5px;"><select id="in-s1-p" onchange="upd()" style="width:80px;"><option value="X">X</option><option value="Disc">Disc</option></select><input type="text" id="in-s1-i" placeholder="SNS ID" oninput="upd()"></div>
-        
-        <label class="g-title">戦術 & 属性</label>
-        <select id="in-style" onchange="upd()">
+    </div>
+    
+    <div class="input-block">
+        <label class="g-title">脚質 & 属性</label>
+        <select id="in-style" onchange="upd()" style="margin-bottom:8px;">
             <option value="---">脚質を選択</option>
             <option value="逃げ">逃げ</option>
             <option value="捲り">捲り</option>
             <option value="差し">差し</option>
             <option value="マーク">マーク</option>
         </select>
-        <input type="text" id="in-fav" placeholder="推し選手" oninput="upd()">
-        <input type="text" id="in-line" placeholder="推しライン" oninput="upd()">
+        <input type="text" id="in-fav" placeholder="推し選手" oninput="upd()" style="margin-bottom:8px;">
+        <input type="text" id="in-line" placeholder="推しライン" oninput="upd()" style="margin-bottom:8px;">
         <input type="text" id="in-bank" placeholder="好きなバンク" oninput="upd()">
-        <input type="text" id="in-bet" placeholder="車券の買い方" oninput="upd()">
-        
-        <label class="g-title">時間帯</label>
-        <div class="check-grid" id="time-grp">
-            <label><input type="checkbox" value="モーニング" onchange="upd()">モーニング</label><label><input type="checkbox" value="デイ" onchange="upd()">デイ</label><label><input type="checkbox" value="ナイター" onchange="upd()">ナイター</label><label><input type="checkbox" value="ミッド" onchange="upd()">ミッド</label>
-        </div>
-        
+    </div>
+
+    <div class="input-block">
         <label class="g-title">グレード</label>
         <div class="check-grid" id="grade-grp">
-            <label><input type="checkbox" value="GP" onchange="upd()">GP</label><label><input type="checkbox" value="G1" onchange="upd()">G1</label><label><input type="checkbox" value="G2" onchange="upd()">G2</label><label><input type="checkbox" value="G3" onchange="upd()">G3</label><label><input type="checkbox" value="F1" onchange="upd()">F1</label><label><input type="checkbox" value="F2" onchange="upd()">F2</label><label><input type="checkbox" value="L1" onchange="upd()">L1</label>
+            <label><input type="checkbox" value="GP" onchange="upd()">GP</label><label><input type="checkbox" value="G1" onchange="upd()">G1</label><label><input type="checkbox" value="G2" onchange="upd()">G2</label><label><input type="checkbox" value="G3" onchange="upd()">G3</label><label><input type="checkbox" value="F1" onchange="upd()">F1</label><label><input type="checkbox" value="F2" onchange="upd()">F2</label>
         </div>
     </div>
+
     <textarea id="in-com" placeholder="一言メッセージ..." oninput="upd()"></textarea>
     <button class="save-btn" onclick="save()">画像化して保存する📸</button>
 </div>
@@ -145,7 +138,7 @@
         const container = document.querySelector('.card-container');
         const card = document.getElementById('card-wrap');
         const isLandscape = window.innerWidth > window.innerHeight;
-        const scale = isLandscape ? (container.offsetHeight * 0.85) / 580 : (container.offsetWidth * 0.95) / 850;
+        const scale = isLandscape ? (container.offsetHeight * 0.9) / 580 : (container.offsetWidth * 0.9) / 850;
         card.style.transform = `scale(${Math.min(scale, 1)})`;
     }
     window.addEventListener('resize', adjustScale);
@@ -156,22 +149,16 @@
     function upd() {
         document.getElementById('out-name').innerText = document.getElementById('in-n').value || "お名前";
         document.getElementById('out-exp').innerText = "歴: " + (document.getElementById('in-exp').value || "---");
-        document.getElementById('out-sns1').innerText = document.getElementById('in-s1-i').value ? document.getElementById('in-s1-p').value + ":" + document.getElementById('in-s1-i').value : "";
         document.getElementById('out-style-fav').innerText = document.getElementById('in-style').value + " / " + (document.getElementById('in-fav').value || "---");
         document.getElementById('out-line').innerText = document.getElementById('in-line').value || "---";
         document.getElementById('out-bank').innerText = document.getElementById('in-bank').value || "---";
-        document.getElementById('out-bet').innerText = document.getElementById('in-bet').value || "---";
         document.getElementById('out-comment').innerText = document.getElementById('in-com').value || "...よろしくお願いします";
-        const ts = Array.from(document.querySelectorAll('#time-grp input:checked')).map(c => c.value);
-        document.getElementById('out-time').innerText = ts.length ? ts.join('/') : "---";
         const gs = Array.from(document.querySelectorAll('#grade-grp input:checked')).map(c => c.value);
         document.getElementById('out-grade').innerText = gs.length ? gs.join('/') : "---";
     }
     function save() { 
-        const btn = document.querySelector('.save-btn'); btn.innerText = "生成中...";
         html2canvas(document.querySelector("#card-wrap"), { scale: 3, useCORS: true, width: 850, height: 580 }).then(canvas => {
-            const link = document.createElement('a'); link.download = 'keirin-mushyn-pro.png'; link.href = canvas.toDataURL(); link.click();
-            btn.innerText = "画像化して保存する📸";
+            const link = document.createElement('a'); link.download = 'keirin-card-v2.png'; link.href = canvas.toDataURL(); link.click();
         });
     }
 </script>
