@@ -144,6 +144,58 @@
 
     <textarea id="in-com" placeholder="一言メッセージ..." oninput="upd()"></textarea>
     <button class="save-btn" onclick="save()">画像化して保存する📸</button>
+<style>
+  
+    /* 折りたたみ(details)の装飾 */
+    .how-to-use {
+        background: #1a1a1a;
+        border-radius: 12px;
+        border-left: 4px solid var(--k-color);
+        overflow: hidden;
+        margin-bottom: 5px;
+    }
+    .how-to-use summary {
+        padding: 15px;
+        font-size: 14px;
+        font-weight: 900;
+        color: var(--k-color);
+        cursor: pointer;
+        list-style: none; /* デフォルトの矢印を消す(一部ブラウザ) */
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    /* 擬似的な矢印アイコンの演出 */
+    .how-to-use summary::after {
+        content: "▼";
+        font-size: 10px;
+        margin-left: auto;
+        transition: 0.3s;
+    }
+    .how-to-use[open] summary::after {
+        transform: rotate(180deg);
+    }
+    .how-to-use ol {
+        margin: 0 15px 15px 35px;
+        padding: 0;
+        font-size: 13px;
+        color: #ccc;
+        line-height: 1.6;
+    }
+    .how-to-use li { margin-bottom: 8px; }
+    .how-to-use li b { color: #fff; }
+</style>
+
+<div class="footer-info">
+    <details class="how-to-use">
+        <summary>💡 基本的な使い方</summary>
+        <ol>
+            <li><b>入力・選択：</b> 車番（色）、アイコン、お名前、戦術などを設定します。</li>
+            <li><b>確認：</b> プレビューで、カードの出来栄えをチェック！</li>
+            <li><b>保存：</b> 「画像化して保存」でPNGファイルを書き出します。</li>
+            <li><b>備考：</b> 入力する文字数があまりにも多いとめちゃくちゃになりますのでご注意🙏</li>
+        </ol>
+    </details>
 
     <div class="footer-info">
         <div class="simple-link-area">
