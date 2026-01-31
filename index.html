@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>華耀天輪 己成拵え</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root { --k-color: #e60012; --txt-color: #fff; }
@@ -29,35 +30,20 @@
         .item { border-left: 6px solid var(--k-color); padding-left: 12px; }
         .label { font-size: 11px; color: #444; font-weight: 900; display: block; }
         .val { font-size: 19px; font-weight: 900; color: #000; }
-        /* CSSの .footer-comment 部分を以下に差し替え */
-.footer-comment { 
-    border-top: 4px solid #000; 
-    padding: 15px 30px; 
-    background: #fff; 
-    font-size: 21px; 
-    font-weight: 900; 
-    color: #000; 
-    display: block;        /* flexからblockに変更して改行を許容 */
-    word-wrap: break-word; /* 長い単語でも強制的に折り返し */
-    overflow-wrap: break-word; 
-    line-height: 1.4;      /* 改行した時の行間を調整 */
-    height: auto;          /* 高さを内容に合わせる */
-    min-height: 60px;      /* 最低限の高さは維持 */
-}
 
-/* ついでに、右下の著作権表記が文字に被らないよう調整 */
-.copyright { 
-    position: absolute; 
-    bottom: 8px; 
-    right: 12px; 
-    font-size: 11px; 
-    font-weight: bold; 
-    color: rgba(0,0,0,0.3); /* 少し透過させて重なっても読めるように */
-    z-index: 20; 
-    pointer-events: none;   /* 操作の邪魔をしない */
-}
+        .footer-comment { 
+            border-top: 4px solid #000; padding: 15px 30px; background: #fff; font-size: 21px; font-weight: 900; color: #000; 
+            display: block; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.3; height: auto; min-height: 65px; 
+        }
+        .copyright { position: absolute; bottom: 8px; right: 12px; font-size: 11px; font-weight: bold; color: rgba(0,0,0,0.25); z-index: 20; pointer-events: none; }
 
         .panel { width: 100%; flex-grow: 1; overflow-y: auto; background: #111; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px; }
+        
+        /* 復活：タイトルロゴ */
+        .title-logo { text-align: center; margin-bottom: 10px; padding: 15px; border: 1px double #444; background: #0a0a0a; }
+        .title-logo h2 { margin: 0; font-size: 20px; letter-spacing: 0.3em; color: #f5f5f5; font-weight: 900; }
+        .title-logo p { margin: 5px 0 0; font-size: 10px; color: #666; font-weight: 800; letter-spacing: 0.2em; }
+
         .input-block { display: flex; flex-direction: column; gap: 12px; padding: 18px; background: #1a1a1a; border-radius: 12px; border: 1px solid #333; }
         label.g-title { font-size: 13px; font-weight: 900; color: var(--k-color); border-left: 5px solid var(--k-color); padding-left: 10px; }
         input, select, textarea { padding: 14px; border-radius: 8px; border: 1px solid #444; background: #222; color: #fff; font-size: 16px; width: 100%; box-sizing: border-box; }
@@ -75,7 +61,6 @@
         .how-to-use[open] summary::after { transform: rotate(180deg); }
         .how-to-use ol { margin: 0 15px 15px 35px; padding: 0; font-size: 13px; color: #ccc; line-height: 1.6; }
         .how-to-use li { margin-bottom: 8px; }
-        .how-to-use li b { color: #fff; }
         .how-to-use .caution { margin-top: 10px; padding: 10px 15px; border-top: 1px dashed #444; color: #ff4444; font-weight: 900; font-size: 12px; }
 
         .simple-link-area { font-size: 15px; font-weight: 900; color: #ccc; }
@@ -125,6 +110,11 @@
 </div>
 
 <div class="panel">
+    <div class="title-logo">
+        <h2>華耀天輪 <span style="color:var(--k-color)">己成</span>拵え</h2>
+        <p>― KINARI KOSHIRAE : KEIRIN PROFILE CARD ―</p>
+    </div>
+
     <div class="input-block">
         <label class="g-title">基本設定</label>
         <div style="display:grid; grid-template-columns: repeat(9, 1fr); gap:6px; margin-bottom:10px;">
@@ -141,7 +131,7 @@
         <select id="in-gender" onchange="chgGender()"><option value="male">男性 (♂)</option><option value="female">女性 (♀)</option></select>
         <input type="file" accept="image/*" onchange="loadImg(event)">
         <input type="text" id="in-n" placeholder="お名前" oninput="upd()">
-        <input type="text" id="in-sns" placeholder="X (@...)" oninput="upd()">
+        <input type="text" id="in-sns" placeholder="SNS ID (@...)" oninput="upd()">
         <input type="text" id="in-exp" placeholder="競輪歴" oninput="upd()">
     </div>
 
@@ -188,7 +178,6 @@
             </div>
         </details>
 
-
         <div class="simple-link-area">
             LINK：<a href="https://huggingface.co/spaces/Jiz41/Jiz41r1t5u" target="_blank">競輪予想アシストツール 華耀天輪 真自在律</a>
         </div>
@@ -225,12 +214,12 @@
     window.addEventListener('load', adjustScale);
     function chgLane(no, bg, txt) { document.documentElement.style.setProperty('--k-color', bg); document.documentElement.style.setProperty('--txt-color', txt); document.getElementById('out-no').innerText = no; }
     function loadImg(e) { document.getElementById('preview').src = URL.createObjectURL(e.target.files[0]); }
+    
     function upd() {
         const defName = currentGender === "male" ? "ジョン・ドゥ" : "ジェーン・ドゥ";
         document.getElementById('out-name').innerText = document.getElementById('in-n').value || defName;
         document.getElementById('out-exp').innerText = "歴: " + (document.getElementById('in-exp').value || "---");
         
-        // SNS IDの更新（@の重複を防止しつつ表示）
         const snsVal = document.getElementById('in-sns').value;
         document.getElementById('out-sns').innerText = snsVal ? "@" + snsVal.replace('@','') : "@---";
         
@@ -238,15 +227,33 @@
         document.getElementById('out-style-fav').innerText = document.getElementById('in-style').value + " / " + (document.getElementById('in-fav').value || "---");
         document.getElementById('out-line').innerText = document.getElementById('in-line').value || "---";
         document.getElementById('out-bank').innerText = document.getElementById('in-bank').value || "---";
-        document.getElementById('out-comment').innerText = document.getElementById('in-com').value || "...よろしくお願いします";
+        
+        // 文字サイズ可変ロジック付き一言欄更新
+        const commentEl = document.getElementById('out-comment');
+        const commentVal = document.getElementById('in-com').value || "...よろしくお願いします";
+        commentEl.innerText = commentVal;
+        
+        const len = commentVal.length;
+        if (len > 55) { 
+            commentEl.style.fontSize = "14px"; 
+        } else if (len > 35) { 
+            commentEl.style.fontSize = "17px"; 
+        } else { 
+            commentEl.style.fontSize = "21px"; 
+        }
+
         const ts = Array.from(document.querySelectorAll('#time-grp input:checked')).map(c => c.value);
         document.getElementById('out-time').innerText = ts.length ? ts.join('/') : "---";
         const gs = Array.from(document.querySelectorAll('#grade-grp input:checked')).map(c => c.value);
         document.getElementById('out-grade').innerText = gs.length ? gs.join('/') : "---";
     }
+
     function save() { 
         html2canvas(document.querySelector("#card-wrap"), { scale: 3, useCORS: true, backgroundColor: "#ffffff" }).then(canvas => {
-            const link = document.createElement('a'); link.download = 'keirin-card.png'; link.href = canvas.toDataURL(); link.click();
+            const link = document.createElement('a'); 
+            link.download = 'kinari-koshirae.png'; 
+            link.href = canvas.toDataURL(); 
+            link.click();
         });
     }
 </script>
