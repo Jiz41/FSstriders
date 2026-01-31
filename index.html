@@ -2,97 +2,84 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        :root { --k-color: #e60012; } /* 3枠赤をデフォルトに */
-        body { background: #333; display: flex; flex-direction: column; align-items: center; padding: 40px; font-family: "MS UI Gothic", "Meiryo", sans-serif; }
+        :root { --k-color: #e60012; --txt-color: #fff; }
+        body { background: #222; color: #fff; display: flex; flex-direction: column; align-items: center; padding: 20px; font-family: sans-serif; }
+        
+        /* カード全体 */
+        #card-wrap { width: 800px; height: 450px; background: #fff; border: 4px solid #000; overflow: hidden; position: relative; color: #000; display: grid; grid-template-columns: 80px 1fr; }
 
-        /* カード本体：出走表の質感をCSSだけで再現 */
-        #card {
-            width: 800px; height: 450px; background: #fff;
-            border: 4px solid #000; position: relative;
-            display: grid; grid-template-columns: 80px 1fr 220px;
-            box-shadow: 10px 10px 0px rgba(0,0,0,0.2);
-        }
+        /* 左端：車番エリア */
+        .lane-box { background: var(--k-color); color: var(--txt-color); display: flex; align-items: center; justify-content: center; font-size: 70px; font-weight: bold; border-right: 4px solid #000; z-index: 10; }
 
-        /* 左端：車番エリア（CSSの巨大数字） */
-        .lane-no {
-            background: var(--k-color); color: #fff;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 80px; font-weight: bold; border-right: 4px solid #000;
-            text-shadow: 2px 2px 0 #000;
-        }
+        /* 右側：メインコンテンツ */
+        .main-content { position: relative; display: grid; grid-template-rows: 140px 1fr; }
+        
+        /* 選手シルエット（SVGを絶対配置） */
+        .silhouette-svg { position: absolute; right: -20px; bottom: -40px; width: 500px; height: auto; opacity: 0.15; fill: var(--k-color); z-index: 1; pointer-events: none; }
 
-        /* 中央：メイン情報 */
-        .main-info { display: grid; grid-template-rows: 140px 1fr; }
-        .name-box { border-bottom: 4px solid #000; padding: 20px; position: relative; overflow: hidden; }
-        .name-box h1 { margin: 0; font-size: 56px; line-height: 1; letter-spacing: -2px; }
-        .name-label { position: absolute; top: 5px; left: 10px; font-size: 12px; font-weight: bold; }
+        .name-area { padding: 30px; border-bottom: 4px solid #000; z-index: 2; }
+        .name-area h1 { margin: 0; font-size: 60px; letter-spacing: -2px; }
+        
+        .data-grid { padding: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; z-index: 2; }
+        .item { border-left: 5px solid var(--k-color); padding-left: 15px; }
+        .label { font-size: 12px; color: #666; font-weight: bold; }
+        .val { font-size: 22px; font-weight: bold; }
 
-        /* 背景に流れるCSSの「バンクライン」 */
-        .bank-line {
-            position: absolute; right: -50px; bottom: -50px;
-            width: 300px; height: 300px; border: 40px solid var(--k-color);
-            border-radius: 50%; opacity: 0.1; pointer-events: none;
-        }
-
-        .details { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .data-item { border-left: 4px solid var(--k-color); padding-left: 10px; margin-bottom: 15px; }
-        .label { font-size: 12px; color: #666; display: block; }
-        .val { font-size: 20px; font-weight: bold; color: #000; }
-
-        /* 右端：戦歴・短評エリア */
-        .sidebar { border-left: 4px solid #000; background: #f0f0f0; padding: 15px; }
-        .comment-box { height: 100%; border: 2px dashed #999; padding: 10px; font-size: 14px; line-height: 1.6; }
-
-        /* 操作用ボタン */
-        .controls { margin-top: 30px; display: flex; gap: 10px; }
-        .c-btn { width: 40px; height: 40px; border: 2px solid #000; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+        /* 操作パネル */
+        .panel { width: 800px; margin-top: 20px; background: #eee; color: #333; padding: 20px; border-radius: 8px; display: grid; grid-template-columns: repeat(9, 1fr); gap: 5px; }
+        .c-btn { height: 40px; cursor: pointer; border: 2px solid #000; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+        .save-btn { grid-column: span 9; margin-top: 15px; padding: 15px; background: #000; color: #fff; border: none; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div id="card">
-    <div class="lane-no" id="out-no">3</div>
-    <div class="main-info">
-        <div class="name-box">
-            <span class="name-label">NAME</span>
-            <h1 id="out-name">Alphabet</h1>
-            <div class="bank-line"></div>
+<div id="card-wrap">
+    <div class="lane-box" id="out-no">3</div>
+    <div class="main-content">
+        <svg class="silhouette-svg" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+            <path d="M430,230c-15-50-60-80-110-85l-40-5c-20-2-40,10-45,30l-10,40l-80,10c-15,2-25,15-22,30s15,25,30,22l70-10l5,40c2,15,15,25,30,22s25-15,22-30l-5-40l30,5c30,5,55,25,65,55l10,30h50L430,230z M150,350c-40,0-75,35-75,75s35,75,75,75s75-35,75-75S190,350,150,350z M150,470c-25,0-45-20-45-45s20-45,45-45s45,20,45,45S175,470,150,470z M380,350c-40,0-75,35-75,75s35,75,75,75s75-35,75-75S420,350,380,350z M380,470c-25,0-45-20-45-45s20-45,45-45s45,20,45,45S405,470,380,470z"/>
+        </svg>
+
+        <div class="name-area">
+            <h1 id="out-n">Alphabet</h1>
         </div>
-        <div class="details">
-            <div class="data-item"><span class="label">性別 / GENDER</span><span class="val" id="out-g">John Doe / ♂</span></div>
-            <div class="data-item"><span class="label">脚質 / STYLE</span><span class="val">逃げ・両</span></div>
-            <div class="data-item"><span class="label">ホーム / BANK</span><span class="val">向日町</span></div>
-            <div class="data-item"><span class="label">競輪歴 / EXP</span><span class="val">12年</span></div>
-        </div>
-    </div>
-    <div class="sidebar">
-        <span class="label">短評 / COMMENT</span>
-        <div class="comment-box">
-            本命党ながら、時折見せる大穴狙いに定評あり。展開予想を重視する硬派な車券師スタイル。
+        <div class="data-grid">
+            <div class="item"><span class="label">PROFILE</span><div class="val" id="out-p">John Doe / ♂</div></div>
+            <div class="item"><span class="label">FAVORITE</span><div class="val">脇本 雄太</div></div>
+            <div class="item"><span class="label">HISTORY</span><div class="val">15 Years</div></div>
+            <div class="item"><span class="label">STYLE</span><div class="val">捲り・追込</div></div>
         </div>
     </div>
 </div>
 
-<div class="controls">
-    <div class="c-btn" style="background:#fff; color:#000" onclick="setLane(1, '#fff', '#000')">1</div>
-    <div class="c-btn" style="background:#000; color:#fff" onclick="setLane(2, '#000', '#fff')">2</div>
-    <div class="c-btn" style="background:#f00; color:#fff" onclick="setLane(3, '#f00', '#fff')">3</div>
-    <div class="c-btn" style="background:#00f; color:#fff" onclick="setLane(4, '#00f', '#fff')">4</div>
-    <div class="c-btn" style="background:#ff0; color:#000" onclick="setLane(5, '#ff0', '#000')">5</div>
-    <div class="c-btn" style="background:#080; color:#fff" onclick="setLane(6, '#080', '#fff')">6</div>
-    <div class="c-btn" style="background:#f80; color:#fff" onclick="setLane(7, '#f80', '#fff')">7</div>
-    <div class="c-btn" style="background:#fbc; color:#000" onclick="setLane(8, '#fbc', '#000')">8</div>
-    <div class="c-btn" style="background:#808; color:#fff" onclick="setLane(9, '#808', '#fff')">9</div>
+<div class="panel">
+    <div class="c-btn" style="background:#fff; color:#000" onclick="chg(1,'#fff','#000')">1</div>
+    <div class="c-btn" style="background:#000; color:#fff" onclick="chg(2,'#000','#fff')">2</div>
+    <div class="c-btn" style="background:#f00; color:#fff" onclick="chg(3,'#f00','#fff')">3</div>
+    <div class="c-btn" style="background:#00f; color:#fff" onclick="chg(4,'#00f','#fff')">4</div>
+    <div class="c-btn" style="background:#ff0; color:#000" onclick="chg(5,'#ff0','#000')">5</div>
+    <div class="c-btn" style="background:#080; color:#fff" onclick="chg(6,'#080','#fff')">6</div>
+    <div class="c-btn" style="background:#f80; color:#fff" onclick="chg(7,'#f80','#fff')">7</div>
+    <div class="c-btn" style="background:#fbc; color:#000" onclick="chg(8,'#fbc','#000')">8</div>
+    <div class="c-btn" style="background:#808; color:#fff" onclick="chg(9,'#808','#fff')">9</div>
+    <button class="save-btn" onclick="save()">Download PNG</button>
 </div>
 
 <script>
-    function setLane(no, bg, txt) {
-        const root = document.documentElement;
-        root.style.setProperty('--k-color', bg);
-        const lane = document.getElementById('out-no');
-        lane.innerText = no;
-        lane.style.color = txt;
+    function chg(no, bg, txt) {
+        document.documentElement.style.setProperty('--k-color', bg);
+        document.documentElement.style.setProperty('--txt-color', txt);
+        document.getElementById('out-no').innerText = no;
+    }
+    function save() {
+        html2canvas(document.querySelector("#card-wrap")).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'keirin-profile.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
     }
 </script>
 
