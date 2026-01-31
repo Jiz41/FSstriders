@@ -8,16 +8,20 @@
         :root { --k-color: #e60012; --txt-color: #fff; }
         body { background: #111; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 10px; margin: 0; }
         
-        /* カード全体のスケール制御 */
-        .card-container { width: 100%; max-width: 850px; overflow: hidden; display: flex; justify-content: center; }
+        /* プレビューエリア（スマホ縮小用） */
+        .card-container { 
+            width: 100%; max-width: 850px; overflow: hidden; display: flex; justify-content: center; 
+            background: #000; padding: 10px 0; position: sticky; top: 0; z-index: 100;
+        }
         
+        /* ケンさんの「字面」を完全準拠 */
         #card-wrap { 
             width: 850px; height: 580px; border: 6px solid #000; overflow: hidden; position: relative; color: #000; 
             display: grid; grid-template-columns: 100px 1fr; flex-shrink: 0;
             background-color: #f8f8f8;
             background-image: radial-gradient(#ccc 0.5px, transparent 0.5px);
             background-size: 5px 5px;
-            transform-origin: top left; /* スマホで縮小するための基点 */
+            transform-origin: top center;
         }
 
         .lane-box { background: var(--k-color); color: var(--txt-color); display: flex; align-items: center; justify-content: center; font-size: 90px; font-weight: 900; border-right: 6px solid #000; z-index: 20; }
@@ -52,10 +56,9 @@
         textarea { height: 70px; resize: none; grid-column: span 2; }
         .save-btn { grid-column: span 2; padding: 18px; background: #e60012; color: #fff; border: none; font-weight: 900; cursor: pointer; border-radius: 8px; font-size: 18px; }
 
-        /* モバイル用レイアウト調整 */
         @media screen and (max-width: 600px) {
-            .panel { grid-template-columns: 1fr; } /* パネルを1列に */
-            .lane-selector { grid-template-columns: repeat(5, 1fr); } /* ボタンを2段に */
+            .panel { grid-template-columns: 1fr; }
+            .lane-selector { grid-template-columns: repeat(5, 1fr); }
             textarea, .save-btn { grid-column: span 1; }
         }
     </style>
@@ -163,7 +166,7 @@
     function save() { 
         const btn = document.querySelector('.save-btn'); btn.innerText = "生成中...";
         html2canvas(document.querySelector("#card-wrap"), { scale: 3, useCORS: true, width: 850, height: 580 }).then(canvas => {
-            const link = document.createElement('a'); link.download = 'keirin-sp-ready.png'; link.href = canvas.toDataURL(); link.click();
+            const link = document.createElement('a'); link.download = 'keirin-target-races.png'; link.href = canvas.toDataURL(); link.click();
             btn.innerText = "画像化して保存する📸";
         });
     }
