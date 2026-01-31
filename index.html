@@ -5,38 +5,48 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root { --k-color: #e60012; --txt-color: #fff; }
-        body { background: #1a1a1a; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        body { background: #111; color: #fff; font-family: "Helvetica Neue", Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
         
         /* カード本体 */
-        #card-wrap { width: 800px; height: 450px; background: #fff; border: 5px solid #000; overflow: hidden; position: relative; color: #000; display: grid; grid-template-columns: 90px 1fr; }
+        #card-wrap { 
+            width: 850px; height: 500px; background: #fff; border: 6px solid #000; overflow: hidden; position: relative; color: #000; 
+            display: grid; grid-template-columns: 100px 1fr; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
 
         /* 左端：車番 */
-        .lane-box { background: var(--k-color); color: var(--txt-color); display: flex; align-items: center; justify-content: center; font-size: 80px; font-weight: 900; border-right: 5px solid #000; z-index: 5; }
+        .lane-box { background: var(--k-color); color: var(--txt-color); display: flex; align-items: center; justify-content: center; font-size: 85px; font-weight: 900; border-right: 6px solid #000; z-index: 10; }
 
-        /* メインエリア */
-        .main-content { position: relative; display: grid; grid-template-rows: 150px 1fr; background: #fff; }
+        .main-content { position: relative; display: grid; grid-template-rows: 140px 1fr 60px; background: #fff; }
         
-        /* アイコン＋名前エリア */
-        .profile-header { display: flex; align-items: center; padding: 0 30px; border-bottom: 5px solid #000; z-index: 2; gap: 20px; }
-        
-        /* アイコン：車番カラーの縁取り */
-        .icon-frame { width: 100px; height: 100px; border-radius: 50%; border: 5px solid var(--k-color); overflow: hidden; background: #eee; flex-shrink: 0; }
+        /* 意匠：シルエットとバンク */
+        .silhouette-svg { position: absolute; right: -40px; bottom: 20px; width: 450px; opacity: 0.1; fill: var(--k-color); z-index: 1; pointer-events: none; }
+        .bank-line { position: absolute; width: 1000px; height: 1000px; border: 1px solid rgba(0,0,0,0.05); border-radius: 50%; top: -500px; right: -500px; z-index: 1; }
+
+        /* 1. 基本プロフィール */
+        .header { display: flex; align-items: center; padding: 0 30px; border-bottom: 5px solid #000; z-index: 5; gap: 20px; }
+        .icon-frame { width: 90px; height: 90px; border-radius: 50%; border: 5px solid var(--k-color); overflow: hidden; background: #eee; flex-shrink: 0; }
         .icon-frame img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .name-box h1 { margin: 0; font-size: 48px; letter-spacing: -1px; text-transform: uppercase; font-weight: 800; }
+        .name-area { flex-grow: 1; }
+        .name-area h1 { margin: 0; font-size: 42px; font-weight: 900; line-height: 1.1; }
+        .sub-info { font-size: 14px; font-weight: bold; color: #666; margin-top: 5px; }
 
-        /* データグリッド */
-        .data-grid { padding: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; z-index: 2; }
-        .item { border-left: 6px solid var(--k-color); padding-left: 15px; }
-        .label { font-size: 11px; color: #888; font-weight: bold; }
-        .val { font-size: 24px; font-weight: bold; margin-top: 2px; }
+        /* 2&3. 属性・グレード枠 */
+        .data-grid { padding: 20px 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; z-index: 5; }
+        .item { border-left: 5px solid var(--k-color); padding-left: 15px; }
+        .label { font-size: 10px; color: #888; font-weight: 800; letter-spacing: 1px; }
+        .val { font-size: 18px; font-weight: 800; color: #111; margin-top: 2px; }
+
+        /* 4. 自由記述 */
+        .footer-comment { border-top: 2px solid #000; padding: 0 30px; display: flex; align-items: center; z-index: 5; background: rgba(0,0,0,0.03); font-style: italic; font-weight: bold; }
 
         /* 操作パネル */
-        .panel { width: 800px; margin-top: 20px; background: #f5f5f5; color: #333; padding: 25px; border-radius: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .panel { width: 850px; margin-top: 20px; background: #222; padding: 25px; border-radius: 12px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; border: 1px solid #444; }
+        .input-group { display: flex; flex-direction: column; gap: 8px; }
         .lane-selector { grid-column: span 2; display: grid; grid-template-columns: repeat(9, 1fr); gap: 5px; }
-        .c-btn { height: 45px; cursor: pointer; border: 2px solid #000; font-weight: bold; display: flex; align-items: center; justify-content: center; }
-        .save-btn { grid-column: span 2; padding: 18px; background: #000; color: #fff; border: none; cursor: pointer; font-size: 18px; font-weight: bold; }
-        input, select { padding: 10px; border: 2px solid #ddd; border-radius: 5px; }
+        .c-btn { height: 40px; cursor: pointer; border: 1px solid #fff; font-weight: bold; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
+        label { font-size: 12px; font-weight: bold; color: #aaa; }
+        input, select, textarea { padding: 10px; border-radius: 4px; border: none; background: #333; color: #fff; }
+        .save-btn { grid-column: span 2; padding: 15px; background: #e60012; color: #fff; border: none; font-weight: 900; cursor: pointer; border-radius: 6px; }
     </style>
 </head>
 <body>
@@ -44,77 +54,106 @@
 <div id="card-wrap">
     <div class="lane-box" id="out-no">3</div>
     <div class="main-content">
-        <div class="profile-header">
+        <div class="bank-line"></div>
+        <svg class="silhouette-svg" viewBox="0 0 512 512"><path d="M430,230c-15-50-60-80-110-85l-40-5c-20-2-40,10-45,30l-10,40l-80,10c-15,2-25,15-22,30s15,25,30,22l70-10l5,40c2,15,15,25,30,22s25-15,22-30l-5-40l30,5c30,5,55,25,65,55l10,30h50L430,230z M150,350c-40,0-75,35-75,75s35,75,75,75s75-35,75-75S190,350,150,350z M150,470c-25,0-45-20-45-45s20-45,45-45s45,20,45,45S175,470,150,470z M380,350c-40,0-75,35-75,75s35,75,75,75s75-35,75-75S420,350,380,350z M380,470c-25,0-45-20-45-45s20-45,45-45s45,20,45,45S405,470,380,470z"/></svg>
+        
+        <div class="header">
             <div class="icon-frame"><img id="preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ccc' d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E"></div>
-            <div class="name-box"><h1 id="out-n">Alphabet</h1></div>
+            <div class="name-area">
+                <h1 id="out-name">お名前を入力してください</h1>
+                <div class="sub-info"><span id="out-exp">競輪歴: ---</span> / <span id="out-sns">SNS: ---</span></div>
+            </div>
         </div>
+
         <div class="data-grid">
-            <div class="item"><span class="label">PROFILE</span><div class="val" id="out-p">Guest / ?</div></div>
-            <div class="item"><span class="label">FAVORITE</span><div class="val" id="out-f">---</div></div>
-            <div class="item"><span class="label">STYLE</span><div class="val" id="out-s">---</div></div>
-            <div class="item"><span class="label">HOME</span><div class="val" id="out-h">---</div></div>
+            <div class="item"><span class="label">好きな脚質</span><div class="val" id="out-style">---</div></div>
+            <div class="item"><span class="label">推しライン</span><div class="val" id="out-line">---</div></div>
+            <div class="item"><span class="label">推し選手</span><div class="val" id="out-fav">---</div></div>
+            <div class="item"><span class="label">主戦場 / 買い方</span><div class="val" id="out-battle">---</div></div>
+            <div class="item" style="grid-column: span 2;"><span class="label">活動時間帯</span><div class="val" id="out-time">---</div></div>
         </div>
+
+        <div class="footer-comment" id="out-comment">...よろしくお願いします</div>
     </div>
 </div>
 
 <div class="panel">
     <div class="lane-selector">
-        <div class="c-btn" style="background:#fff; color:#000" onclick="chg(1,'#fff','#000')">1</div>
-        <div class="c-btn" style="background:#000; color:#fff" onclick="chg(2,'#000','#fff')">2</div>
-        <div class="c-btn" style="background:#f00; color:#fff" onclick="chg(3,'#f00','#fff')">3</div>
-        <div class="c-btn" style="background:#00f; color:#fff" onclick="chg(4,'#00f','#fff')">4</div>
-        <div class="c-btn" style="background:#ff0; color:#000" onclick="chg(5,'#ff0','#000')">5</div>
-        <div class="c-btn" style="background:#080; color:#fff" onclick="chg(6,'#080','#fff')">6</div>
-        <div class="c-btn" style="background:#f80; color:#fff" onclick="chg(7,'#f80','#fff')">7</div>
-        <div class="c-btn" style="background:#fbc; color:#000" onclick="chg(8,'#fbc','#000')">8</div>
-        <div class="c-btn" style="background:#808; color:#fff" onclick="chg(9,'#808','#fff')">9</div>
+        <div class="c-btn" style="background:#fff; color:#000" onclick="chgLane(1,'#fff','#000')">1</div>
+        <div class="c-btn" style="background:#000; color:#fff" onclick="chgLane(2,'#000','#fff')">2</div>
+        <div class="c-btn" style="background:#f00; color:#fff" onclick="chgLane(3,'#f00','#fff')">3</div>
+        <div class="c-btn" style="background:#00f; color:#fff" onclick="chgLane(4,'#00f','#fff')">4</div>
+        <div class="c-btn" style="background:#ff0; color:#000" onclick="chgLane(5,'#ff0','#000')">5</div>
+        <div class="c-btn" style="background:#080; color:#fff" onclick="chgLane(6,'#080','#fff')">6</div>
+        <div class="c-btn" style="background:#f80; color:#fff" onclick="chgLane(7,'#f80','#fff')">7</div>
+        <div class="c-btn" style="background:#fbc; color:#000" onclick="chgLane(8,'#fbc','#000')">8</div>
+        <div class="c-btn" style="background:#808; color:#fff" onclick="chgLane(9,'#808','#fff')">9</div>
     </div>
-    <div style="display:flex; flex-direction:column; gap:10px;">
-        <label>アイコン選択</label>
-        <input type="file" accept="image/*" onchange="loadFile(event)">
-        <label>性別</label>
-        <select id="in-g" onchange="autoFillName()">
-            <option value="?">選択</option>
+    <div class="input-group">
+        <label>アイコン / 性別</label>
+        <input type="file" accept="image/*" onchange="loadImg(event)">
+        <select id="in-g" onchange="upd()">
+            <option value="?">性別を選択</option>
             <option value="♂">男性 (John Doe)</option>
             <option value="♀">女性 (Jane Doe)</option>
         </select>
-    </div>
-    <div style="display:flex; flex-direction:column; gap:10px;">
         <label>名前</label>
-        <input type="text" id="in-n" value="Alphabet" oninput="manualName()">
-        <label>推し / 脚質</label>
-        <input type="text" placeholder="推し / 脚質" oninput="updAll(this.value)">
+        <input type="text" id="in-n" placeholder="お名前" oninput="upd()">
+        <label>SNS / 競輪歴</label>
+        <input type="text" id="in-sns" placeholder="X: @username" oninput="upd()">
+        <input type="text" id="in-exp" placeholder="例：10年 / 昨日から" oninput="upd()">
     </div>
-    <button class="save-btn" onclick="save()">画像を保存するじゃ！！🫵</button>
+    <div class="input-group">
+        <label>脚質 / ライン</label>
+        <select id="in-style" onchange="upd()">
+            <option value="---">脚質を選択</option>
+            <option value="逃げ">逃げ</option><option value="捲り">捲り</option><option value="追い込み">追い込み</option><option value="両">両</option>
+        </select>
+        <select id="in-line" onchange="upd()">
+            <option value="---">推しラインを選択</option>
+            <option value="北日本">北日本</option><option value="関東">関東</option><option value="南関">南関</option>
+            <option value="中部">中部</option><option value="近畿">近畿</option><option value="中国">中国</option>
+            <option value="四国">四国</option><option value="九州">九州</option>
+        </select>
+        <label>推し選手 / 主戦場・買い方</label>
+        <input type="text" id="in-fav" placeholder="推し選手名" oninput="upd()">
+        <input type="text" id="in-battle" placeholder="例：G1 / 三連単厚張り" oninput="upd()">
+        <label>一言</label>
+        <input type="text" id="in-com" placeholder="意気込みをどうぞ" oninput="upd()">
+    </div>
+    <button class="save-btn" onclick="save()">画像を生成して保存するじゃ！！🫵</button>
 </div>
 
 <script>
-    let isManual = false;
-    function chg(no, bg, txt) {
+    let isManualName = false;
+    function chgLane(no, bg, txt) {
         document.documentElement.style.setProperty('--k-color', bg);
         document.documentElement.style.setProperty('--txt-color', txt);
         document.getElementById('out-no').innerText = no;
     }
-    function loadFile(event) {
-        const output = document.getElementById('preview');
-        output.src = URL.createObjectURL(event.target.files[0]);
-    }
-    function autoFillName() {
+    function loadImg(e) { document.getElementById('preview').src = URL.createObjectURL(e.target.files[0]); }
+    function upd() {
         const g = document.getElementById('in-g').value;
         const nInput = document.getElementById('in-n');
-        document.getElementById('out-p').innerText = (g === '♂' ? 'John Doe / ♂' : g === '♀' ? 'Jane Doe / ♀' : 'Guest / ?');
-        if (!isManual) {
-            let name = (g === '♂' ? 'John Doe' : g === '♀' ? 'Jane Doe' : 'Alphabet');
-            nInput.value = name;
-            document.getElementById('out-n').innerText = name;
+        
+        if (nInput.value) isManualName = true;
+        if (!isManualName && g !== "?") {
+            nInput.value = (g === "♂" ? "John Doe" : "Jane Doe");
         }
+
+        document.getElementById('out-name').innerText = nInput.value || "お名前を入力してください";
+        document.getElementById('out-exp').innerText = "競輪歴: " + (document.getElementById('in-exp').value || "---");
+        document.getElementById('out-sns').innerText = "SNS: " + (document.getElementById('in-sns').value || "---");
+        document.getElementById('out-style').innerText = document.getElementById('in-style').value;
+        document.getElementById('out-line').innerText = document.getElementById('in-line').value;
+        document.getElementById('out-fav').innerText = document.getElementById('in-fav').value || "---";
+        document.getElementById('out-battle').innerText = document.getElementById('in-battle').value || "---";
+        document.getElementById('out-comment').innerText = "「" + (document.getElementById('in-com').value || "よろしくお願いします") + "」";
     }
-    function manualName() { isManual = true; document.getElementById('out-n').innerText = document.getElementById('in-n').value; }
-    function updAll(v) { document.getElementById('out-f').innerText = v; }
     function save() {
-        html2canvas(document.querySelector("#card-wrap"), { scale: 2, useCORS: true }).then(canvas => {
+        html2canvas(document.querySelector("#card-wrap"), { scale: 3, useCORS: true }).then(canvas => {
             const link = document.createElement('a');
-            link.download = 'keirin-card.png';
+            link.download = 'keirin-profile.png';
             link.href = canvas.toDataURL();
             link.click();
         });
