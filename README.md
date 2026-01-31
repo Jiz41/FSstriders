@@ -1,6 +1,6 @@
 ---
-title: Keirin Profile Card
-emoji: 📊
+title: 華耀天輪 己成拵
+emoji: 🧍
 colorFrom: blue
 colorTo: indigo
 sdk: static
