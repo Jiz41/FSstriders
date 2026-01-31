@@ -12,12 +12,12 @@
         .card-container { width: 100%; height: 40vh; background: #000; display: flex; justify-content: center; align-items: center; flex-shrink: 0; border-bottom: 2px solid #333; overflow: hidden; position: relative; }
         #card-wrap { width: 850px; height: 580px; border: 4px solid #000; overflow: hidden; position: relative; color: #000; display: grid; grid-template-columns: 100px 1fr; background: #ffffff; flex-shrink: 0; transform-origin: center; }
 
-        /* 意匠 */
+        /* カード意匠 */
         .bg-design { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
         .bank-line { position: absolute; top: 0; right: 0; width: 100%; height: 100%; background: #f2f2f2; clip-path: polygon(40% 0, 100% 0, 100% 100%, 0% 100%); }
         .dot-pattern { position: absolute; inset: 0; background-image: radial-gradient(#ddd 1.5px, transparent 1.5px); background-size: 12px 12px; }
 
-        /* コンテンツ */
+        /* カード内コンテンツ */
         .lane-box { background: var(--k-color); color: var(--txt-color); display: flex; align-items: center; justify-content: center; font-size: 85px; font-weight: 900; border-right: 4px solid #000; z-index: 10; position: relative; }
         .main-content { display: grid; grid-template-rows: 135px 1fr 95px; z-index: 5; position: relative; }
         .header { display: flex; align-items: center; padding: 0 30px; border-bottom: 4px solid #000; gap: 20px; background: rgba(255,255,255,0.5); }
@@ -41,27 +41,26 @@
         label.g-title { font-size: 13px; font-weight: 900; color: var(--k-color); border-left: 5px solid var(--k-color); padding-left: 10px; }
         input, select, textarea { padding: 14px; border-radius: 8px; border: 1px solid #444; background: #222; color: #fff; font-size: 16px; width: 100%; box-sizing: border-box; }
         
-        /* 【修正：チェックボックス整列】 */
+        /* チェックボックス整列 */
         .check-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: #222; padding: 12px; border-radius: 8px; }
-        .check-grid label { 
-            display: flex; 
-            align-items: center; 
-            color: #fff; 
-            font-size: 13px; 
-            font-weight: 900; 
-            cursor: pointer; 
-            line-height: 1;
-        }
-        .check-grid input[type="checkbox"] { 
-            width: 18px; 
-            height: 18px; 
-            margin: 0 8px 0 0; 
-            flex-shrink: 0; 
-            cursor: pointer;
-        }
-
+        .check-grid label { display: flex; align-items: center; color: #fff; font-size: 13px; font-weight: 900; cursor: pointer; line-height: 1; }
+        .check-grid input[type="checkbox"] { width: 18px; height: 18px; margin: 0 8px 0 0; flex-shrink: 0; cursor: pointer; }
+        
         .save-btn { padding: 22px; background: #e60012; color: #fff; border: none; font-weight: 900; cursor: pointer; border-radius: 15px; font-size: 20px; margin-bottom: 20px; }
+
+        /* フッターセクション */
         .footer-info { margin-bottom: 60px; border-top: 1px solid #333; padding-top: 20px; display: flex; flex-direction: column; gap: 15px; }
+        
+        /* 折りたたみガイド */
+        .how-to-use { background: #1a1a1a; border-radius: 12px; border-left: 4px solid var(--k-color); overflow: hidden; }
+        .how-to-use summary { padding: 15px; font-size: 14px; font-weight: 900; color: var(--k-color); cursor: pointer; list-style: none; display: flex; align-items: center; }
+        .how-to-use summary::after { content: "▼"; font-size: 10px; margin-left: auto; transition: 0.3s; }
+        .how-to-use[open] summary::after { transform: rotate(180deg); }
+        .how-to-use ol { margin: 0 15px 15px 35px; padding: 0; font-size: 13px; color: #ccc; line-height: 1.6; }
+        .how-to-use li { margin-bottom: 8px; }
+        .how-to-use li b { color: #fff; }
+        .how-to-use .caution { margin-top: 10px; padding: 10px 15px; border-top: 1px dashed #444; color: #ff4444; font-weight: 900; font-size: 12px; }
+
         .simple-link-area { font-size: 15px; font-weight: 900; color: #ccc; }
         .simple-link-area a { color: var(--k-color); text-decoration: none; border-bottom: 1px solid var(--k-color); }
         .rules-block { background: #1a1a1a; padding: 15px; border-radius: 12px; font-size: 12px; color: #999; line-height: 1.6; }
@@ -144,78 +143,26 @@
 
     <textarea id="in-com" placeholder="一言メッセージ..." oninput="upd()"></textarea>
     <button class="save-btn" onclick="save()">画像化して保存する📸</button>
-<style>
-  
-    /* 折りたたみ(details)の装飾 */
-    .how-to-use {
-        background: #1a1a1a;
-        border-radius: 12px;
-        border-left: 4px solid var(--k-color);
-        overflow: hidden;
-        margin-bottom: 5px;
-    }
-    .how-to-use summary {
-        padding: 15px;
-        font-size: 14px;
-        font-weight: 900;
-        color: var(--k-color);
-        cursor: pointer;
-        list-style: none; /* デフォルトの矢印を消す(一部ブラウザ) */
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    /* 擬似的な矢印アイコンの演出 */
-    .how-to-use summary::after {
-        content: "▼";
-        font-size: 10px;
-        margin-left: auto;
-        transition: 0.3s;
-    }
-    .how-to-use[open] summary::after {
-        transform: rotate(180deg);
-    }
-    .how-to-use ol {
-        margin: 0 15px 15px 35px;
-        padding: 0;
-        font-size: 13px;
-        color: #ccc;
-        line-height: 1.6;
-    }
-    .how-to-use li { margin-bottom: 8px; }
-    .how-to-use li b { color: #fff; }
-</style>
-
-<style>
-    .how-to-use .caution {
-        margin-top: 10px;
-        padding-top: 10px;
-        border-top: 1px dashed #444;
-        color: #ff4444; /* 警告色 */
-        font-weight: 900;
-        font-size: 12px;
-    }
-</style>
-
-<details class="how-to-use">
-    <summary>💡 詳しい使い方・項目説明</summary>
-    <ol>
-        <li><b>基本設定：</b> 車番（色）、性別、アイコン写真を設定します。</li>
-        <li><b>戦術＆推し：</b> 脚質や推しの選手・ラインを記入します。</li>
-        <li><b>戦域：</b> 普段戦っている時間帯やグレードにチェック！</li>
-        <li><b>メッセージ：</b> 最下部の帯に載る、あなたの意気込みです。</li>
-        <li><b>保存：</b> 整ったら「📸画像化して保存」を押してください。</li>
-    </ol>
-    <div class="caution">
-        備考：入力する文字数があまりにも多いとめちゃくちゃになりますのでご注意🙏
-    </div>
-</details>
-
 
     <div class="footer-info">
+        <details class="how-to-use">
+            <summary>💡 詳しい使い方・項目説明</summary>
+            <ol>
+                <li><b>基本設定：</b> 車番（色）、性別、アイコン写真を設定します。</li>
+                <li><b>戦術＆推し：</b> 脚質や推しの選手・ラインを記入します。</li>
+                <li><b>戦域：</b> 普段戦っている時間帯やグレードにチェック！</li>
+                <li><b>メッセージ：</b> 最下部の帯に載る、あなたの意気込みです。</li>
+                <li><b>保存：</b> 整ったら「📸画像化して保存」を押してください。</li>
+            </ol>
+            <div class="caution">
+                備考：入力する文字数があまりにも多いとめちゃくちゃになりますのでご注意🙏
+            </div>
+        </details>
+
         <div class="simple-link-area">
             LINK：<a href="https://huggingface.co/spaces/Jiz41/Jiz41r1t5u" target="_blank">競輪予想アシストツール 華耀天輪 真自在律</a>
         </div>
+
         <div class="rules-block">
             <h4>利用規約 / Terms of Use</h4>
             <ul>
