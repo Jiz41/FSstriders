@@ -2,122 +2,99 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>KEIRIN Profile Card Maker</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        :root { --k-color: #f00; --t-color: #fff; }
-        body { font-family: 'Arial', sans-serif; background: #222; color: #fff; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        
-        /* カード本体 (16:9) */
-        #card-wrap { width: 800px; height: 450px; padding: 10px; background: #000; }
+        :root { --k-color: #e60012; } /* 3枠赤をデフォルトに */
+        body { background: #333; display: flex; flex-direction: column; align-items: center; padding: 40px; font-family: "MS UI Gothic", "Meiryo", sans-serif; }
+
+        /* カード本体：出走表の質感をCSSだけで再現 */
         #card {
-            width: 100%; height: 100%; background: linear-gradient(135deg, #111 0%, #333 100%);
-            border: 6px solid var(--k-color); position: relative; overflow: hidden;
-            display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px; padding: 30px; box-sizing: border-box;
+            width: 800px; height: 450px; background: #fff;
+            border: 4px solid #000; position: relative;
+            display: grid; grid-template-columns: 80px 1fr 220px;
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.2);
         }
 
-        /* シルエット (仮) */
-        .sh { position: absolute; left: -20px; bottom: -20px; width: 350px; height: 350px; 
-              background: var(--k-color); opacity: 0.2; clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%); z-index: 1; }
+        /* 左端：車番エリア（CSSの巨大数字） */
+        .lane-no {
+            background: var(--k-color); color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 80px; font-weight: bold; border-right: 4px solid #000;
+            text-shadow: 2px 2px 0 #000;
+        }
 
-        .content { z-index: 2; }
-        h1 { font-size: 3em; margin: 0; color: var(--k-color); text-transform: uppercase; }
-        .tag-area { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-        .tag { border: 1px solid var(--k-color); padding: 4px 10px; font-size: 0.8em; border-radius: 4px; background: rgba(0,0,0,0.3); }
-        
-        /* 操作パネル */
-        #panel { width: 800px; background: #eee; color: #333; padding: 20px; border-radius: 8px; margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .c-btns { display: flex; gap: 4px; margin-top: 5px; }
-        .c-btn { width: 25px; height: 25px; border-radius: 50%; cursor: pointer; border: 1px solid #999; }
-        input, select, textarea { width: 100%; margin-bottom: 10px; }
-        #save-btn { grid-column: span 2; padding: 15px; background: #333; color: #fff; border: none; cursor: pointer; font-weight: bold; border-radius: 4px; }
+        /* 中央：メイン情報 */
+        .main-info { display: grid; grid-template-rows: 140px 1fr; }
+        .name-box { border-bottom: 4px solid #000; padding: 20px; position: relative; overflow: hidden; }
+        .name-box h1 { margin: 0; font-size: 56px; line-height: 1; letter-spacing: -2px; }
+        .name-label { position: absolute; top: 5px; left: 10px; font-size: 12px; font-weight: bold; }
+
+        /* 背景に流れるCSSの「バンクライン」 */
+        .bank-line {
+            position: absolute; right: -50px; bottom: -50px;
+            width: 300px; height: 300px; border: 40px solid var(--k-color);
+            border-radius: 50%; opacity: 0.1; pointer-events: none;
+        }
+
+        .details { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .data-item { border-left: 4px solid var(--k-color); padding-left: 10px; margin-bottom: 15px; }
+        .label { font-size: 12px; color: #666; display: block; }
+        .val { font-size: 20px; font-weight: bold; color: #000; }
+
+        /* 右端：戦歴・短評エリア */
+        .sidebar { border-left: 4px solid #000; background: #f0f0f0; padding: 15px; }
+        .comment-box { height: 100%; border: 2px dashed #999; padding: 10px; font-size: 14px; line-height: 1.6; }
+
+        /* 操作用ボタン */
+        .controls { margin-top: 30px; display: flex; gap: 10px; }
+        .c-btn { width: 40px; height: 40px; border: 2px solid #000; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-<div id="card-wrap">
-    <div id="card">
-        <div class="sh"></div>
-        <div class="content">
-            <h1 id="out-n">Alphabet</h1>
-            <p id="out-g">♂ / ♀ / ?</p>
-            <p>History: <span id="out-h">---</span></p>
-            <p style="margin-top:20px;">Favorite Player:<br><strong id="out-f">---</strong></p>
+<div id="card">
+    <div class="lane-no" id="out-no">3</div>
+    <div class="main-info">
+        <div class="name-box">
+            <span class="name-label">NAME</span>
+            <h1 id="out-name">Alphabet</h1>
+            <div class="bank-line"></div>
         </div>
-        <div class="content">
-            <p>Style / Line</p>
-            <div id="out-s" class="tag-area"></div>
-            <p style="margin-top:20px;">Main Field (Grade / Time)</p>
-            <div id="out-b" class="tag-area"></div>
-            <p style="margin-top:20px;">Message</p>
-            <p id="out-m" style="font-size:0.9em; font-style: italic;">Welcome to Keirin world.</p>
+        <div class="details">
+            <div class="data-item"><span class="label">性別 / GENDER</span><span class="val" id="out-g">John Doe / ♂</span></div>
+            <div class="data-item"><span class="label">脚質 / STYLE</span><span class="val">逃げ・両</span></div>
+            <div class="data-item"><span class="label">ホーム / BANK</span><span class="val">向日町</span></div>
+            <div class="data-item"><span class="label">競輪歴 / EXP</span><span class="val">12年</span></div>
+        </div>
+    </div>
+    <div class="sidebar">
+        <span class="label">短評 / COMMENT</span>
+        <div class="comment-box">
+            本命党ながら、時折見せる大穴狙いに定評あり。展開予想を重視する硬派な車券師スタイル。
         </div>
     </div>
 </div>
 
-<div id="panel">
-    <div>
-        <strong>1. Color (車番)</strong>
-        <div class="c-btns">
-            <div class="c-btn" style="background:#fff" onclick="chgC('#fff')"></div>
-            <div class="c-btn" style="background:#000" onclick="chgC('#000')"></div>
-            <div class="c-btn" style="background:#f00" onclick="chgC('#f00')"></div>
-            <div class="c-btn" style="background:#00f" onclick="chgC('#00f')"></div>
-            <div class="c-btn" style="background:#ff0" onclick="chgC('#ff0')"></div>
-            <div class="c-btn" style="background:#080" onclick="chgC('#080')"></div>
-            <div class="c-btn" style="background:#f80" onclick="chgC('#f80')"></div>
-            <div class="c-btn" style="background:#fbc" onclick="chgC('#fbc')"></div>
-            <div class="c-btn" style="background:#808" onclick="chgC('#808')"></div>
-        </div>
-        <br>
-        <strong>2. Profile</strong><br>
-        Name: <input type="text" id="in-n" placeholder="Alphabet" oninput="upd()">
-        Gender: <select id="in-g" onchange="updG()">
-            <option value="?">?</option>
-            <option value="♂">Male (John Doe)</option>
-            <option value="♀">Female (Jane Doe)</option>
-        </select>
-        History: <input type="text" id="in-h" placeholder="5 years" oninput="upd()">
-    </div>
-    <div>
-        <strong>3. Detail</strong><br>
-        Favorite Player: <input type="text" id="in-f" oninput="upd()">
-        Message: <textarea id="in-m" oninput="upd()"></textarea>
-    </div>
-    <button id="save-btn" onclick="save()">Download Card (.png)</button>
+<div class="controls">
+    <div class="c-btn" style="background:#fff; color:#000" onclick="setLane(1, '#fff', '#000')">1</div>
+    <div class="c-btn" style="background:#000; color:#fff" onclick="setLane(2, '#000', '#fff')">2</div>
+    <div class="c-btn" style="background:#f00; color:#fff" onclick="setLane(3, '#f00', '#fff')">3</div>
+    <div class="c-btn" style="background:#00f; color:#fff" onclick="setLane(4, '#00f', '#fff')">4</div>
+    <div class="c-btn" style="background:#ff0; color:#000" onclick="setLane(5, '#ff0', '#000')">5</div>
+    <div class="c-btn" style="background:#080; color:#fff" onclick="setLane(6, '#080', '#fff')">6</div>
+    <div class="c-btn" style="background:#f80; color:#fff" onclick="setLane(7, '#f80', '#fff')">7</div>
+    <div class="c-btn" style="background:#fbc; color:#000" onclick="setLane(8, '#fbc', '#000')">8</div>
+    <div class="c-btn" style="background:#808; color:#fff" onclick="setLane(9, '#808', '#fff')">9</div>
 </div>
 
 <script>
-    let customName = false;
-    function chgC(c) { document.documentElement.style.setProperty('--k-color', c); }
-    function updG() {
-        const g = document.getElementById('in-g').value;
-        const nInput = document.getElementById('in-n');
-        document.getElementById('out-g').innerText = g;
-        if(!customName) {
-            let n = "Alphabet";
-            if(g === "♂") n = "John Doe";
-            if(g === "♀") n = "Jane Doe";
-            nInput.value = n;
-            document.getElementById('out-n').innerText = n;
-        }
-    }
-    function upd() {
-        const n = document.getElementById('in-n').value;
-        if(n !== "Alphabet" && n !== "John Doe" && n !== "Jane Doe") customName = true;
-        document.getElementById('out-n').innerText = n || "Alphabet";
-        document.getElementById('out-h').innerText = document.getElementById('in-h').value || "---";
-        document.getElementById('out-f').innerText = document.getElementById('in-f').value || "---";
-        document.getElementById('out-m').innerText = document.getElementById('in-m').value || "Welcome to Keirin world.";
-    }
-    function save() {
-        html2canvas(document.querySelector("#card-wrap")).then(canvas => {
-            const link = document.createElement('a');
-            link.download = 'keirin-card.png';
-            link.href = canvas.toDataURL();
-            link.click();
-        });
+    function setLane(no, bg, txt) {
+        const root = document.documentElement;
+        root.style.setProperty('--k-color', bg);
+        const lane = document.getElementById('out-no');
+        lane.innerText = no;
+        lane.style.color = txt;
     }
 </script>
+
 </body>
 </html>
