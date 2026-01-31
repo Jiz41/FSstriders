@@ -5,34 +5,38 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root { --k-color: #e60012; --txt-color: #fff; }
-        body { background: #1a1a1a; color: #fff; font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        body { background: #1a1a1a; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
         
         /* カード本体 */
-        #card-wrap { width: 800px; height: 450px; background: #fff; border: 5px solid #000; overflow: hidden; position: relative; color: #000; display: grid; grid-template-columns: 90px 1fr; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .lane-box { background: var(--k-color); color: var(--txt-color); display: flex; align-items: center; justify-content: center; font-size: 80px; font-weight: 900; border-right: 5px solid #000; z-index: 10; transition: 0.3s; }
+        #card-wrap { width: 800px; height: 450px; background: #fff; border: 5px solid #000; overflow: hidden; position: relative; color: #000; display: grid; grid-template-columns: 90px 1fr; }
 
-        /* コンテンツエリア */
-        .main-content { position: relative; display: grid; grid-template-rows: 150px 1fr; background: linear-gradient(135deg, #fff 70%, #f0f0f0 100%); }
-        .name-area { padding: 35px; border-bottom: 5px solid #000; z-index: 2; }
-        .name-area h1 { margin: 0; font-size: 64px; letter-spacing: -2px; text-transform: uppercase; font-weight: 800; }
+        /* 左端：車番 */
+        .lane-box { background: var(--k-color); color: var(--txt-color); display: flex; align-items: center; justify-content: center; font-size: 80px; font-weight: 900; border-right: 5px solid #000; z-index: 5; }
+
+        /* メインエリア */
+        .main-content { position: relative; display: grid; grid-template-rows: 150px 1fr; background: #fff; }
         
+        /* アイコン＋名前エリア */
+        .profile-header { display: flex; align-items: center; padding: 0 30px; border-bottom: 5px solid #000; z-index: 2; gap: 20px; }
+        
+        /* アイコン：車番カラーの縁取り */
+        .icon-frame { width: 100px; height: 100px; border-radius: 50%; border: 5px solid var(--k-color); overflow: hidden; background: #eee; flex-shrink: 0; }
+        .icon-frame img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .name-box h1 { margin: 0; font-size: 48px; letter-spacing: -1px; text-transform: uppercase; font-weight: 800; }
+
+        /* データグリッド */
         .data-grid { padding: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; z-index: 2; }
-        .item { border-left: 6px solid var(--k-color); padding-left: 15px; transition: 0.3s; }
-        .label { font-size: 11px; color: #888; font-weight: bold; letter-spacing: 1px; }
+        .item { border-left: 6px solid var(--k-color); padding-left: 15px; }
+        .label { font-size: 11px; color: #888; font-weight: bold; }
         .val { font-size: 24px; font-weight: bold; margin-top: 2px; }
 
-        /* SVGシルエット */
-        .silhouette-svg { position: absolute; right: -30px; bottom: -30px; width: 480px; height: auto; opacity: 0.12; fill: var(--k-color); z-index: 1; pointer-events: none; transition: 0.5s; }
-
-        /* 操作パネル（実務的配置） */
+        /* 操作パネル */
         .panel { width: 800px; margin-top: 20px; background: #f5f5f5; color: #333; padding: 25px; border-radius: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .input-group { display: flex; flex-direction: column; gap: 10px; }
-        label { font-size: 13px; font-weight: bold; }
-        input, select { padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px; }
-        .lane-selector { grid-column: span 2; display: grid; grid-template-columns: repeat(9, 1fr); gap: 5px; margin-bottom: 10px; }
-        .c-btn { height: 45px; cursor: pointer; border: 2px solid #000; font-weight: bold; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
-        .save-btn { grid-column: span 2; padding: 18px; background: #e60012; color: #fff; border: none; cursor: pointer; font-size: 18px; font-weight: bold; border-radius: 6px; margin-top: 10px; }
-        .save-btn:hover { background: #b3000e; }
+        .lane-selector { grid-column: span 2; display: grid; grid-template-columns: repeat(9, 1fr); gap: 5px; }
+        .c-btn { height: 45px; cursor: pointer; border: 2px solid #000; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+        .save-btn { grid-column: span 2; padding: 18px; background: #000; color: #fff; border: none; cursor: pointer; font-size: 18px; font-weight: bold; }
+        input, select { padding: 10px; border: 2px solid #ddd; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -40,15 +44,15 @@
 <div id="card-wrap">
     <div class="lane-box" id="out-no">3</div>
     <div class="main-content">
-        <svg class="silhouette-svg" viewBox="0 0 512 512">
-            <path d="M430,230c-15-50-60-80-110-85l-40-5c-20-2-40,10-45,30l-10,40l-80,10c-15,2-25,15-22,30s15,25,30,22l70-10l5,40c2,15,15,25,30,22s25-15,22-30l-5-40l30,5c30,5,55,25,65,55l10,30h50L430,230z M150,350c-40,0-75,35-75,75s35,75,75,75s75-35,75-75S190,350,150,350z M150,470c-25,0-45-20-45-45s20-45,45-45s45,20,45,45S175,470,150,470z M380,350c-40,0-75,35-75,75s35,75,75,75s75-35,75-75S420,350,380,350z M380,470c-25,0-45-20-45-45s20-45,45-45s45,20,45,45S405,470,380,470z"/>
-        </svg>
-        <div class="name-area"><h1 id="out-n">Alphabet</h1></div>
+        <div class="profile-header">
+            <div class="icon-frame"><img id="preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ccc' d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E"></div>
+            <div class="name-box"><h1 id="out-n">Alphabet</h1></div>
+        </div>
         <div class="data-grid">
             <div class="item"><span class="label">PROFILE</span><div class="val" id="out-p">Guest / ?</div></div>
-            <div class="item"><span class="label">FAVORITE PLAYER</span><div class="val" id="out-f">---</div></div>
-            <div class="item"><span class="label">LEG STYLE</span><div class="val" id="out-s">---</div></div>
-            <div class="item"><span class="label">HOME BANK</span><div class="val" id="out-h">---</div></div>
+            <div class="item"><span class="label">FAVORITE</span><div class="val" id="out-f">---</div></div>
+            <div class="item"><span class="label">STYLE</span><div class="val" id="out-s">---</div></div>
+            <div class="item"><span class="label">HOME</span><div class="val" id="out-h">---</div></div>
         </div>
     </div>
 </div>
@@ -65,23 +69,23 @@
         <div class="c-btn" style="background:#fbc; color:#000" onclick="chg(8,'#fbc','#000')">8</div>
         <div class="c-btn" style="background:#808; color:#fff" onclick="chg(9,'#808','#fff')">9</div>
     </div>
-    <div class="input-group">
-        <label>性別（名前を自動補完）</label>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+        <label>アイコン選択</label>
+        <input type="file" accept="image/*" onchange="loadFile(event)">
+        <label>性別</label>
         <select id="in-g" onchange="autoFillName()">
-            <option value="?">選択してください</option>
+            <option value="?">選択</option>
             <option value="♂">男性 (John Doe)</option>
             <option value="♀">女性 (Jane Doe)</option>
         </select>
-        <label>名前 (NAME)</label>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+        <label>名前</label>
         <input type="text" id="in-n" value="Alphabet" oninput="manualName()">
+        <label>推し / 脚質</label>
+        <input type="text" placeholder="推し / 脚質" oninput="updAll(this.value)">
     </div>
-    <div class="input-group">
-        <label>推し選手 (FAVORITE)</label>
-        <input type="text" id="in-f" placeholder="例：脇本 雄太" oninput="upd()">
-        <label>脚質 (STYLE) / ホーム</label>
-        <input type="text" id="in-s" placeholder="例：捲り / 立川" oninput="upd()">
-    </div>
-    <button class="save-btn" onclick="save()">画像を生成して保存するじゃ！！🫵</button>
+    <button class="save-btn" onclick="save()">画像を保存するじゃ！！🫵</button>
 </div>
 
 <script>
@@ -91,36 +95,28 @@
         document.documentElement.style.setProperty('--txt-color', txt);
         document.getElementById('out-no').innerText = no;
     }
+    function loadFile(event) {
+        const output = document.getElementById('preview');
+        output.src = URL.createObjectURL(event.target.files[0]);
+    }
     function autoFillName() {
         const g = document.getElementById('in-g').value;
         const nInput = document.getElementById('in-n');
         document.getElementById('out-p').innerText = (g === '♂' ? 'John Doe / ♂' : g === '♀' ? 'Jane Doe / ♀' : 'Guest / ?');
         if (!isManual) {
-            let name = "Alphabet";
-            if (g === '♂') name = "John Doe";
-            if (g === '♀') name = "Jane Doe";
+            let name = (g === '♂' ? 'John Doe' : g === '♀' ? 'Jane Doe' : 'Alphabet');
             nInput.value = name;
             document.getElementById('out-n').innerText = name;
         }
     }
-    function manualName() {
-        isManual = true;
-        upd();
-    }
-    function upd() {
-        document.getElementById('out-n').innerText = document.getElementById('in-n').value || "Alphabet";
-        document.getElementById('out-f').innerText = document.getElementById('in-f').value || "---";
-        document.getElementById('out-s').innerText = document.getElementById('in-s').value || "---";
-    }
+    function manualName() { isManual = true; document.getElementById('out-n').innerText = document.getElementById('in-n').value; }
+    function updAll(v) { document.getElementById('out-f').innerText = v; }
     function save() {
-        const btn = document.querySelector('.save-btn');
-        btn.innerText = "生成中...";
-        html2canvas(document.querySelector("#card-wrap"), { scale: 2 }).then(canvas => {
+        html2canvas(document.querySelector("#card-wrap"), { scale: 2, useCORS: true }).then(canvas => {
             const link = document.createElement('a');
             link.download = 'keirin-card.png';
             link.href = canvas.toDataURL();
             link.click();
-            btn.innerText = "画像を生成して保存するじゃ！！🫵";
         });
     }
 </script>
