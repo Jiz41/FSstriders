@@ -89,7 +89,7 @@
                     <h1 id="out-name">ジョン・ドゥ</h1>
                     <div class="sub-info">
                         <span id="out-exp">歴: ---</span>
-                        <span id="out-sns" style="color:var(--k-color);">@---</span>
+                        <span id="out-sns" style="color:#000;">@---</span>
                         <span id="out-gender" class="gender-mark">♂</span>
                     </div>
                 </div>
@@ -233,7 +233,10 @@
         document.getElementById('out-exp').innerText = "歴: " + (document.getElementById('in-exp').value || "---");
         
         const snsVal = document.getElementById('in-sns').value;
-        document.getElementById('out-sns').innerText = snsVal ? "@" + snsVal.replace('@','') : "@---";
+        const snsEl = document.getElementById('out-sns');
+snsEl.innerText = snsVal ? "@" + snsVal.replace('@','') : "@---";
+snsEl.style.color = "#000"; // ここで黒に固定
+
         
         document.getElementById('out-gender').innerText = currentGender === "male" ? "♂" : "♀";
         document.getElementById('out-style-fav').innerText = document.getElementById('in-style').value + " / " + (document.getElementById('in-fav').value || "---");
