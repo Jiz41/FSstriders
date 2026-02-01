@@ -213,7 +213,18 @@
     window.addEventListener('resize', adjustScale);
     window.addEventListener('load', adjustScale);
     function chgLane(no, bg, txt) { document.documentElement.style.setProperty('--k-color', bg); document.documentElement.style.setProperty('--txt-color', txt); document.getElementById('out-no').innerText = no; }
-    function loadImg(e) { document.getElementById('preview').src = URL.createObjectURL(e.target.files[0]); }
+    function loadImg(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        // 画像をBase64形式で読み込み、プレビューにセット
+        document.getElementById('preview').src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
     
     function upd() {
         const defName = currentGender === "male" ? "ジョン・ドゥ" : "ジェーン・ドゥ";
