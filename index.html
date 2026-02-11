@@ -29,26 +29,97 @@
         .icon-frame img { width: 100%; height: 100%; object-fit: cover; }
         
         .name-area { display: flex; flex-direction: column; justify-content: center; overflow: hidden; width: 100%; }
-        .name-area h1 { margin: 0; font-size: 46px; font-weight: 900; color: #000; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .name-area h1 { 
+            margin: 0; 
+            font-size: 46px; 
+            font-weight: 900; 
+            color: #000; 
+            line-height: 1.1; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+        }
         .sub-info { font-size: 13px; font-weight: 800; color: #333; margin-top: 5px; display: flex; flex-direction: column; gap: 2px; }
-        .sub-info span { width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+        .sub-info span { 
+            width: 100%; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            display: block; 
+        }
 
         .data-grid { padding: 10px 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex-grow: 1; align-content: start; overflow: hidden; }
         .category-label { grid-column: span 2; font-size: 13px; font-weight: 900; color: #fff; background: #000; padding: 3px 12px; margin-top: 5px; height: fit-content; }
         
-        .item { border-left: 6px solid var(--k-color); padding-left: 12px; display: flex; flex-direction: column; max-height: 65px; overflow: hidden; transition: border-color 0.3s; }
+        .item { 
+            border-left: 6px solid var(--k-color); 
+            padding-left: 12px; 
+            display: flex; 
+            flex-direction: column; 
+            max-height: 65px; 
+            overflow: hidden; 
+            transition: border-color 0.3s; 
+        }
         .label { font-size: 10px; color: #444; font-weight: 900; line-height: 1.2; margin-bottom: 1px; }
-        .val { font-size: 17px; font-weight: 900; color: #000; line-height: 1.25; word-break: break-all; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+        .val { 
+            font-size: 17px; 
+            font-weight: 900; 
+            color: #000; 
+            line-height: 1.25; 
+            word-wrap: break-word;
+            word-break: normal;
+            overflow-wrap: break-word;
+            hyphens: none;
+            max-height: 42px;
+            overflow: hidden;
+        }
 
-        .footer-comment { border-top: 4px solid #000; padding: 12px 30px; background: #fff; color: #000; font-weight: 900; height: 110px; flex-shrink: 0; display: flex; align-items: flex-start; box-sizing: border-box; overflow: hidden; }
-        #out-comment { width: 100%; line-height: 1.3; font-size: 21px; word-break: break-all; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+        .footer-comment { 
+            border-top: 4px solid #000; 
+            padding: 12px 30px; 
+            background: #fff; 
+            color: #000; 
+            font-weight: 900; 
+            height: 110px; 
+            flex-shrink: 0; 
+            display: flex; 
+            align-items: flex-start; 
+            box-sizing: border-box; 
+            overflow: hidden; 
+        }
+        #out-comment { 
+            width: 100%; 
+            line-height: 1.3; 
+            font-size: 21px; 
+            word-wrap: break-word;
+            word-break: normal;
+            overflow-wrap: break-word;
+            hyphens: none;
+            max-height: 82px;
+            overflow: hidden;
+        }
         
         .copyright { position: absolute; bottom: 8px; right: 12px; font-size: 11px; font-weight: bold; color: rgba(0,0,0,0.35); z-index: 20; }
 
         /* 操作パネルエリア */
         .panel { width: 100%; flex-grow: 1; overflow-y: auto; background: #111; display: flex; flex-direction: column; }
-        .title-image-area { width: 100%; padding: 20px 0; display: flex; justify-content: center; background: #000; border-bottom: 1px solid #333; }
-        .title-image-area img { max-width: 80%; max-height: 80px; object-fit: contain; }
+        .title-image-area { 
+            width: 100%; 
+            padding: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            background: #000; 
+            border-bottom: 1px solid #333; 
+            overflow: hidden;
+            aspect-ratio: 4 / 1;
+        }
+        .title-image-area img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            display: block;
+        }
         
         .input-container { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
         .input-block { display: flex; flex-direction: column; gap: 12px; padding: 18px; background: #1a1a1a; border-radius: 12px; border: 1px solid #333; }
@@ -200,6 +271,42 @@
         reader.readAsDataURL(file);
     }
     
+    // テキストを指定行数で切り詰める関数
+    function truncateText(text, maxLines, lineHeight, maxHeight) {
+        const tempDiv = document.createElement('div');
+        tempDiv.style.position = 'absolute';
+        tempDiv.style.visibility = 'hidden';
+        tempDiv.style.width = '100%';
+        tempDiv.style.lineHeight = lineHeight;
+        tempDiv.style.wordWrap = 'break-word';
+        tempDiv.style.wordBreak = 'normal';
+        tempDiv.style.overflowWrap = 'break-word';
+        tempDiv.innerText = text;
+        document.body.appendChild(tempDiv);
+        
+        const actualHeight = tempDiv.offsetHeight;
+        document.body.removeChild(tempDiv);
+        
+        if (actualHeight <= maxHeight) {
+            return text;
+        }
+        
+        // 文字を削りながら適切な長さを見つける
+        let truncated = text;
+        while (truncated.length > 0) {
+            tempDiv.innerText = truncated + '...';
+            document.body.appendChild(tempDiv);
+            const h = tempDiv.offsetHeight;
+            document.body.removeChild(tempDiv);
+            
+            if (h <= maxHeight) {
+                return truncated + '...';
+            }
+            truncated = truncated.slice(0, -1);
+        }
+        return text;
+    }
+    
     function upd() {
         const nVal = document.getElementById('in-n').value || "JOCKEY NAME";
         const nEl = document.getElementById('out-name');
@@ -230,6 +337,32 @@
         const originalTransform = target.style.transform;
         target.style.transform = "none";
         
+        // html2canvas用に一時的にスタイルを強制
+        const valElements = target.querySelectorAll('.val');
+        const commentElement = target.querySelector('#out-comment');
+        
+        const originalStyles = [];
+        valElements.forEach(el => {
+            originalStyles.push({
+                element: el,
+                display: el.style.display,
+                webkitBoxOrient: el.style.webkitBoxOrient,
+                webkitLineClamp: el.style.webkitLineClamp
+            });
+            el.style.display = 'block';
+            el.style.webkitBoxOrient = '';
+            el.style.webkitLineClamp = '';
+        });
+        
+        const commentOriginal = {
+            display: commentElement.style.display,
+            webkitBoxOrient: commentElement.style.webkitBoxOrient,
+            webkitLineClamp: commentElement.style.webkitLineClamp
+        };
+        commentElement.style.display = 'block';
+        commentElement.style.webkitBoxOrient = '';
+        commentElement.style.webkitLineClamp = '';
+        
         try {
             const canvas = await html2canvas(target, { 
                 scale: 2, 
@@ -240,7 +373,8 @@
                 x: 0,
                 y: 0,
                 scrollX: 0,
-                scrollY: 0
+                scrollY: 0,
+                logging: false
             });
             const link = document.createElement('a'); 
             link.download = `fullstride-card-gate${document.getElementById('in-waku').value}.png`; 
@@ -248,7 +382,18 @@
             link.click();
         } catch (err) {
             console.error(err);
+            alert('画像の保存に失敗しました。もう一度お試しください。');
         } finally {
+            // スタイルを元に戻す
+            originalStyles.forEach(({element, display, webkitBoxOrient, webkitLineClamp}) => {
+                element.style.display = display;
+                element.style.webkitBoxOrient = webkitBoxOrient;
+                element.style.webkitLineClamp = webkitLineClamp;
+            });
+            commentElement.style.display = commentOriginal.display;
+            commentElement.style.webkitBoxOrient = commentOriginal.webkitBoxOrient;
+            commentElement.style.webkitLineClamp = commentOriginal.webkitLineClamp;
+            
             target.style.transform = originalTransform;
             adjustScale();
         }
