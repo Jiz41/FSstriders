@@ -23,52 +23,47 @@
         .lane-box { background: var(--k-color); color: var(--txt-color); display: flex; align-items: center; justify-content: center; font-size: 85px; font-weight: 900; border-right: 4px solid #000; z-index: 10; position: relative; }
         
         .main-content { display: flex; flex-direction: column; z-index: 5; position: relative; height: 100%; }
-        .header { height: 155px; display: flex; align-items: center; padding: 0 30px; border-bottom: 4px solid #000; gap: 20px; background: rgba(255,255,255,0.5); flex-shrink: 0; }
+        
+        /* ヘッダー：突き抜け防止 */
+        .header { height: 155px; display: flex; align-items: center; padding: 0 30px; border-bottom: 4px solid #000; gap: 20px; background: rgba(255,255,255,0.5); flex-shrink: 0; overflow: hidden; }
         .icon-frame { width: 110px; height: 110px; border-radius: 50%; border: 5px solid var(--k-color); overflow: hidden; flex-shrink: 0; background: #fff; }
         .icon-frame img { width: 100%; height: 100%; object-fit: cover; }
         
-        .name-area { display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
-        .name-area h1 { margin: 0; font-size: 46px; font-weight: 900; color: #000; line-height: 1.1; word-break: break-all; }
+        .name-area { display: flex; flex-direction: column; justify-content: center; overflow: hidden; max-width: 580px; }
+        .name-area h1 { margin: 0; font-size: 46px; font-weight: 900; color: #000; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .sub-info { font-size: 13px; font-weight: 800; color: #333; margin-top: 5px; display: flex; flex-direction: column; gap: 2px; }
+        .sub-info span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* データ領域：高さを柔軟にしつつ、重なりを防止 */
-        .data-grid { padding: 10px 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex-grow: 1; align-content: start; overflow: hidden; }
+        /* データグリッド：独立したコンテナ */
+        .data-grid { padding: 10px 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex-grow: 1; align-content: start; overflow: hidden; }
         .category-label { grid-column: span 2; font-size: 13px; font-weight: 900; color: #fff; background: #000; padding: 3px 12px; margin-top: 5px; height: fit-content; }
         
         .item { 
             border-left: 6px solid var(--k-color); padding-left: 12px; 
             display: flex; flex-direction: column; justify-content: flex-start; 
-            max-height: 75px; /* 1項目が伸びすぎないよう制限 */
+            max-height: 70px; /* 重なり防止 */
             overflow: hidden; 
         }
-        .label { font-size: 10px; color: #444; font-weight: 900; display: block; line-height: 1.2; margin-bottom: 1px; flex-shrink: 0; }
-        .val { 
-            font-size: 17px; font-weight: 900; color: #000; line-height: 1.3; 
-            word-break: break-all; 
-            display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; /* 最大3行で省略 */
-        }
+        .label { font-size: 10px; color: #444; font-weight: 900; display: block; line-height: 1.2; margin-bottom: 1px; }
+        .val { font-size: 17px; font-weight: 900; color: #000; line-height: 1.3; word-break: break-all; }
 
-        /* フッターの位置を引き上げ、高さを確保 */
+        /* フッター：高さを確保し領域を拡大 */
         .footer-comment { 
             border-top: 4px solid #000; padding: 10px 30px; background: #fff; 
             font-size: 21px; font-weight: 900; color: #000; 
-            height: 110px; /* 少し高さを増やして開始位置を上に */
-            flex-shrink: 0; display: flex; align-items: center; box-sizing: border-box; 
+            height: 110px; flex-shrink: 0; display: flex; align-items: center; box-sizing: border-box; 
         }
         .copyright { position: absolute; bottom: 8px; right: 12px; font-size: 11px; font-weight: bold; color: rgba(0,0,0,0.35); z-index: 20; letter-spacing: 0.05em; }
 
-        /* 入力パネル */
+        /* UIパネル */
         .panel { width: 100%; flex-grow: 1; overflow-y: auto; background: #111; padding: 0; box-sizing: border-box; display: flex; flex-direction: column; }
         .title-logo { width: 100%; background: #000; padding: 10px 0; border-bottom: 2px solid #333; display: flex; justify-content: center; align-items: center; }
         .header-logo { width: 90%; max-height: 80px; height: auto; display: block; object-fit: contain; }
-
         .input-container { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
         .input-block { display: flex; flex-direction: column; gap: 12px; padding: 18px; background: #1a1a1a; border-radius: 12px; border: 1px solid #333; }
         label.g-title { font-size: 13px; font-weight: 900; color: var(--k-color); border-left: 5px solid var(--k-color); padding-left: 10px; margin-bottom: 5px; }
         input, select, textarea { padding: 14px; border-radius: 8px; border: 1px solid #444; background: #222; color: #fff; font-size: 16px; width: 100%; box-sizing: border-box; }
-        
         .save-btn { padding: 22px; background: #e60012; color: #fff; border: none; font-weight: 900; cursor: pointer; border-radius: 15px; font-size: 20px; margin-bottom: 20px; }
-        .disclaimer-box { font-size: 11px; color: #888; line-height: 1.6; margin-top: 10px; padding: 15px; border-top: 1px dashed #333; background: rgba(0,0,0,0.2); border-radius: 8px; }
         .m-copyright { text-align: center; margin-top: 20px; margin-bottom: 40px; font-size: 11px; color: #555; }
 
         @media screen and (orientation: landscape) {
@@ -90,8 +85,8 @@
                 <div class="name-area">
                     <h1 id="out-name">JOCKEY NAME</h1>
                     <div class="sub-info">
-                        <span id="out-exp">馬との歩み / Horse History: ---</span>
-                        <span id="out-hard">主なハード / Platform: ---</span>
+                        <span id="out-exp">馬との歩み: ---</span>
+                        <span id="out-hard">Platform: ---</span>
                         <span id="out-sns" style="color:#000; font-weight: 900;">@---</span>
                     </div>
                 </div>
@@ -136,27 +131,26 @@
         </div>
         <div class="input-block">
             <label class="g-title">競馬の好み / Favorite (Real)</label>
-            <input type="text" id="in-fav" placeholder="推し馬・騎手 / Fav Horse, Jockey" oninput="upd()">
-            <input type="text" id="in-blood" placeholder="好きな血統 / Favorite Pedigree" oninput="upd()">
-            <input type="text" id="in-bank" placeholder="好きな競馬場 / Favorite Racecourse" oninput="upd()">
-            <input type="text" id="in-coat" placeholder="好きな毛色 / Favorite Coat" oninput="upd()">
+            <input type="text" id="in-fav" placeholder="推し馬・騎手" oninput="upd()">
+            <input type="text" id="in-blood" placeholder="好きな血統" oninput="upd()">
+            <input type="text" id="in-bank" placeholder="好きな競馬場" oninput="upd()">
+            <input type="text" id="in-coat" placeholder="好きな毛色" oninput="upd()">
         </div>
         <div class="input-block">
             <label class="g-title">プレイの傾向 / Playstyle (Game)</label>
             <select id="in-style" onchange="upd()">
-                <option value="---">好きな脚質を選択 / Select Strategy</option>
-                <option value="大逃げ">大逃げ / Ultra Escape</option>
-                <option value="逃げ">逃げ / Escape</option>
-                <option value="先行">先行 / Leader</option>
-                <option value="差し">差し / Betweeners</option>
-                <option value="追い込み">追い込み / Closer</option>
+                <option value="---">好きな脚質を選択</option>
+                <option value="大逃げ">大逃げ</option>
+                <option value="逃げ">逃げ</option>
+                <option value="先行">先行</option>
+                <option value="差し">差し</option>
+                <option value="追い込み">追い込み</option>
             </select>
-            <input type="text" id="in-way" placeholder="騎乗スタイル / Riding Style" oninput="upd()">
-            <input type="text" id="in-time" placeholder="よく遊んでる時間帯 / Playing Hours" oninput="upd()">
+            <input type="text" id="in-way" placeholder="騎乗スタイル" oninput="upd()">
+            <input type="text" id="in-time" placeholder="時間帯" oninput="upd()">
         </div>
-        <textarea id="in-com" placeholder="一言メッセージ / Message" oninput="upd()"></textarea>
+        <textarea id="in-com" placeholder="メッセージ" oninput="upd()"></textarea>
         <button class="save-btn" onclick="save()">画像を保存する / Save Image📸</button>
-        <div class="disclaimer-box">本ツールは非公式キットです。マナーを守ってクリーンな騎乗を心がけましょう。</div>
         <div class="m-copyright">© 2026 Musyn Reagan / FullStride Fan Kit</div>
     </div>
 </div>
@@ -165,9 +159,8 @@
     function adjustScale() {
         const container = document.querySelector('.card-container');
         const card = document.getElementById('card-wrap');
-        const scaleW = container.offsetWidth / 860;
-        const scaleH = container.offsetHeight / 590;
-        card.style.transform = `scale(${Math.min(scaleW, scaleH, 1.0)})`;
+        const scale = Math.min(container.offsetWidth / 860, container.offsetHeight / 590, 1.0);
+        card.style.transform = `scale(${scale})`;
     }
     window.addEventListener('resize', adjustScale);
     window.addEventListener('load', adjustScale);
@@ -186,27 +179,29 @@
         reader.readAsDataURL(file);
     }
     
-    // 全自動フォントサイズ可変 + 禁じ手の省略
     function setAdaptiveText(targetId, val, sizes = { normal: "17px", mid: "13px", small: "11px" }, thresholds = { mid: 15, small: 30 }) {
         const el = document.getElementById(targetId);
         el.innerText = val || "---";
         const len = (val || "").length;
-        if (len > thresholds.small) { el.style.fontSize = sizes.small; }
-        else if (len > thresholds.mid) { el.style.fontSize = sizes.mid; }
-        else { el.style.fontSize = sizes.normal; }
+        if (len > thresholds.small) el.style.fontSize = sizes.small;
+        else if (len > thresholds.mid) el.style.fontSize = sizes.mid;
+        else el.style.fontSize = sizes.normal;
     }
 
     function upd() {
+        // 名前適応
         const nameVal = document.getElementById('in-n').value || "JOCKEY NAME";
         const nameEl = document.getElementById('out-name');
         nameEl.innerText = nameVal;
-        nameEl.style.fontSize = nameVal.length > 12 ? "28px" : (nameVal.length > 8 ? "36px" : "46px");
+        nameEl.style.fontSize = nameVal.length > 15 ? "22px" : (nameVal.length > 10 ? "32px" : "46px");
 
-        document.getElementById('out-exp').innerText = "馬との歩み: " + (document.getElementById('in-exp').value || "---");
-        document.getElementById('out-hard').innerText = "Platform: " + (document.getElementById('in-hard').value || "---");
+        // サブ情報適応
+        setAdaptiveText('out-exp', "馬との歩み: " + (document.getElementById('in-exp').value || "---"), {normal:"13px", mid:"11px", small:"10px"}, {mid:20, small:35});
+        setAdaptiveText('out-hard', "Platform: " + (document.getElementById('in-hard').value || "---"), {normal:"13px", mid:"11px", small:"10px"}, {mid:20, small:35});
         const snsVal = document.getElementById('in-sns').value;
-        document.getElementById('out-sns').innerText = snsVal ? "@" + snsVal.replace('@','') : "@---";
+        setAdaptiveText('out-sns', snsVal ? "@" + snsVal.replace('@','') : "@---", {normal:"13px", mid:"11px", small:"10px"}, {mid:20, small:35});
 
+        // データ項目
         setAdaptiveText('out-fav', document.getElementById('in-fav').value);
         setAdaptiveText('out-blood', document.getElementById('in-blood').value);
         setAdaptiveText('out-bank', document.getElementById('in-bank').value);
@@ -218,6 +213,7 @@
         setAdaptiveText('out-way', document.getElementById('in-way').value);
         setAdaptiveText('out-time', document.getElementById('in-time').value);
 
+        // ひとこと適応
         const commentEl = document.getElementById('out-comment');
         const commentVal = document.getElementById('in-com').value || "...よろしくお願いします";
         commentEl.innerText = commentVal;
