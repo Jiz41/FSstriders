@@ -168,7 +168,7 @@
 
 <div class="panel">
     <div class="title-image-area">
-        <img src="title.png" alt="FullStride Profile Generator" onerror="this.style.display='none'">
+        <img src="title.png" alt="FullStride Profile Generator" onload="debugLog('✅ 画像読み込み成功: ' + this.src)" onerror="debugLog('❌ 画像読み込み失敗: ' + this.src); this.style.border='3px solid red';">
     </div>
     <div class="input-container">
         <div class="input-block">
@@ -214,6 +214,7 @@
         </div>
         <textarea id="in-com" maxlength="100" placeholder="一言メッセージ (100字以内)" oninput="upd()"></textarea>
         <button class="save-btn" onclick="save()">画像を保存する / Save Image📸</button>
+        <div id="debug-log" style="background: #222; border: 2px solid #f00; padding: 15px; margin-top: 20px; color: #0f0; font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;"></div>
 <div class="m-copyright">
     本ツールはファンによる非公式ジェネレータです。<br>
     『FULL STRIDE』の名称は、BLUE BULLETの商標または登録商標です。<br>
@@ -224,6 +225,14 @@
 
 
 <script>
+    function debugLog(message) {
+        const logDiv = document.getElementById('debug-log');
+        const time = new Date().toLocaleTimeString();
+        logDiv.innerHTML += `[${time}] ${message}<br>`;
+        logDiv.scrollTop = logDiv.scrollHeight;
+        console.log(message);
+    }
+    
     const WAKU_COLORS = {
         "1": { bg: "#ffffff", tx: "#000000" },
         "2": { bg: "#000000", tx: "#ffffff" },
@@ -261,7 +270,12 @@
         card.style.transform = `scale(${scale})`;
     }
     window.addEventListener('resize', adjustScale);
-    window.addEventListener('load', () => { adjustScale(); updWaku(); });
+    window.addEventListener('load', () => { 
+        debugLog('🚀 ページ読み込み完了');
+        debugLog('📂 現在のURL: ' + window.location.href);
+        adjustScale(); 
+        updWaku(); 
+    });
 
     function loadImg(e) {
         const file = e.target.files[0];
