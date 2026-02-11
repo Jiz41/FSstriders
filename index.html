@@ -20,11 +20,11 @@
         .bank-line { position: absolute; top: 0; right: 0; width: 100%; height: 100%; background: #f2f2f2; clip-path: polygon(40% 0, 100% 0, 100% 100%, 0% 100%); }
         .dot-pattern { position: absolute; inset: 0; background-image: radial-gradient(#ddd 1.5px, transparent 1.5px); background-size: 12px 12px; }
 
-        .lane-box { background: var(--k-color); color: var(--txt-color); display: flex; align-items: center; justify-content: center; font-size: 85px; font-weight: 900; border-right: 4px solid #000; z-index: 10; position: relative; }
+        .lane-box { background: var(--k-color); color: var(--txt-color); display: flex; align-items: center; justify-content: center; font-size: 85px; font-weight: 900; border-right: 4px solid #000; z-index: 10; position: relative; transition: background 0.3s, color 0.3s; }
         .main-content { display: flex; flex-direction: column; z-index: 5; position: relative; height: 100%; }
         
         .header { height: 155px; display: flex; align-items: center; padding: 0 30px; border-bottom: 4px solid #000; gap: 20px; background: rgba(255,255,255,0.5); flex-shrink: 0; overflow: hidden; }
-        .icon-frame { width: 110px; height: 110px; border-radius: 50%; border: 5px solid var(--k-color); overflow: hidden; flex-shrink: 0; background: #fff; }
+        .icon-frame { width: 110px; height: 110px; border-radius: 50%; border: 5px solid var(--k-color); overflow: hidden; flex-shrink: 0; background: #fff; transition: border-color 0.3s; }
         .icon-frame img { width: 100%; height: 100%; object-fit: cover; }
         
         .name-area { display: flex; flex-direction: column; justify-content: center; overflow: hidden; width: 100%; }
@@ -35,7 +35,7 @@
         .data-grid { padding: 10px 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex-grow: 1; align-content: start; overflow: hidden; }
         .category-label { grid-column: span 2; font-size: 13px; font-weight: 900; color: #fff; background: #000; padding: 3px 12px; margin-top: 5px; height: fit-content; }
         
-        .item { border-left: 6px solid var(--k-color); padding-left: 12px; display: flex; flex-direction: column; max-height: 65px; overflow: hidden; }
+        .item { border-left: 6px solid var(--k-color); padding-left: 12px; display: flex; flex-direction: column; max-height: 65px; overflow: hidden; transition: border-color 0.3s; }
         .label { font-size: 10px; color: #444; font-weight: 900; line-height: 1.2; margin-bottom: 1px; }
         .val { font-size: 17px; font-weight: 900; color: #000; line-height: 1.25; word-break: break-all; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 
@@ -47,9 +47,9 @@
         .panel { width: 100%; flex-grow: 1; overflow-y: auto; background: #111; display: flex; flex-direction: column; }
         .input-container { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
         .input-block { display: flex; flex-direction: column; gap: 12px; padding: 18px; background: #1a1a1a; border-radius: 12px; border: 1px solid #333; }
-        label.g-title { font-size: 13px; font-weight: 900; color: var(--k-color); border-left: 5px solid var(--k-color); padding-left: 10px; }
+        label.g-title { font-size: 13px; font-weight: 900; color: var(--k-color); border-left: 5px solid var(--k-color); padding-left: 10px; transition: color 0.3s, border-color 0.3s; }
         input, select, textarea { padding: 14px; border-radius: 8px; border: 1px solid #444; background: #222; color: #fff; font-size: 16px; width: 100%; box-sizing: border-box; }
-        .save-btn { padding: 22px; background: #e60012; color: #fff; border: none; font-weight: 900; cursor: pointer; border-radius: 15px; font-size: 20px; margin-top: 10px; }
+        .save-btn { padding: 22px; background: var(--k-color); color: var(--txt-color); border: none; font-weight: 900; cursor: pointer; border-radius: 15px; font-size: 20px; margin-top: 10px; transition: background 0.3s; }
         .m-copyright { text-align: center; margin: 20px 0 40px; font-size: 11px; color: #555; line-height: 1.6; }
 
         @media screen and (orientation: landscape) { body { flex-direction: row; } .card-container { width: 45%; height: 100vh; border-right: 2px solid #333; } .panel { width: 55%; height: 100vh; } }
@@ -63,7 +63,7 @@
         <div class="lane-box" id="out-no">1</div>
         <div class="main-content">
             <div class="header">
-                <div class="icon-frame"><img id="preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ccc' d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E"></div>
+                <div class="icon-frame" id="out-icon-frame"><img id="preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ccc' d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E"></div>
                 <div class="name-area">
                     <h1 id="out-name">JOCKEY NAME</h1>
                     <div class="sub-info">
@@ -75,14 +75,14 @@
             </div>
             <div class="data-grid">
                 <div class="category-label">競馬の好み / Favorite (Real)</div>
-                <div class="item"><span class="label">推し馬・騎手 / Fav Horse, Jockey</span><div class="val" id="out-fav">---</div></div>
-                <div class="item"><span class="label">好きな血統 / Favorite Pedigree</span><div class="val" id="out-blood">---</div></div>
-                <div class="item"><span class="label">好きな競馬場 / Favorite Racecourse</span><div class="val" id="out-bank">---</div></div>
-                <div class="item"><span class="label">好きな毛色 / Favorite Coat</span><div class="val" id="out-coat">---</div></div>
+                <div class="item out-border"><span class="label">推し馬・騎手 / Fav Horse, Jockey</span><div class="val" id="out-fav">---</div></div>
+                <div class="item out-border"><span class="label">好きな血統 / Favorite Pedigree</span><div class="val" id="out-blood">---</div></div>
+                <div class="item out-border"><span class="label">好きな競馬場 / Favorite Racecourse</span><div class="val" id="out-bank">---</div></div>
+                <div class="item out-border"><span class="label">好きな毛色 / Favorite Coat</span><div class="val" id="out-coat">---</div></div>
                 <div class="category-label">プレイの傾向 / Playstyle (Game)</div>
-                <div class="item"><span class="label">好きな脚質 / Favorite Strategy</span><div class="val" id="out-style">---</div></div>
-                <div class="item"><span class="label">騎乗スタイル / Riding Style</span><div class="val" id="out-way">---</div></div>
-                <div class="item" style="grid-column: span 2;"><span class="label">プレイ時間帯 / Playing Hours</span><div class="val" id="out-time">---</div></div>
+                <div class="item out-border"><span class="label">好きな脚質 / Favorite Strategy</span><div class="val" id="out-style">---</div></div>
+                <div class="item out-border"><span class="label">騎乗スタイル / Riding Style</span><div class="val" id="out-way">---</div></div>
+                <div class="item out-border" style="grid-column: span 2;"><span class="label">プレイ時間帯 / Playing Hours</span><div class="val" id="out-time">---</div></div>
             </div>
             <div class="footer-comment"><span id="out-comment">...よろしくお願いします</span></div>
         </div>
@@ -93,7 +93,17 @@
 <div class="panel">
     <div class="input-container">
         <div class="input-block">
-            <label class="g-title">基本 / Basic</label>
+            <label class="g-title" id="label-basic">基本 / Basic</label>
+            <select id="in-waku" onchange="updWaku()">
+                <option value="1">1枠 (白) / 1st Gate (White)</option>
+                <option value="2">2枠 (黒) / 2nd Gate (Black)</option>
+                <option value="3" selected>3枠 (赤) / 3rd Gate (Red)</option>
+                <option value="4">4枠 (青) / 4th Gate (Blue)</option>
+                <option value="5">5枠 (黄) / 5th Gate (Yellow)</option>
+                <option value="6">6枠 (緑) / 6th Gate (Green)</option>
+                <option value="7">7枠 (橙) / 7th Gate (Orange)</option>
+                <option value="8">8枠 (桃) / 8th Gate (Pink)</option>
+            </select>
             <input type="file" accept="image/*" onchange="loadImg(event)">
             <input type="text" id="in-n" maxlength="20" placeholder="お名前 (20字以内)" oninput="upd()">
             <input type="text" id="in-sns" maxlength="30" placeholder="SNS ID (30字以内)" oninput="upd()">
@@ -101,14 +111,14 @@
             <input type="text" id="in-hard" maxlength="30" placeholder="主なハード (30字以内)" oninput="upd()">
         </div>
         <div class="input-block">
-            <label class="g-title">競馬の好み / Favorite (Real)</label>
+            <label class="g-title" id="label-fav">競馬の好み / Favorite (Real)</label>
             <input type="text" id="in-fav" maxlength="30" placeholder="推し馬・騎手" oninput="upd()">
             <input type="text" id="in-blood" maxlength="30" placeholder="好きな血統" oninput="upd()">
             <input type="text" id="in-bank" maxlength="30" placeholder="好きな競馬場" oninput="upd()">
             <input type="text" id="in-coat" maxlength="30" placeholder="好きな毛色" oninput="upd()">
         </div>
         <div class="input-block">
-            <label class="g-title">プレイの傾向 / Playstyle (Game)</label>
+            <label class="g-title" id="label-style">プレイの傾向 / Playstyle (Game)</label>
             <select id="in-style" onchange="upd()">
                 <option value="---">好きな脚質を選択</option>
                 <option value="大逃げ">大逃げ / Ultra Escape</option>
@@ -130,6 +140,36 @@
 </div>
 
 <script>
+    const WAKU_COLORS = {
+        "1": { bg: "#ffffff", tx: "#000000" },
+        "2": { bg: "#000000", tx: "#ffffff" },
+        "3": { bg: "#e60012", tx: "#ffffff" },
+        "4": { bg: "#0062ad", tx: "#ffffff" },
+        "5": { bg: "#ffdb00", tx: "#000000" },
+        "6": { bg: "#009944", tx: "#ffffff" },
+        "7": { bg: "#f39800", tx: "#ffffff" },
+        "8": { bg: "#e5007f", tx: "#ffffff" }
+    };
+
+    function updWaku() {
+        const val = document.getElementById('in-waku').value;
+        const theme = WAKU_COLORS[val];
+        document.getElementById('out-no').innerText = val;
+        
+        // CSS変数の更新
+        document.documentElement.style.setProperty('--k-color', theme.bg);
+        document.documentElement.style.setProperty('--txt-color', theme.tx);
+        
+        // 各要素への色反映
+        document.getElementById('out-no').style.background = theme.bg;
+        document.getElementById('out-no').style.color = theme.tx;
+        document.getElementById('out-icon-frame').style.borderColor = theme.bg;
+        
+        document.querySelectorAll('.out-border').forEach(el => el.style.borderColor = theme.bg);
+        document.querySelectorAll('.g-title').forEach(el => el.style.color = theme.bg);
+        document.querySelectorAll('.g-title').forEach(el => el.style.borderColor = theme.bg);
+    }
+
     function adjustScale() {
         const container = document.querySelector('.card-container');
         const card = document.getElementById('card-wrap');
@@ -137,7 +177,7 @@
         card.style.transform = `scale(${scale})`;
     }
     window.addEventListener('resize', adjustScale);
-    window.addEventListener('load', adjustScale);
+    window.addEventListener('load', () => { adjustScale(); updWaku(); });
 
     function loadImg(e) {
         const file = e.target.files[0];
@@ -175,8 +215,6 @@
     async function save() { 
         const target = document.querySelector("#card-wrap");
         const originalTransform = target.style.transform;
-        
-        // 描画バグ防止：実寸大に強制リセット
         target.style.transform = "none";
         
         try {
@@ -192,7 +230,7 @@
                 scrollY: 0
             });
             const link = document.createElement('a'); 
-            link.download = 'fullstride-card.png'; 
+            link.download = `fullstride-card-gate${document.getElementById('in-waku').value}.png`; 
             link.href = canvas.toDataURL("image/png"); 
             link.click();
         } catch (err) {
