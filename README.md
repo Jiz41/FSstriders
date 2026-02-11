@@ -1,7 +1,7 @@
 ---
-title: 華耀天輪 己成拵
+title: FS Striders
 emoji: 🧍
-colorFrom: blue
+colorFrom: gray
 colorTo: indigo
 sdk: static
 pinned: false
