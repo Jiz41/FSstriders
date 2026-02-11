@@ -33,26 +33,9 @@
         .footer-comment { border-top: 4px solid #000; padding: 15px 30px; background: #fff; font-size: 21px; font-weight: 900; color: #000; line-height: 1.3; min-height: 65px; }
         .copyright { position: absolute; bottom: 8px; right: 12px; font-size: 11px; font-weight: bold; color: rgba(0,0,0,0.35); z-index: 20; letter-spacing: 0.05em; }
 
-        /* --- 入力パネル & ロゴ修正 --- */
         .panel { width: 100%; flex-grow: 1; overflow-y: auto; background: #111; padding: 0; box-sizing: border-box; display: flex; flex-direction: column; }
-        
-        .title-logo { 
-            width: 100%; 
-            background: #000; 
-            padding: 10px 0; /* 上下に少し余白 */
-            border-bottom: 2px solid #333; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .header-logo { 
-            width: 90%; /* 横幅は90%までに制限 */
-            max-height: 80px; /* 縦300pxの画像を縮小して全体を見せる */
-            height: auto; 
-            display: block; 
-            object-fit: contain; /* アスペクト比を維持して枠内に収める */
-        }
+        .title-logo { width: 100%; background: #000; padding: 10px 0; border-bottom: 2px solid #333; display: flex; justify-content: center; align-items: center; }
+        .header-logo { width: 90%; max-height: 80px; height: auto; display: block; object-fit: contain; }
 
         .input-container { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
         .input-block { display: flex; flex-direction: column; gap: 12px; padding: 18px; background: #1a1a1a; border-radius: 12px; border: 1px solid #333; }
@@ -124,28 +107,32 @@
                 <div class="c-btn" style="background:#fbc; color:#000; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(8,'#fbc','#000')">8</div>
             </div>
             <input type="file" accept="image/*" onchange="loadImg(event)">
-            <input type="text" id="in-n" placeholder="お名前 / Name" oninput="upd()">
+            <input type="text" id="in-n" placeholder="お名前 / Jockey Name" oninput="upd()">
             <input type="text" id="in-sns" placeholder="SNS ID (@...)" oninput="upd()">
-            <input type="text" id="in-exp" placeholder="馬との歩み（例：〇〇の世代から）" oninput="upd()">
-            <input type="text" id="in-hard" placeholder="主なハード（PS/Steam/Switch等）" oninput="upd()">
+            <input type="text" id="in-exp" placeholder="馬との歩み / Horse History" oninput="upd()">
+            <input type="text" id="in-hard" placeholder="主なハード / Platform" oninput="upd()">
         </div>
 
         <div class="input-block">
             <label class="g-title">競馬の好み / Favorite (Real)</label>
-            <input type="text" id="in-fav" placeholder="推し馬・騎手" oninput="upd()">
-            <input type="text" id="in-blood" placeholder="好きな血統" oninput="upd()">
-            <input type="text" id="in-bank" placeholder="好きな競馬場" oninput="upd()">
-            <input type="text" id="in-coat" placeholder="好きな毛色（芦毛、栗毛など）" oninput="upd()">
+            <input type="text" id="in-fav" placeholder="推し馬・騎手 / Fav Horse, Jockey" oninput="upd()">
+            <input type="text" id="in-blood" placeholder="好きな血統 / Favorite Pedigree" oninput="upd()">
+            <input type="text" id="in-bank" placeholder="好きな競馬場 / Favorite Racecourse" oninput="upd()">
+            <input type="text" id="in-coat" placeholder="好きな毛色 / Favorite Coat" oninput="upd()">
         </div>
 
         <div class="input-block">
             <label class="g-title">プレイの傾向 / Playstyle (Game)</label>
             <select id="in-style" onchange="upd()">
-                <option value="---">好きな脚質を選択</option>
-                <option value="大逃げ">大逃げ</option><option value="逃げ">逃げ</option><option value="先行">先行</option><option value="差し">差し</option><option value="追い込み">追い込み</option>
+                <option value="---">好きな脚質を選択 / Select Strategy</option>
+                <option value="大逃げ">大逃げ / Ultra Escape</option>
+                <option value="逃げ">逃げ / Escape</option>
+                <option value="先行">先行 / Leader</option>
+                <option value="差し">差し / Betweeners</option>
+                <option value="追い込み">追い込み / Closer</option>
             </select>
-            <input type="text" id="in-way" placeholder="騎乗スタイル（例：イン突き、剛腕）" oninput="upd()">
-            <input type="text" id="in-time" placeholder="よく遊んでる時間帯" oninput="upd()">
+            <input type="text" id="in-way" placeholder="騎乗スタイル / Riding Style" oninput="upd()">
+            <input type="text" id="in-time" placeholder="よく遊んでる時間帯 / Playing Hours" oninput="upd()">
         </div>
 
         <textarea id="in-com" placeholder="一言メッセージ / Message" oninput="upd()"></textarea>
@@ -194,7 +181,11 @@
         document.getElementById('out-blood').innerText = document.getElementById('in-blood').value || "---";
         document.getElementById('out-bank').innerText = document.getElementById('in-bank').value || "---";
         document.getElementById('out-coat').innerText = document.getElementById('in-coat').value || "---";
-        document.getElementById('out-style').innerText = document.getElementById('in-style').value;
+        
+        // カードに反映する際は日本語のみ
+        const styleSelect = document.getElementById('in-style');
+        document.getElementById('out-style').innerText = styleSelect.value.split(' / ')[0];
+        
         document.getElementById('out-way').innerText = document.getElementById('in-way').value || "---";
         document.getElementById('out-time').innerText = document.getElementById('in-time').value || "---";
 
