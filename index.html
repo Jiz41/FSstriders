@@ -193,22 +193,36 @@
 
     async function save() { 
         const target = document.querySelector("#card-wrap");
+        
+        // 保存時の一時的なレイアウト補正（ズレ防止）
+        const originalTransform = target.style.transform;
+        target.style.transform = "none"; // 縮小を解除して実寸にする
+        
         try {
             const canvas = await html2canvas(target, { 
-                scale: 3, 
+                scale: 2, // 高解像度出力
                 useCORS: true, 
                 backgroundColor: "#ffffff",
                 logging: false,
                 width: 850,
-                height: 580
+                height: 580,
+                x: 0,
+                y: 0,
+                scrollX: 0,
+                scrollY: 0
             });
+            
             const link = document.createElement('a'); 
             link.download = 'fullstride-card.png'; 
             link.href = canvas.toDataURL("image/png"); 
             link.click();
         } catch (err) {
             console.error("Save error:", err);
-            alert("保存に失敗しました。再読み込みをお試しください。");
+            alert("保存に失敗しました。");
+        } finally {
+            // 保存が終わったら元の表示スケールに戻す
+            target.style.transform = originalTransform;
+            adjustScale(); 
         }
     }
 </script>
