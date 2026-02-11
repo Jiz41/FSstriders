@@ -9,9 +9,8 @@
         :root { --k-color: #e60012; --txt-color: #fff; }
         body { background: #000; color: #fff; font-family: sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
-        /* カードプレビューエリア */
-        .card-container { width: 100%; height: 40vh; background: #000; display: flex; justify-content: center; align-items: center; flex-shrink: 0; border-bottom: 2px solid #333; overflow: hidden; position: relative; }
-        #card-wrap { width: 850px; height: 580px; border: 4px solid #000; overflow: hidden; position: relative; color: #000; display: grid; grid-template-columns: 100px 1fr; background: #ffffff; flex-shrink: 0; transform-origin: center; }
+        .card-container { width: 100%; height: 50vh; background: #1a1a1a; display: flex; justify-content: center; align-items: center; flex-shrink: 0; border-bottom: 2px solid #333; position: relative; overflow: visible; }
+        #card-wrap { width: 850px; height: 580px; border: 4px solid #000; position: relative; color: #000; display: grid; grid-template-columns: 100px 1fr; background: #ffffff; flex-shrink: 0; transform-origin: center; }
 
         .bg-design { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
         .bank-line { position: absolute; top: 0; right: 0; width: 100%; height: 100%; background: #f2f2f2; clip-path: polygon(40% 0, 100% 0, 100% 100%, 0% 100%); }
@@ -25,7 +24,6 @@
         .name-area h1 { margin: 0; font-size: 46px; font-weight: 900; color: #000; }
         .sub-info { font-size: 13px; font-weight: 800; color: #333; margin-top: 5px; display: flex; flex-direction: column; gap: 2px; }
 
-        /* データグリッド */
         .data-grid { padding: 10px 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .category-label { grid-column: span 2; font-size: 13px; font-weight: 900; color: #fff; background: #000; padding: 3px 12px; margin-top: 5px; }
         .item { border-left: 6px solid var(--k-color); padding-left: 12px; }
@@ -33,12 +31,28 @@
         .val { font-size: 17px; font-weight: 900; color: #000; }
 
         .footer-comment { border-top: 4px solid #000; padding: 15px 30px; background: #fff; font-size: 21px; font-weight: 900; color: #000; line-height: 1.3; min-height: 65px; }
-        .copyright { position: absolute; bottom: 8px; right: 12px; font-size: 11px; font-weight: bold; color: rgba(0,0,0,0.25); z-index: 20; }
+        .copyright { position: absolute; bottom: 8px; right: 12px; font-size: 11px; font-weight: bold; color: rgba(0,0,0,0.35); z-index: 20; letter-spacing: 0.05em; }
 
-        /* 入力パネル */
+        /* --- 入力パネル & ロゴ修正 --- */
         .panel { width: 100%; flex-grow: 1; overflow-y: auto; background: #111; padding: 0; box-sizing: border-box; display: flex; flex-direction: column; }
-        .title-logo { width: 100%; background: #000; overflow: hidden; border-bottom: 2px solid #333; line-height: 0; min-height: 50px; }
-        .header-logo { width: 100%; height: auto; display: block; object-fit: contain; }
+        
+        .title-logo { 
+            width: 100%; 
+            background: #000; 
+            padding: 10px 0; /* 上下に少し余白 */
+            border-bottom: 2px solid #333; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header-logo { 
+            width: 90%; /* 横幅は90%までに制限 */
+            max-height: 80px; /* 縦300pxの画像を縮小して全体を見せる */
+            height: auto; 
+            display: block; 
+            object-fit: contain; /* アスペクト比を維持して枠内に収める */
+        }
 
         .input-container { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
         .input-block { display: flex; flex-direction: column; gap: 12px; padding: 18px; background: #1a1a1a; border-radius: 12px; border: 1px solid #333; }
@@ -46,8 +60,6 @@
         input, select, textarea { padding: 14px; border-radius: 8px; border: 1px solid #444; background: #222; color: #fff; font-size: 16px; width: 100%; box-sizing: border-box; }
         
         .save-btn { padding: 22px; background: #e60012; color: #fff; border: none; font-weight: 900; cursor: pointer; border-radius: 15px; font-size: 20px; margin-bottom: 20px; }
-        
-        /* 免責事項エリアのデザイン */
         .disclaimer-box { font-size: 11px; color: #888; line-height: 1.6; margin-top: 10px; padding: 15px; border-top: 1px dashed #333; background: rgba(0,0,0,0.2); border-radius: 8px; }
         .m-copyright { text-align: center; margin-top: 20px; margin-bottom: 40px; font-size: 11px; color: #555; }
 
@@ -82,7 +94,6 @@
                 <div class="item"><span class="label">好きな血統 / Favorite Pedigree</span><div class="val" id="out-blood">---</div></div>
                 <div class="item"><span class="label">好きな競馬場 / Favorite Racecourse</span><div class="val" id="out-bank">---</div></div>
                 <div class="item"><span class="label">好きな毛色 / Favorite Coat</span><div class="val" id="out-coat">---</div></div>
-                
                 <div class="category-label">プレイの傾向 / Playstyle (Game)</div>
                 <div class="item"><span class="label">好きな脚質 / Favorite Strategy</span><div class="val" id="out-style">---</div></div>
                 <div class="item"><span class="label">騎乗スタイル / Riding Style</span><div class="val" id="out-way">---</div></div>
@@ -90,7 +101,7 @@
             </div>
             <div class="footer-comment"><span id="out-comment">...よろしくお願いします</span></div>
         </div>
-        <div class="copyright">(C) FullStride Jockey Card</div>
+        <div class="copyright">© 2026 Musyn Reagan / FullStride Fan Kit</div>
     </div>
 </div>
 
@@ -138,13 +149,11 @@
         </div>
 
         <textarea id="in-com" placeholder="一言メッセージ / Message" oninput="upd()"></textarea>
-        
         <button class="save-btn" onclick="save()">画像を保存する / Save Image📸</button>
 
         <div class="disclaimer-box">
             本ツールは、PS,PC用ゲーム『FullStride』のファンによる非公式キットです。本ツールの利用により発生したトラブルに関し、製作者は一切の責任を負いかねます。マナーを守ってクリーンな騎乗（利用）を心がけましょう。
         </div>
-        
         <div class="m-copyright">© 2026 Musyn Reagan / FullStride Fan Kit</div>
     </div>
 </div>
@@ -153,7 +162,9 @@
     function adjustScale() {
         const container = document.querySelector('.card-container');
         const card = document.getElementById('card-wrap');
-        const finalScale = Math.min(container.offsetHeight / 580, container.offsetWidth / 850) * 0.95;
+        const scaleW = container.offsetWidth / 860;
+        const scaleH = container.offsetHeight / 590;
+        const finalScale = Math.min(scaleW, scaleH, 1.0);
         card.style.transform = `scale(${finalScale})`;
     }
     window.addEventListener('resize', adjustScale);
@@ -179,12 +190,10 @@
         document.getElementById('out-hard').innerText = "Platform: " + (document.getElementById('in-hard').value || "---");
         const snsVal = document.getElementById('in-sns').value;
         document.getElementById('out-sns').innerText = snsVal ? "@" + snsVal.replace('@','') : "@---";
-        
         document.getElementById('out-fav').innerText = document.getElementById('in-fav').value || "---";
         document.getElementById('out-blood').innerText = document.getElementById('in-blood').value || "---";
         document.getElementById('out-bank').innerText = document.getElementById('in-bank').value || "---";
         document.getElementById('out-coat').innerText = document.getElementById('in-coat').value || "---";
-        
         document.getElementById('out-style').innerText = document.getElementById('in-style').value;
         document.getElementById('out-way').innerText = document.getElementById('in-way').value || "---";
         document.getElementById('out-time').innerText = document.getElementById('in-time').value || "---";
