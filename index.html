@@ -24,7 +24,7 @@
         
         .main-content { display: flex; flex-direction: column; z-index: 5; position: relative; height: 100%; }
         
-        /* ヘッダー：完全防衛 */
+        /* ヘッダー：物理的1行制限 */
         .header { height: 155px; display: flex; align-items: center; padding: 0 30px; border-bottom: 4px solid #000; gap: 20px; background: rgba(255,255,255,0.5); flex-shrink: 0; overflow: hidden; }
         .icon-frame { width: 110px; height: 110px; border-radius: 50%; border: 5px solid var(--k-color); overflow: hidden; flex-shrink: 0; background: #fff; }
         .icon-frame img { width: 100%; height: 100%; object-fit: cover; }
@@ -32,33 +32,22 @@
         .name-area { display: flex; flex-direction: column; justify-content: center; overflow: hidden; max-width: 580px; }
         .name-area h1 { margin: 0; font-size: 46px; font-weight: 900; color: #000; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .sub-info { font-size: 13px; font-weight: 800; color: #333; margin-top: 5px; display: flex; flex-direction: column; gap: 2px; }
-        .sub-info span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 580px; }
+        .sub-info span { width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
 
-        /* データグリッド：独立境界線 */
+        /* データグリッド：絶対領域分離 */
         .data-grid { padding: 10px 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex-grow: 1; align-content: start; overflow: hidden; }
         .category-label { grid-column: span 2; font-size: 13px; font-weight: 900; color: #fff; background: #000; padding: 3px 12px; margin-top: 5px; height: fit-content; }
         
-        .item { 
-            border-left: 6px solid var(--k-color); padding-left: 12px; 
-            display: flex; flex-direction: column; justify-content: flex-start; 
-            max-height: 70px; overflow: hidden; 
-        }
-        .label { font-size: 10px; color: #444; font-weight: 900; display: block; line-height: 1.2; margin-bottom: 1px; }
-        .val { font-size: 17px; font-weight: 900; color: #000; line-height: 1.3; word-break: break-all; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+        .item { border-left: 6px solid var(--k-color); padding-left: 12px; display: flex; flex-direction: column; max-height: 72px; overflow: hidden; }
+        .label { font-size: 10px; color: #444; font-weight: 900; line-height: 1.2; margin-bottom: 1px; white-space: nowrap; }
+        .val { font-size: 17px; font-weight: 900; color: #000; line-height: 1.25; word-break: break-all; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
 
-        /* フッター：自動改行と3行制限 */
-        .footer-comment { 
-            border-top: 4px solid #000; padding: 10px 30px; background: #fff; 
-            color: #000; font-weight: 900; height: 110px; flex-shrink: 0; 
-            display: flex; align-items: center; box-sizing: border-box; 
-        }
-        #out-comment {
-            width: 100%; line-height: 1.3; font-size: 21px; word-break: break-all;
-            display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden;
-        }
+        /* フッター：上端からの開始と3行制限 */
+        .footer-comment { border-top: 4px solid #000; padding: 12px 30px; background: #fff; color: #000; font-weight: 900; height: 110px; flex-shrink: 0; display: flex; align-items: flex-start; box-sizing: border-box; overflow: hidden; }
+        #out-comment { width: 100%; line-height: 1.3; font-size: 21px; word-break: break-all; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
         .copyright { position: absolute; bottom: 8px; right: 12px; font-size: 11px; font-weight: bold; color: rgba(0,0,0,0.35); z-index: 20; }
 
-        /* UIパネル */
+        /* UI */
         .panel { width: 100%; flex-grow: 1; overflow-y: auto; background: #111; display: flex; flex-direction: column; }
         .title-logo { width: 100%; background: #000; padding: 10px 0; display: flex; justify-content: center; }
         .header-logo { width: 90%; max-height: 80px; object-fit: contain; }
@@ -67,13 +56,8 @@
         label.g-title { font-size: 13px; font-weight: 900; color: var(--k-color); border-left: 5px solid var(--k-color); padding-left: 10px; }
         input, select, textarea { padding: 14px; border-radius: 8px; border: 1px solid #444; background: #222; color: #fff; font-size: 16px; width: 100%; box-sizing: border-box; }
         .save-btn { padding: 22px; background: #e60012; color: #fff; border: none; font-weight: 900; cursor: pointer; border-radius: 15px; font-size: 20px; }
-        .m-copyright { text-align: center; margin-top: 20px; margin-bottom: 40px; font-size: 11px; color: #555; }
 
-        @media screen and (orientation: landscape) {
-            body { flex-direction: row; }
-            .card-container { width: 45%; height: 100vh; border-right: 2px solid #333; }
-            .panel { width: 55%; height: 100vh; }
-        }
+        @media screen and (orientation: landscape) { body { flex-direction: row; } .card-container { width: 45%; height: 100vh; border-right: 2px solid #333; } .panel { width: 55%; height: 100vh; } }
     </style>
 </head>
 <body>
@@ -88,7 +72,7 @@
                 <div class="name-area">
                     <h1 id="out-name">JOCKEY NAME</h1>
                     <div class="sub-info">
-                        <span id="out-exp">馬との歩み: ---</span>
+                        <span id="out-exp">馬との歩み / Horse History: ---</span>
                         <span id="out-hard">Platform: ---</span>
                         <span id="out-sns" style="color:#000; font-weight: 900;">@---</span>
                     </div>
@@ -116,45 +100,21 @@
     <div class="input-container">
         <div class="input-block">
             <label class="g-title">基本プロフィール / Basic</label>
-            <div style="display:grid; grid-template-columns: repeat(8, 1fr); gap:6px; margin-bottom:10px;">
-                <div class="c-btn" style="background:#fff; color:#000; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center; border:2px solid #000;" onclick="chgLane(1,'#f2f2f2','#000')">1</div>
-                <div class="c-btn" style="background:#000; color:#fff; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(2,'#000','#fff')">2</div>
-                <div class="c-btn" style="background:#f00; color:#fff; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(3,'#f00','#fff')">3</div>
-                <div class="c-btn" style="background:#00f; color:#fff; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(4,'#00f','#fff')">4</div>
-                <div class="c-btn" style="background:#dcb000; color:#000; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(5,'#dcb000','#000')">5</div>
-                <div class="c-btn" style="background:#080; color:#fff; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(6,'#080','#fff')">6</div>
-                <div class="c-btn" style="background:#f80; color:#fff; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(7,'#f80','#fff')">7</div>
-                <div class="c-btn" style="background:#fbc; color:#000; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(8,'#fbc','#000')">8</div>
-            </div>
             <input type="file" accept="image/*" onchange="loadImg(event)">
-            <input type="text" id="in-n" placeholder="お名前" oninput="upd()">
+            <input type="text" id="in-n" placeholder="お名前 / Jockey Name" oninput="upd()">
             <input type="text" id="in-sns" placeholder="SNS ID (@...)" oninput="upd()">
-            <input type="text" id="in-exp" placeholder="馬との歩み" oninput="upd()">
-            <input type="text" id="in-hard" placeholder="主なハード" oninput="upd()">
+            <input type="text" id="in-exp" placeholder="馬との歩み / Horse History" oninput="upd()">
+            <input type="text" id="in-hard" placeholder="主なハード / Platform" oninput="upd()">
         </div>
         <div class="input-block">
             <label class="g-title">競馬の好み / Favorite (Real)</label>
-            <input type="text" id="in-fav" placeholder="推し馬・騎手" oninput="upd()">
-            <input type="text" id="in-blood" placeholder="好きな血統" oninput="upd()">
-            <input type="text" id="in-bank" placeholder="好きな競馬場" oninput="upd()">
-            <input type="text" id="in-coat" placeholder="好きな毛色" oninput="upd()">
+            <input type="text" id="in-fav" placeholder="推し馬・騎手 / Fav Horse, Jockey" oninput="upd()">
+            <input type="text" id="in-blood" placeholder="好きな血統 / Favorite Pedigree" oninput="upd()">
+            <input type="text" id="in-bank" placeholder="好きな競馬場 / Favorite Racecourse" oninput="upd()">
+            <input type="text" id="in-coat" placeholder="好きな毛色 / Favorite Coat" oninput="upd()">
         </div>
-        <div class="input-block">
-            <label class="g-title">プレイの傾向 / Playstyle (Game)</label>
-            <select id="in-style" onchange="upd()">
-                <option value="---">好きな脚質を選択</option>
-                <option value="大逃げ">大逃げ</option>
-                <option value="逃げ">逃げ</option>
-                <option value="先行">先行</option>
-                <option value="差し">差し</option>
-                <option value="追い込み">追い込み</option>
-            </select>
-            <input type="text" id="in-way" placeholder="騎乗スタイル" oninput="upd()">
-            <input type="text" id="in-time" placeholder="時間帯" oninput="upd()">
-        </div>
-        <textarea id="in-com" placeholder="メッセージ" oninput="upd()"></textarea>
-        <button class="save-btn" onclick="save()">画像を保存する📸</button>
-        <div class="m-copyright">© 2026 Musyn Reagan / FullStride Fan Kit</div>
+        <textarea id="in-com" placeholder="一言メッセージ / Message" oninput="upd()"></textarea>
+        <button class="save-btn" onclick="save()">画像を保存する / Save Image📸</button>
     </div>
 </div>
 
@@ -167,13 +127,7 @@
     }
     window.addEventListener('resize', adjustScale);
     window.addEventListener('load', adjustScale);
-    
-    function chgLane(no, bg, txt) { 
-        document.documentElement.style.setProperty('--k-color', bg); 
-        document.documentElement.style.setProperty('--txt-color', txt); 
-        document.getElementById('out-no').innerText = no; 
-    }
-    
+
     function loadImg(e) {
         const file = e.target.files[0];
         if (!file) return;
@@ -182,7 +136,7 @@
         reader.readAsDataURL(file);
     }
     
-    function setAdaptiveText(targetId, val, sizes = { normal: "17px", mid: "13px", small: "11px" }, thresholds = { mid: 15, small: 35 }) {
+    function setAdaptiveText(targetId, val, sizes = { normal: "17px", mid: "13px", small: "11px" }, thresholds = { mid: 25, small: 50 }) {
         const el = document.getElementById(targetId);
         el.innerText = val || "---";
         const len = (val || "").length;
@@ -192,34 +146,30 @@
     }
 
     function upd() {
-        const nameVal = document.getElementById('in-n').value || "JOCKEY NAME";
-        const nameEl = document.getElementById('out-name');
-        nameEl.innerText = nameVal;
-        nameEl.style.fontSize = nameVal.length > 25 ? "18px" : (nameVal.length > 15 ? "28px" : "46px");
+        const nVal = document.getElementById('in-n').value || "JOCKEY NAME";
+        const nEl = document.getElementById('out-name');
+        nEl.innerText = nVal;
+        nEl.style.fontSize = nVal.length > 20 ? "24px" : (nVal.length > 12 ? "32px" : "46px");
 
-        setAdaptiveText('out-exp', "馬との歩み: " + (document.getElementById('in-exp').value || "---"), {normal:"13px", mid:"11px", small:"10px"});
-        setAdaptiveText('out-hard', "Platform: " + (document.getElementById('in-hard').value || "---"), {normal:"13px", mid:"11px", small:"10px"});
+        setAdaptiveText('out-exp', "馬との歩み / Horse History: " + (document.getElementById('in-exp').value || "---"), {normal:"13px", mid:"11px", small:"9px"});
+        setAdaptiveText('out-hard', "主なハード / Platform: " + (document.getElementById('in-hard').value || "---"), {normal:"13px", mid:"11px", small:"9px"});
         const snsVal = document.getElementById('in-sns').value;
-        setAdaptiveText('out-sns', snsVal ? "@" + snsVal.replace('@','') : "@---", {normal:"13px", mid:"11px", small:"10px"});
+        setAdaptiveText('out-sns', snsVal ? "@" + snsVal.replace('@','') : "@---", {normal:"13px", mid:"11px", small:"9px"});
 
         setAdaptiveText('out-fav', document.getElementById('in-fav').value);
         setAdaptiveText('out-blood', document.getElementById('in-blood').value);
         setAdaptiveText('out-bank', document.getElementById('in-bank').value);
         setAdaptiveText('out-coat', document.getElementById('in-coat').value);
-        
-        document.getElementById('out-style').innerText = document.getElementById('in-style').value;
-        setAdaptiveText('out-way', document.getElementById('in-way').value);
-        setAdaptiveText('out-time', document.getElementById('in-time').value);
 
-        const commentEl = document.getElementById('out-comment');
-        const commentVal = document.getElementById('in-com').value || "...よろしくお願いします";
-        commentEl.innerText = commentVal;
-        commentEl.style.fontSize = commentVal.length > 60 ? "14px" : (commentVal.length > 40 ? "17px" : "21px");
+        const cEl = document.getElementById('out-comment');
+        const cVal = document.getElementById('in-com').value || "...よろしくお願いします";
+        cEl.innerText = cVal;
+        cEl.style.fontSize = cVal.length > 70 ? "14px" : (cVal.length > 40 ? "17px" : "21px");
     }
 
     function save() { 
         html2canvas(document.querySelector("#card-wrap"), { scale: 3, useCORS: true, backgroundColor: "#ffffff" }).then(canvas => {
-            const link = document.createElement('a'); link.download = 'fullstride-jockey-card.png'; 
+            const link = document.createElement('a'); link.download = 'fullstride-card.png'; 
             link.href = canvas.toDataURL(); link.click();
         });
     }
