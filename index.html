@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FS Striders - Player Profile Generator</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* ========================================
            CSS変数定義
@@ -40,14 +39,14 @@
         }
 
         /* ========================================
-           カードプレビューエリア
+           カードプレビューエリア (HTMLプレビュー)
            ======================================== */
         .card-container {
             width: 100%;
             height: 50vh;
             background: #1a1a1a;
             display: flex;
-            justify-content: center;
+            justify(content: center;
             align-items: center;
             flex-shrink: 0;
             border-bottom: 2px solid #333;
@@ -69,33 +68,10 @@
             overflow: hidden;
         }
 
-        /* 背景デザイン要素 */
-        .bg-design {
-            position: absolute;
-            inset: 0;
-            z-index: 1;
-            pointer-events: none;
-        }
+        .bg-design { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+        .bank-line { position: absolute; top: 0; right: 0; width: 100%; height: 100%; background: #f2f2f2; clip-path: polygon(40% 0, 100% 0, 100% 100%, 0% 100%); }
+        .dot-pattern { position: absolute; inset: 0; background-image: radial-gradient(#ddd 1.5px, transparent 1.5px); background-size: 12px 12px; }
 
-        .bank-line {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 100%;
-            height: 100%;
-            background: #f2f2f2;
-            clip-path: polygon(40% 0, 100% 0, 100% 100%, 0% 100%);
-        }
-
-        .dot-pattern {
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(#ddd 1.5px, transparent 1.5px);
-            background-size: 12px 12px;
-            opacity: 1;
-        }
-
-        /* 枠番エリア */
         .lane-box {
             background: var(--k-color);
             color: var(--txt-color);
@@ -110,16 +86,8 @@
             transition: background var(--transition-speed), color var(--transition-speed);
         }
 
-        /* メインコンテンツエリア */
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            z-index: 5;
-            position: relative;
-            height: 100%;
-        }
+        .main-content { display: flex; flex-direction: column; z-index: 5; position: relative; height: 100%; }
 
-        /* ヘッダーエリア */
         .header {
             height: var(--header-height);
             display: flex;
@@ -129,408 +97,74 @@
             gap: 20px;
             background: rgba(255, 255, 255, 0.5);
             flex-shrink: 0;
-            overflow: hidden;
         }
 
         .icon-frame {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            border: 5px solid var(--k-color);
-            overflow: hidden;
-            flex-shrink: 0;
-            background: #fff;
-            transition: border-color var(--transition-speed);
+            width: 110px; height: 110px; border-radius: 50%; border: 5px solid var(--k-color);
+            overflow: hidden; flex-shrink: 0; background: #fff; transition: border-color var(--transition-speed);
         }
+        .icon-frame img { width: 100%; height: 100%; object-fit: cover; }
 
-        .icon-frame img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .name-area { flex: 1; min-width: 0; }
+        .name-area h1 { margin: 0; font-size: 46px; font-weight: 900; color: #000; line-height: 1.1; }
+        .sub-info { font-size: 13px; font-weight: 800; color: #333; margin-top: 5px; display: flex; flex-direction: column; gap: 2px; }
 
-        .name-area {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            overflow: hidden;
-            flex: 1;
-            min-width: 0;
-        }
+        .data-grid { padding: 10px var(--spacing-base); display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex-grow: 1; }
+        .category-label { grid-column: span 2; font-size: 13px; font-weight: 900; color: #fff; background: #000; padding: 3px var(--spacing-small); margin-top: 5px; }
+        .item { border-left: 6px solid var(--k-color); padding-left: var(--spacing-small); transition: border-color var(--transition-speed); }
+        .label { font-size: 10px; color: #444; font-weight: 900; line-height: 1.2; }
+        .val { font-size: 17px; font-weight: 900; color: #000; }
 
-        .name-area h1 {
-            margin: 0;
-            font-size: 46px;
-            font-weight: 900;
-            color: #000;
-            line-height: 1.1;
-            word-wrap: break-word;
-            word-break: break-word;
-            overflow: hidden;
-            max-height: 60px;
-        }
-
-        .sub-info {
-            font-size: 13px;
-            font-weight: 800;
-            color: #333;
-            margin-top: 5px;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .sub-info span {
-            width: 100%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: block;
-        }
-
-        /* データグリッドエリア */
-        .data-grid {
-            padding: 10px var(--spacing-base);
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            flex-grow: 1;
-            align-content: start;
-            overflow: hidden;
-        }
-
-        .category-label {
-            grid-column: span 2;
-            font-size: 13px;
-            font-weight: 900;
-            color: #fff;
-            background: #000;
-            padding: 3px var(--spacing-small);
-            margin-top: 5px;
-            height: fit-content;
-        }
-
-        .item {
-            border-left: 6px solid var(--k-color);
-            padding-left: var(--spacing-small);
-            display: flex;
-            flex-direction: column;
-            max-height: 65px;
-            overflow: hidden;
-            transition: border-color var(--transition-speed);
-            min-width: 0;
-        }
-
-        .label {
-            font-size: 10px;
-            color: #444;
-            font-weight: 900;
-            line-height: 1.2;
-            margin-bottom: 1px;
-        }
-
-        .val {
-            font-size: 17px;
-            font-weight: 900;
-            color: #000;
-            line-height: 1.25;
-            word-wrap: break-word;
-            word-break: break-word;
-            overflow-wrap: break-word;
-            max-height: 43px;
-            overflow: hidden;
-            width: 100%;
-        }
-
-        /* フッターコメントエリア */
-        .footer-comment {
-            border-top: var(--border-width) solid #000;
-            padding: var(--spacing-small) var(--spacing-base);
-            background: #fff;
-            color: #000;
-            font-weight: 900;
-            height: var(--footer-height);
-            flex-shrink: 0;
-            display: flex;
-            align-items: flex-start;
-            overflow: hidden;
-        }
-
-        #out-comment {
-            width: 100%;
-            line-height: 1.3;
-            font-size: 21px;
-            word-wrap: break-word;
-            word-break: break-word;
-            overflow-wrap: break-word;
-            max-height: 82px;
-            overflow: hidden;
-        }
-
-        .copyright {
-            position: absolute;
-            bottom: 8px;
-            right: 12px;
-            font-size: 11px;
-            font-weight: bold;
-            color: rgba(0, 0, 0, 0.35);
-            z-index: 20;
-        }
+        .footer-comment { border-top: var(--border-width) solid #000; padding: var(--spacing-small) var(--spacing-base); background: #fff; height: var(--footer-height); flex-shrink: 0; display: flex; align-items: flex-start; }
+        #out-comment { width: 100%; line-height: 1.3; font-size: 21px; color: #000; font-weight: 900; word-break: break-all; }
+        .copyright { position: absolute; bottom: 8px; right: 12px; font-size: 11px; font-weight: bold; color: rgba(0, 0, 0, 0.35); z-index: 20; }
 
         /* ========================================
-           操作パネルエリア
+           操作パネル
            ======================================== */
-        .panel {
-            width: 100%;
-            flex-grow: 1;
-            overflow-y: auto;
-            background: #111;
-            display: flex;
-            flex-direction: column;
-        }
+        .panel { width: 100%; flex-grow: 1; overflow-y: auto; background: #111; display: flex; flex-direction: column; }
+        .title-image-area { width: 100%; height: 100px; padding: 10px; display: flex; justify-content: center; background: #000; border-bottom: 1px solid #333; }
+        .title-image-area img { max-height: 100%; object-fit: contain; }
 
-        .title-image-area {
-            width: 100%;
-            height: 100px;
-            min-height: 100px;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #000;
-            border-bottom: 1px solid #333;
-            overflow: hidden;
-        }
+        .input-container { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+        .input-block { display: flex; flex-direction: column; gap: 12px; padding: 18px; background: #1a1a1a; border-radius: 12px; border: 1px solid #333; transition: border-color 0.3s; }
+        .input-block:focus-within { border-color: var(--k-color); }
+        label.g-title { font-size: 13px; font-weight: 900; color: var(--k-color); border-left: 5px solid var(--k-color); padding-left: 10px; }
 
-        .title-image-area img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-        }
+        input, select, textarea { padding: 14px; border-radius: 8px; border: 1px solid #444; background: #222; color: #fff; font-size: 16px; width: 100%; font-family: inherit; }
+        .char-counter { font-size: 11px; color: #888; text-align: right; margin-top: -8px; }
+        .save-btn { padding: 22px; background: var(--k-color); color: var(--txt-color); border: none; font-weight: 900; cursor: pointer; border-radius: 15px; font-size: 20px; margin-top: 10px; transition: transform 0.1s, background 0.3s; }
+        .save-btn:active { transform: scale(0.96); }
 
-        .input-container {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+        .m-copyright { text-align: center; margin: 20px 0 40px; font-size: 11px; color: #555; line-height: 1.6; }
 
-        .input-block {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding: 18px;
-            background: #1a1a1a;
-            border-radius: 12px;
-            border: 1px solid #333;
-        }
+        /* ローディング */
+        .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; flex-direction: column; gap: 20px; }
+        .loading-overlay.active { display: flex; }
+        .spinner { width: 50px; height: 50px; border: 4px solid #333; border-top-color: var(--k-color); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        label.g-title {
-            font-size: 13px;
-            font-weight: 900;
-            color: var(--k-color);
-            border-left: 5px solid var(--k-color);
-            padding-left: 10px;
-            transition: color var(--transition-speed), border-color var(--transition-speed);
-        }
-
-        input,
-        select,
-        textarea {
-            padding: 14px;
-            border-radius: 8px;
-            border: 1px solid #444;
-            background: #222;
-            color: #fff;
-            font-size: 16px;
-            width: 100%;
-            font-family: inherit;
-            transition: border-color 0.2s, background 0.2s;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--k-color);
-            background: #2a2a2a;
-        }
-
-        .char-counter {
-            font-size: 11px;
-            color: #888;
-            text-align: right;
-            margin-top: -8px;
-        }
-
-        .char-counter.warning {
-            color: #f39800;
-        }
-
-        .char-counter.danger {
-            color: #e60012;
-        }
-
-        .save-btn {
-            padding: 22px;
-            background: var(--k-color);
-            color: var(--txt-color);
-            border: none;
-            font-weight: 900;
-            cursor: pointer;
-            border-radius: 15px;
-            font-size: 20px;
-            margin-top: 10px;
-            transition: background var(--transition-speed), transform 0.1s, box-shadow 0.2s;
-            font-family: inherit;
-        }
-
-        .save-btn:hover {
-            background: #cc0010;
-            box-shadow: 0 4px 12px rgba(230, 0, 18, 0.4);
-        }
-
-        .save-btn:active {
-            transform: scale(0.98);
-        }
-
-        .save-btn:disabled {
-            background: #666;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        .save-btn.saving {
-            background: #666;
-            cursor: wait;
-        }
-
-        .m-copyright {
-            text-align: center;
-            margin: 20px 0 40px;
-            font-size: 11px;
-            color: #555;
-            line-height: 1.6;
-        }
-
-        /* ローディングオーバーレイ */
-        .loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .loading-overlay.active {
-            display: flex;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #333;
-            border-top-color: var(--k-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .loading-text {
-            color: #fff;
-            font-size: 18px;
-            font-weight: 900;
-        }
-
-        /* 通知トースト */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #222;
-            color: #fff;
-            padding: 16px 24px;
-            border-radius: 8px;
-            border-left: 4px solid var(--k-color);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-            font-weight: 700;
-            z-index: 10000;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.3s, transform 0.3s;
-        }
-
-        .toast.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .toast.success {
-            border-left-color: #009944;
-        }
-
-        .toast.error {
-            border-left-color: #e60012;
-        }
-
-        /* レスポンシブ対応 */
         @media screen and (orientation: landscape) {
-            body {
-                flex-direction: row;
-            }
-            .card-container {
-                width: 45%;
-                height: 100vh;
-                border-right: 2px solid #333;
-                border-bottom: none;
-            }
-            .panel {
-                width: 55%;
-                height: 100vh;
-            }
-        }
-
-        @media screen and (max-width: 480px) {
-            .input-container {
-                padding: 15px;
-            }
-            .input-block {
-                padding: 15px;
-            }
+            body { flex-direction: row; }
+            .card-container { width: 45%; height: 100vh; border-right: 2px solid #333; border-bottom: none; }
+            .panel { width: 55%; height: 100vh; }
         }
     </style>
 </head>
 <body>
-    <!-- ローディングオーバーレイ -->
+
     <div class="loading-overlay" id="loading-overlay">
         <div class="spinner"></div>
-        <div class="loading-text">画像を生成中...</div>
+        <div class="loading-text">高精細レンダリング中...</div>
     </div>
 
-    <!-- カードプレビュー -->
     <div class="card-container">
         <div id="card-wrap">
-            <div class="bg-design">
-                <div class="dot-pattern"></div>
-                <div class="bank-line"></div>
-            </div>
+            <div class="bg-design"><div class="dot-pattern"></div><div class="bank-line"></div></div>
             <div class="lane-box" id="out-no">3</div>
             <div class="main-content">
                 <div class="header">
-                    <div class="icon-frame" id="out-icon-frame">
-                        <img id="preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ccc' d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="プロフィールアイコン">
-                    </div>
+                    <div class="icon-frame" id="out-icon-frame"><img id="preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ccc' d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E"></div>
                     <div class="name-area">
                         <h1 id="out-name">JOCKEY NAME</h1>
                         <div class="sub-info">
@@ -557,61 +191,60 @@
         </div>
     </div>
 
-    <!-- 操作パネル -->
     <div class="panel">
         <div class="title-image-area">
-            <img src="title.png" alt="FullStride Profile Generator">
+            <img src="title.png" id="title-logo-img" alt="Title Logo">
         </div>
         <div class="input-container">
             <div class="input-block">
                 <label class="g-title">枠番設定 / Gate Settings</label>
                 <select id="in-waku">
-                    <option value="1">1枠 (白) / 1st Gate (White)</option>
-                    <option value="2">2枠 (黒) / 2nd Gate (Black)</option>
-                    <option value="3" selected>3枠 (赤) / 3rd Gate (Red)</option>
-                    <option value="4">4枠 (青) / 4th Gate (Blue)</option>
-                    <option value="5">5枠 (黄) / 5th Gate (Yellow)</option>
-                    <option value="6">6枠 (緑) / 6th Gate (Green)</option>
-                    <option value="7">7枠 (橙) / 7th Gate (Orange)</option>
-                    <option value="8">8枠 (桃) / 8th Gate (Pink)</option>
+                    <option value="1">1枠 (白) / 1st Gate</option>
+                    <option value="2">2枠 (黒) / 2nd Gate</option>
+                    <option value="3" selected>3枠 (赤) / 3rd Gate</option>
+                    <option value="4">4枠 (青) / 4th Gate</option>
+                    <option value="5">5枠 (黄) / 5th Gate</option>
+                    <option value="6">6枠 (緑) / 6th Gate</option>
+                    <option value="7">7枠 (橙) / 7th Gate</option>
+                    <option value="8">8枠 (桃) / 8th Gate</option>
                 </select>
             </div>
             <div class="input-block">
                 <label class="g-title">基本情報 / Basic Info</label>
                 <input type="file" accept="image/*" id="in-icon">
-                <input type="text" id="in-n" maxlength="20" placeholder="お名前 (20字以内)">
+                <input type="text" id="in-n" maxlength="20" placeholder="お名前 / Jockey Name">
                 <div class="char-counter" id="counter-n">0 / 20</div>
-                <input type="text" id="in-sns" maxlength="30" placeholder="SNS ID (30字以内)">
+                <input type="text" id="in-sns" maxlength="30" placeholder="SNS ID (@...)">
                 <div class="char-counter" id="counter-sns">0 / 30</div>
-                <input type="text" id="in-exp" maxlength="40" placeholder="馬との歩み (40字以内)">
+                <input type="text" id="in-exp" maxlength="40" placeholder="馬との歩み / Horse History">
                 <div class="char-counter" id="counter-exp">0 / 40</div>
-                <input type="text" id="in-hard" maxlength="30" placeholder="主なハード (30字以内)">
+                <input type="text" id="in-hard" maxlength="30" placeholder="主なハード / Platform">
                 <div class="char-counter" id="counter-hard">0 / 30</div>
             </div>
             <div class="input-block">
                 <label class="g-title">競馬の好み / Favorite (Real)</label>
-                <input type="text" id="in-fav" maxlength="30" placeholder="推し馬・騎手">
+                <input type="text" id="in-fav" maxlength="30" placeholder="推し馬・騎手 / Fav Horse, Jockey">
                 <div class="char-counter" id="counter-fav">0 / 30</div>
-                <input type="text" id="in-blood" maxlength="30" placeholder="好きな血統">
+                <input type="text" id="in-blood" maxlength="30" placeholder="好きな血統 / Favorite Pedigree">
                 <div class="char-counter" id="counter-blood">0 / 30</div>
-                <input type="text" id="in-bank" maxlength="30" placeholder="好きな競馬場">
+                <input type="text" id="in-bank" maxlength="30" placeholder="好きな競馬場 / Favorite Racecourse">
                 <div class="char-counter" id="counter-bank">0 / 30</div>
-                <input type="text" id="in-coat" maxlength="30" placeholder="好きな毛色">
+                <input type="text" id="in-coat" maxlength="30" placeholder="好きな毛色 / Favorite Coat">
                 <div class="char-counter" id="counter-coat">0 / 30</div>
             </div>
             <div class="input-block">
                 <label class="g-title">プレイの傾向 / Playstyle (Game)</label>
                 <select id="in-style">
-                    <option value="---">好きな脚質を選択</option>
+                    <option value="---">好きな脚質を選択 / Select Strategy</option>
                     <option value="大逃げ">大逃げ / Ultra Escape</option>
                     <option value="逃げ">逃げ / Escape</option>
                     <option value="先行">先行 / Leader</option>
                     <option value="差し">差し / Betweeners</option>
                     <option value="追い込み">追い込み / Closer</option>
                 </select>
-                <input type="text" id="in-way" maxlength="30" placeholder="騎乗スタイル">
+                <input type="text" id="in-way" maxlength="30" placeholder="騎乗スタイル / Riding Style">
                 <div class="char-counter" id="counter-way">0 / 30</div>
-                <input type="text" id="in-time" maxlength="50" placeholder="よく遊ぶ時間帯">
+                <input type="text" id="in-time" maxlength="50" placeholder="よく遊ぶ時間帯 / Playing Hours">
                 <div class="char-counter" id="counter-time">0 / 50</div>
             </div>
             <div class="input-block">
@@ -622,16 +255,12 @@
             <button class="save-btn" id="save-btn">画像を保存する / Save Image 📸</button>
             <div class="m-copyright">
                 本ツールはファンによる非公式ジェネレータです。<br>
-                『FULL STRIDE』の名称は、BLUE BULLETの商標または登録商標です。<br>
-                Created by ©Musyn Reagan
+                Created by © 2026 Musyn Reagan
             </div>
         </div>
     </div>
 
     <script>
-        // ========================================
-        // 定数定義
-        // ========================================
         const WAKU_COLORS = {
             "1": { bg: "#ffffff", tx: "#000000" },
             "2": { bg: "#000000", tx: "#ffffff" },
@@ -643,32 +272,7 @@
             "8": { bg: "#e5007f", tx: "#ffffff" }
         };
 
-        const DEFAULT_PLACEHOLDER = "---";
-        const DEFAULT_COMMENT = "...よろしくお願いします";
-
-        // ========================================
-        // DOM要素のキャッシュ
-        // ========================================
         const elements = {
-            // 出力要素
-            outNo: document.getElementById('out-no'),
-            outIconFrame: document.getElementById('out-icon-frame'),
-            outName: document.getElementById('out-name'),
-            outExp: document.getElementById('out-exp'),
-            outHard: document.getElementById('out-hard'),
-            outSns: document.getElementById('out-sns'),
-            outFav: document.getElementById('out-fav'),
-            outBlood: document.getElementById('out-blood'),
-            outBank: document.getElementById('out-bank'),
-            outCoat: document.getElementById('out-coat'),
-            outStyle: document.getElementById('out-style'),
-            outWay: document.getElementById('out-way'),
-            outTime: document.getElementById('out-time'),
-            outComment: document.getElementById('out-comment'),
-            preview: document.getElementById('preview'),
-            cardWrap: document.getElementById('card-wrap'),
-
-            // 入力要素
             inWaku: document.getElementById('in-waku'),
             inIcon: document.getElementById('in-icon'),
             inN: document.getElementById('in-n'),
@@ -683,304 +287,249 @@
             inWay: document.getElementById('in-way'),
             inTime: document.getElementById('in-time'),
             inCom: document.getElementById('in-com'),
-
-            // UI要素
+            preview: document.getElementById('preview'),
+            titleLogoImg: document.getElementById('title-logo-img'),
             saveBtn: document.getElementById('save-btn'),
             loadingOverlay: document.getElementById('loading-overlay')
         };
 
-        // 文字数カウンター要素
-        const counters = {
-            n: document.getElementById('counter-n'),
-            sns: document.getElementById('counter-sns'),
-            exp: document.getElementById('counter-exp'),
-            hard: document.getElementById('counter-hard'),
-            fav: document.getElementById('counter-fav'),
-            blood: document.getElementById('counter-blood'),
-            bank: document.getElementById('counter-bank'),
-            coat: document.getElementById('counter-coat'),
-            way: document.getElementById('counter-way'),
-            time: document.getElementById('counter-time'),
-            com: document.getElementById('counter-com')
-        };
-
-        // ========================================
-        // ユーティリティ関数
-        // ========================================
-        
-        /**
-         * トースト通知を表示
-         */
-        function showToast(message, type = 'success') {
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => toast.classList.add('show'), 10);
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => document.body.removeChild(toast), 300);
-            }, 3000);
-        }
-
-        /**
-         * 文字数カウンターを更新
-         */
-        function updateCounter(input, counter, maxLength) {
-            const length = input.value.length;
-            counter.textContent = `${length} / ${maxLength}`;
-            
-            counter.classList.remove('warning', 'danger');
-            if (length > maxLength * 0.9) {
-                counter.classList.add('danger');
-            } else if (length > maxLength * 0.7) {
-                counter.classList.add('warning');
-            }
-        }
-
-        /**
-         * テキストのフォントサイズを動的に調整
-         */
-        function adjustFontSize(element, text, baseSize, threshold1, threshold2, size1, size2) {
-            const length = text.length;
-            if (length > threshold1) {
-                element.style.fontSize = size1;
-            } else if (length > threshold2) {
-                element.style.fontSize = size2;
-            } else {
-                element.style.fontSize = baseSize;
-            }
-        }
-
-        // ========================================
-        // 枠番カラー変更
-        // ========================================
-        function updateWaku() {
-            const val = elements.inWaku.value;
-            const theme = WAKU_COLORS[val];
-            
-            // 枠番表示を更新
-            elements.outNo.textContent = val;
-            
-            // CSS変数を更新
+        // プレビュー更新 (HTML側)
+        function updatePreview() {
+            document.getElementById('out-no').textContent = elements.inWaku.value;
+            const theme = WAKU_COLORS[elements.inWaku.value];
             document.documentElement.style.setProperty('--k-color', theme.bg);
             document.documentElement.style.setProperty('--txt-color', theme.tx);
+
+            document.getElementById('out-name').textContent = elements.inN.value || "JOCKEY NAME";
+            document.getElementById('out-exp').textContent = "馬との歩み / Horse History: " + (elements.inExp.value || "---");
+            document.getElementById('out-hard').textContent = "主なハード / Platform: " + (elements.inHard.value || "---");
+            document.getElementById('out-sns').textContent = elements.inSns.value ? "@" + elements.inSns.value.replace('@','') : "@---";
             
-            // 枠番ボックスのスタイルを更新
-            elements.outNo.style.background = theme.bg;
-            elements.outNo.style.color = theme.tx;
+            document.getElementById('out-fav').textContent = elements.inFav.value || "---";
+            document.getElementById('out-blood').textContent = elements.inBlood.value || "---";
+            document.getElementById('out-bank').textContent = elements.inBank.value || "---";
+            document.getElementById('out-coat').textContent = elements.inCoat.value || "---";
+            document.getElementById('out-style').textContent = elements.inStyle.value;
+            document.getElementById('out-way').textContent = elements.inWay.value || "---";
+            document.getElementById('out-time').textContent = elements.inTime.value || "---";
+            document.getElementById('out-comment').textContent = elements.inCom.value || "...よろしくお願いします";
             
-            // アイコンフレームの色を更新
-            elements.outIconFrame.style.borderColor = theme.bg;
-            
-            // 項目のボーダー色を更新
-            document.querySelectorAll('.out-border').forEach(el => {
-                el.style.borderColor = theme.bg;
-            });
-            
-            // ラベルの色を更新（白枠の場合は薄いグレーに）
-            document.querySelectorAll('.g-title').forEach(el => {
-                const color = theme.bg === "#ffffff" ? "#ccc" : theme.bg;
-                el.style.color = color;
-                el.style.borderColor = color;
-            });
+            // 文字数によるフォントサイズ調整
+            const comm = elements.inCom.value || "";
+            const outComm = document.getElementById('out-comment');
+            if(comm.length > 60) outComm.style.fontSize = "15px";
+            else if(comm.length > 30) outComm.style.fontSize = "18px";
+            else outComm.style.fontSize = "21px";
         }
 
-        // ========================================
-        // カードスケール調整
-        // ========================================
-        function adjustScale() {
-            const container = document.querySelector('.card-container');
-            const card = elements.cardWrap;
-            const scaleX = container.offsetWidth / 860;
-            const scaleY = container.offsetHeight / 590;
-            const scale = Math.min(scaleX, scaleY, 1.0);
-            card.style.transform = `scale(${scale})`;
-        }
-
-        // ========================================
-        // 画像読み込み
-        // ========================================
-        function loadImage(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            // ファイルサイズチェック（5MB以下）
-            if (file.size > 5 * 1024 * 1024) {
-                showToast('画像サイズは5MB以下にしてください', 'error');
-                e.target.value = '';
-                return;
-            }
-            
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                elements.preview.src = event.target.result;
-            };
-            reader.onerror = function() {
-                showToast('画像の読み込みに失敗しました', 'error');
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // ========================================
-        // プレビュー更新
-        // ========================================
-        let updateTimer = null;
-
-        function updatePreview() {
-            // デバウンス処理
-            clearTimeout(updateTimer);
-            updateTimer = setTimeout(() => {
-                // 名前
-                const nameVal = elements.inN.value || "JOCKEY NAME";
-                elements.outName.textContent = nameVal;
-                adjustFontSize(elements.outName, nameVal, "46px", 15, 10, "28px", "36px");
-
-                // 基本情報
-                elements.outExp.textContent = "馬との歩み / Horse History: " + (elements.inExp.value || DEFAULT_PLACEHOLDER);
-                elements.outHard.textContent = "主なハード / Platform: " + (elements.inHard.value || DEFAULT_PLACEHOLDER);
-                
-                const snsVal = elements.inSns.value;
-                elements.outSns.textContent = snsVal ? "@" + snsVal.replace('@', '') : "@" + DEFAULT_PLACEHOLDER;
-
-                // 競馬の好み
-                elements.outFav.textContent = elements.inFav.value || DEFAULT_PLACEHOLDER;
-                elements.outBlood.textContent = elements.inBlood.value || DEFAULT_PLACEHOLDER;
-                elements.outBank.textContent = elements.inBank.value || DEFAULT_PLACEHOLDER;
-                elements.outCoat.textContent = elements.inCoat.value || DEFAULT_PLACEHOLDER;
-
-                // プレイの傾向
-                elements.outStyle.textContent = elements.inStyle.value;
-                elements.outWay.textContent = elements.inWay.value || DEFAULT_PLACEHOLDER;
-                elements.outTime.textContent = elements.inTime.value || DEFAULT_PLACEHOLDER;
-
-                // コメント
-                const commentVal = elements.inCom.value || DEFAULT_COMMENT;
-                elements.outComment.textContent = commentVal;
-                adjustFontSize(elements.outComment, commentVal, "21px", 60, 30, "15px", "18px");
-            }, 50);
-        }
-
-        // ========================================
-        // 画像保存
-        // ========================================
-        async function saveImage() {
-            const target = elements.cardWrap;
-            const btn = elements.saveBtn;
-            const overlay = elements.loadingOverlay;
-            
-            // ボタンを無効化
-            btn.disabled = true;
-            btn.classList.add('saving');
-            btn.textContent = '生成中...';
-            overlay.classList.add('active');
-            
-            // スケールを一時的にリセット
-            const originalTransform = target.style.transform;
-            target.style.transform = "none";
-            
-            try {
-                // 少し待機してレンダリングを安定させる
-                await new Promise(resolve => setTimeout(resolve, 100));
-                
-                const canvas = await html2canvas(target, {
-                    scale: 2,
-                    useCORS: true,
-                    backgroundColor: "#ffffff",
-                    width: 850,
-                    height: 580,
-                    x: 0,
-                    y: 0,
-                    scrollX: 0,
-                    scrollY: 0,
-                    logging: false,
-                    imageTimeout: 0,
-                    removeContainer: true
-                });
-                
-                // ファイル名を生成
-                const waku = elements.inWaku.value;
-                const timestamp = new Date().getTime();
-                const filename = `fullstride-card-gate${waku}-${timestamp}.png`;
-                
-                // ダウンロード
-                const link = document.createElement('a');
-                link.download = filename;
-                link.href = canvas.toDataURL("image/png");
-                link.click();
-                
-                showToast('画像を保存しました！', 'success');
-                
-            } catch (err) {
-                console.error('保存エラー:', err);
-                showToast('画像の保存に失敗しました', 'error');
-            } finally {
-                // 元に戻す
-                target.style.transform = originalTransform;
-                adjustScale();
-                btn.disabled = false;
-                btn.classList.remove('saving');
-                btn.textContent = '画像を保存する / Save Image 📸';
-                overlay.classList.remove('active');
-            }
-        }
-
-        // ========================================
-        // イベントリスナー設定
-        // ========================================
-        
-        // 枠番変更
-        elements.inWaku.addEventListener('change', updateWaku);
-
-        // 画像アップロード
-        elements.inIcon.addEventListener('change', loadImage);
-
-        // テキスト入力（文字数カウンター付き）
-        const inputCounterPairs = [
-            { input: elements.inN, counter: counters.n, max: 20 },
-            { input: elements.inSns, counter: counters.sns, max: 30 },
-            { input: elements.inExp, counter: counters.exp, max: 40 },
-            { input: elements.inHard, counter: counters.hard, max: 30 },
-            { input: elements.inFav, counter: counters.fav, max: 30 },
-            { input: elements.inBlood, counter: counters.blood, max: 30 },
-            { input: elements.inBank, counter: counters.bank, max: 30 },
-            { input: elements.inCoat, counter: counters.coat, max: 30 },
-            { input: elements.inWay, counter: counters.way, max: 30 },
-            { input: elements.inTime, counter: counters.time, max: 50 },
-            { input: elements.inCom, counter: counters.com, max: 100 }
-        ];
-
-        inputCounterPairs.forEach(({ input, counter, max }) => {
+        // 文字数カウンター
+        function setupCounter(id, input, max) {
             input.addEventListener('input', () => {
-                updateCounter(input, counter, max);
+                const len = input.value.length;
+                document.getElementById('counter-' + id).textContent = `${len} / ${max}`;
                 updatePreview();
             });
-        });
+        }
+        setupCounter('n', elements.inN, 20);
+        setupCounter('sns', elements.inSns, 30);
+        setupCounter('exp', elements.inExp, 40);
+        setupCounter('hard', elements.inHard, 30);
+        setupCounter('fav', elements.inFav, 30);
+        setupCounter('blood', elements.inBlood, 30);
+        setupCounter('bank', elements.inBank, 30);
+        setupCounter('coat', elements.inCoat, 30);
+        setupCounter('way', elements.inWay, 30);
+        setupCounter('time', elements.inTime, 50);
+        setupCounter('com', elements.inCom, 100);
 
-        // セレクト変更
+        elements.inWaku.addEventListener('change', updatePreview);
         elements.inStyle.addEventListener('change', updatePreview);
 
-        // 保存ボタン
-        elements.saveBtn.addEventListener('click', saveImage);
-
-        // ウィンドウリサイズ
-        window.addEventListener('resize', adjustScale);
-
-        // ========================================
-        // 初期化
-        // ========================================
-        window.addEventListener('load', () => {
-            adjustScale();
-            updateWaku();
-            updatePreview();
-            
-            // 全カウンターを初期化
-            inputCounterPairs.forEach(({ input, counter, max }) => {
-                updateCounter(input, counter, max);
-            });
+        // アイコン読み込み
+        elements.inIcon.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => { elements.preview.src = ev.target.result; };
+            reader.readAsDataURL(file);
         });
+
+        // スケール調整
+        function adjustScale() {
+            const container = document.querySelector('.card-container');
+            const card = document.getElementById('card-wrap');
+            const scale = Math.min(container.offsetWidth / 860, container.offsetHeight / 590, 1.0);
+            card.style.transform = `scale(${scale})`;
+        }
+        window.addEventListener('resize', adjustScale);
+        window.addEventListener('load', () => { adjustScale(); updatePreview(); });
+
+        // ========================================
+        // 核心：Canvas API 直接描画ロジック
+        // ========================================
+        async function saveImage() {
+            elements.loadingOverlay.classList.add('active');
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const dpr = 2; // 高精細化のため2倍で描画
+            canvas.width = 850 * dpr;
+            canvas.height = 580 * dpr;
+            ctx.scale(dpr, dpr);
+
+            const theme = WAKU_COLORS[elements.inWaku.value];
+
+            // 1. 背景描画
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, 850, 580);
+
+            // 2. 右側のグレー背景 (clip-path再現)
+            ctx.fillStyle = "#f2f2f2";
+            ctx.beginPath();
+            ctx.moveTo(850 * 0.4, 0);
+            ctx.lineTo(850, 0);
+            ctx.lineTo(850, 580);
+            ctx.lineTo(0, 580);
+            ctx.closePath();
+            ctx.fill();
+
+            // 3. ドットパターン
+            ctx.fillStyle = "#dddddd";
+            for (let x = 0; x < 850; x += 12) {
+                for (let y = 0; y < 580; y += 12) {
+                    ctx.beginPath();
+                    ctx.arc(x, y, 0.75, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // 4. 左側レーン
+            ctx.fillStyle = theme.bg;
+            ctx.fillRect(0, 0, 100, 580);
+            ctx.strokeStyle = "#000000";
+            ctx.lineWidth = 4;
+            ctx.strokeRect(0, 0, 100, 580);
+            
+            ctx.fillStyle = theme.tx;
+            ctx.font = "900 85px sans-serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(elements.inWaku.value, 50, 290);
+
+            // 5. ヘッダーエリア
+            ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+            ctx.fillRect(100, 0, 750, 155);
+            ctx.strokeRect(100, 0, 750, 155);
+
+            // 6. アイコン描画 (円形クリップ)
+            const iconSize = 110;
+            const iconX = 130;
+            const iconY = 22;
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(iconX + iconSize/2, iconY + iconSize/2, iconSize/2, 0, Math.PI * 2);
+            ctx.clip();
+            try {
+                ctx.drawImage(elements.preview, iconX, iconY, iconSize, iconSize);
+            } catch(e) {}
+            ctx.restore();
+            // アイコン枠
+            ctx.strokeStyle = theme.bg;
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.arc(iconX + iconSize/2, iconY + iconSize/2, iconSize/2, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // 7. 名前・基本情報
+            ctx.fillStyle = "#000000";
+            ctx.textAlign = "left";
+            ctx.textBaseline = "top";
+            ctx.font = "900 46px sans-serif";
+            ctx.fillText(elements.inN.value || "JOCKEY NAME", 260, 35);
+            
+            ctx.font = "800 13px sans-serif";
+            ctx.fillStyle = "#333333";
+            ctx.fillText("馬との歩み / Horse History: " + (elements.inExp.value || "---"), 260, 95);
+            ctx.fillText("主なハード / Platform: " + (elements.inHard.value || "---"), 260, 115);
+            ctx.fillStyle = "#000000";
+            ctx.font = "900 13px sans-serif";
+            ctx.fillText(elements.inSns.value ? "@" + elements.inSns.value.replace('@','') : "@---", 260, 135);
+
+            // 8. データグリッド
+            const gridX = 130;
+            const drawCategory = (text, y) => {
+                ctx.fillStyle = "#000000";
+                ctx.fillRect(gridX, y, 690, 25);
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "900 13px sans-serif";
+                ctx.fillText(text, gridX + 12, y + 6);
+            };
+
+            const drawItem = (label, val, x, y) => {
+                ctx.fillStyle = theme.bg;
+                ctx.fillRect(x, y, 6, 45);
+                ctx.fillStyle = "#444444";
+                ctx.font = "900 10px sans-serif";
+                ctx.fillText(label, x + 12, y + 2);
+                ctx.fillStyle = "#000000";
+                ctx.font = "900 17px sans-serif";
+                ctx.fillText(val || "---", x + 12, y + 18);
+            };
+
+            drawCategory("競馬の好み / Favorite (Real)", 175);
+            drawItem("推し馬・騎手", elements.inFav.value, gridX, 210);
+            drawItem("好きな血統", elements.inBlood.value, gridX + 350, 210);
+            drawItem("好きな競馬場", elements.inBank.value, gridX, 265);
+            drawItem("好きな毛色", elements.inCoat.value, gridX + 350, 265);
+
+            drawCategory("プレイの傾向 / Playstyle (Game)", 325);
+            drawItem("好きな脚質", elements.inStyle.value, gridX, 360);
+            drawItem("騎乗スタイル", elements.inWay.value, gridX + 350, 360);
+            drawItem("プレイ時間帯", elements.inTime.value, gridX, 415);
+
+            // 9. フッターコメント
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(100, 470, 750, 110);
+            ctx.strokeStyle = "#000000";
+            ctx.lineWidth = 4;
+            ctx.strokeRect(100, 470, 750, 110);
+            
+            ctx.fillStyle = "#000000";
+            const comm = elements.inCom.value || "...よろしくお願いします";
+            let fontSize = 21;
+            if(comm.length > 60) fontSize = 15;
+            else if(comm.length > 30) fontSize = 18;
+            ctx.font = `900 ${fontSize}px sans-serif`;
+            // 折り返し描画 (簡易版)
+            const maxWidth = 690;
+            let line = "";
+            let y = 490;
+            for(let n = 0; n < comm.length; n++) {
+                line += comm[n];
+                if(ctx.measureText(line).width > maxWidth) {
+                    ctx.fillText(line.slice(0,-1), gridX, y);
+                    line = comm[n];
+                    y += fontSize * 1.3;
+                }
+            }
+            ctx.fillText(line, gridX, y);
+
+            // 10. コピーライト
+            ctx.fillStyle = "rgba(0,0,0,0.35)";
+            ctx.font = "bold 11px sans-serif";
+            ctx.textAlign = "right";
+            ctx.fillText("© 2026 Musyn Reagan / FullStride Fan Kit", 838, 555);
+
+            // 保存
+            const link = document.createElement('a');
+            link.download = `FS_Profile_${elements.inWaku.value}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+            
+            elements.loadingOverlay.classList.remove('active');
+        }
+
+        elements.saveBtn.addEventListener('click', saveImage);
     </script>
 </body>
 </html>
