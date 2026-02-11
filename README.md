@@ -1,6 +1,6 @@
 ---
 title: FS Striders
-emoji: 🧍
+emoji: 🏇
 colorFrom: gray
 colorTo: indigo
 sdk: static
