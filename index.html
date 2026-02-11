@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>華耀天輪 己成拵</title>
+    <title>FS Striders -Player profile generator-</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root { --k-color: #e60012; --txt-color: #fff; }
         body { background: #000; color: #fff; font-family: sans-serif; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
+        /* カードプレビューエリア */
         .card-container { width: 100%; height: 40vh; background: #000; display: flex; justify-content: center; align-items: center; flex-shrink: 0; border-bottom: 2px solid #333; overflow: hidden; position: relative; }
         #card-wrap { width: 850px; height: 580px; border: 4px solid #000; overflow: hidden; position: relative; color: #000; display: grid; grid-template-columns: 100px 1fr; background: #ffffff; flex-shrink: 0; transform-origin: center; }
 
@@ -17,57 +18,36 @@
         .dot-pattern { position: absolute; inset: 0; background-image: radial-gradient(#ddd 1.5px, transparent 1.5px); background-size: 12px 12px; }
 
         .lane-box { background: var(--k-color); color: var(--txt-color); display: flex; align-items: center; justify-content: center; font-size: 85px; font-weight: 900; border-right: 4px solid #000; z-index: 10; position: relative; }
-        .main-content { display: grid; grid-template-rows: 135px 1fr 95px; z-index: 5; position: relative; }
+        .main-content { display: grid; grid-template-rows: 155px 1fr 95px; z-index: 5; position: relative; }
         .header { display: flex; align-items: center; padding: 0 30px; border-bottom: 4px solid #000; gap: 20px; background: rgba(255,255,255,0.5); }
-        .icon-frame { width: 95px; height: 95px; border-radius: 50%; border: 5px solid var(--k-color); overflow: hidden; flex-shrink: 0; background: #fff; }
+        .icon-frame { width: 110px; height: 110px; border-radius: 50%; border: 5px solid var(--k-color); overflow: hidden; flex-shrink: 0; background: #fff; }
         .icon-frame img { width: 100%; height: 100%; object-fit: cover; }
         .name-area h1 { margin: 0; font-size: 46px; font-weight: 900; color: #000; }
-        .sub-info { font-size: 16px; font-weight: 800; color: #333; margin-top: 5px; display: flex; gap: 12px; }
+        .sub-info { font-size: 13px; font-weight: 800; color: #333; margin-top: 5px; display: flex; flex-direction: column; gap: 2px; }
         .gender-mark { color: #666; font-weight: 900; }
 
-        .data-grid { padding: 20px 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .category-label { grid-column: span 2; font-size: 14px; font-weight: 900; color: #fff; background: #000; padding: 3px 12px; margin-bottom: 5px; }
+        /* データグリッド */
+        .data-grid { padding: 10px 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .category-label { grid-column: span 2; font-size: 13px; font-weight: 900; color: #fff; background: #000; padding: 3px 12px; margin-top: 5px; }
         .item { border-left: 6px solid var(--k-color); padding-left: 12px; }
-        .label { font-size: 11px; color: #444; font-weight: 900; display: block; }
-        .val { font-size: 19px; font-weight: 900; color: #000; }
+        .label { font-size: 10px; color: #444; font-weight: 900; display: block; line-height: 1.2; }
+        .val { font-size: 18px; font-weight: 900; color: #000; }
 
-        .footer-comment { 
-            border-top: 4px solid #000; padding: 15px 30px; background: #fff; font-size: 21px; font-weight: 900; color: #000; 
-            display: block; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.3; height: auto; min-height: 65px; 
-        }
-        .copyright { position: absolute; bottom: 8px; right: 12px; font-size: 11px; font-weight: bold; color: rgba(0,0,0,0.25); z-index: 20; pointer-events: none; }
+        .footer-comment { border-top: 4px solid #000; padding: 15px 30px; background: #fff; font-size: 21px; font-weight: 900; color: #000; line-height: 1.3; min-height: 65px; }
+        .copyright { position: absolute; bottom: 8px; right: 12px; font-size: 11px; font-weight: bold; color: rgba(0,0,0,0.25); z-index: 20; }
 
-        .panel { width: 100%; flex-grow: 1; overflow-y: auto; background: #111; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px; }
-        
-        /* 復活：タイトルロゴ */
-        .title-logo { text-align: center; margin-bottom: 10px; padding: 15px; border: 1px double #444; background: #0a0a0a; }
-        .title-logo h2 { margin: 0; font-size: 20px; letter-spacing: 0.3em; color: #f5f5f5; font-weight: 900; }
-        .title-logo p { margin: 5px 0 0; font-size: 10px; color: #666; font-weight: 800; letter-spacing: 0.2em; }
+        /* 入力パネル */
+        .panel { width: 100%; flex-grow: 1; overflow-y: auto; background: #111; padding: 0; box-sizing: border-box; display: flex; flex-direction: column; }
+        .title-logo { width: 100%; background: #000; overflow: hidden; border-bottom: 2px solid #333; line-height: 0; }
+        .header-logo { width: 100%; height: auto; object-fit: contain; }
 
+        .input-container { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
         .input-block { display: flex; flex-direction: column; gap: 12px; padding: 18px; background: #1a1a1a; border-radius: 12px; border: 1px solid #333; }
-        label.g-title { font-size: 13px; font-weight: 900; color: var(--k-color); border-left: 5px solid var(--k-color); padding-left: 10px; }
+        label.g-title { font-size: 13px; font-weight: 900; color: var(--k-color); border-left: 5px solid var(--k-color); padding-left: 10px; margin-bottom: 5px; }
         input, select, textarea { padding: 14px; border-radius: 8px; border: 1px solid #444; background: #222; color: #fff; font-size: 16px; width: 100%; box-sizing: border-box; }
         
-        .check-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: #222; padding: 12px; border-radius: 8px; }
-        .check-grid label { display: flex; align-items: center; color: #fff; font-size: 13px; font-weight: 900; cursor: pointer; line-height: 1; }
-        .check-grid input[type="checkbox"] { width: 18px; height: 18px; margin: 0 8px 0 0; flex-shrink: 0; cursor: pointer; }
-        
         .save-btn { padding: 22px; background: #e60012; color: #fff; border: none; font-weight: 900; cursor: pointer; border-radius: 15px; font-size: 20px; margin-bottom: 20px; }
-
-        .footer-info { margin-bottom: 60px; border-top: 1px solid #333; padding-top: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .how-to-use { background: #1a1a1a; border-radius: 12px; border-left: 4px solid var(--k-color); overflow: hidden; }
-        .how-to-use summary { padding: 15px; font-size: 14px; font-weight: 900; color: var(--k-color); cursor: pointer; list-style: none; display: flex; align-items: center; }
-        .how-to-use summary::after { content: "▼"; font-size: 10px; margin-left: auto; transition: 0.3s; }
-        .how-to-use[open] summary::after { transform: rotate(180deg); }
-        .how-to-use ol { margin: 0 15px 15px 35px; padding: 0; font-size: 13px; color: #ccc; line-height: 1.6; }
-        .how-to-use li { margin-bottom: 8px; }
-        .how-to-use .caution { margin-top: 10px; padding: 10px 15px; border-top: 1px dashed #444; color: #ff4444; font-weight: 900; font-size: 12px; }
-
-        .simple-link-area { font-size: 15px; font-weight: 900; color: #ccc; }
-        .simple-link-area a { color: var(--k-color); text-decoration: none; border-bottom: 1px solid var(--k-color); }
-        .rules-block { background: #1a1a1a; padding: 15px; border-radius: 12px; font-size: 12px; color: #999; line-height: 1.6; }
-        .rules-block h4 { margin: 0 0 8px 0; color: #ccc; font-size: 13px; }
-        .m-copyright { text-align: center; margin-top: 10px; font-size: 11px; color: #555; }
+        .m-copyright { text-align: center; margin-bottom: 40px; font-size: 11px; color: #555; }
 
         @media screen and (orientation: landscape) {
             body { flex-direction: row; }
@@ -86,189 +66,135 @@
             <div class="header">
                 <div class="icon-frame"><img id="preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ccc' d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E"></div>
                 <div class="name-area">
-                    <h1 id="out-name">ジョン・ドゥ</h1>
+                    <h1 id="out-name">JOCKEY NAME</h1>
                     <div class="sub-info">
-                        <span id="out-exp">歴: ---</span>
-                        <span id="out-sns" style="color:#000;">@---</span>
-                        <span id="out-gender" class="gender-mark">♂</span>
+                        <span id="out-exp">馬との歩み / Horse History: ---</span>
+                        <span id="out-hard">主なハード / Platform: ---</span>
+                        <span id="out-sns" style="color:#000; font-weight: 900;">@---</span>
                     </div>
                 </div>
             </div>
             <div class="data-grid">
-                <div class="category-label">戦術 & 属性</div>
-                <div class="item"><span class="label">脚質 / 推し選手</span><div class="val" id="out-style-fav">---</div></div>
-                <div class="item"><span class="label">推しライン</span><div class="val" id="out-line">---</div></div>
-                <div class="item"><span class="label">好きなバンク</span><div class="val" id="out-bank">---</div></div>
-                <div class="category-label">戦域 (TARGET RACES)</div>
-                <div class="item"><span class="label">時間帯</span><div class="val" id="out-time">---</div></div>
-                <div class="item"><span class="label">格 (GRADE)</span><div class="val" id="out-grade">---</div></div>
+                <div class="category-label">競馬の好み / Favorite (Real)</div>
+                <div class="item"><span class="label">推し馬・騎手 / Fav Horse, Jockey</span><div class="val" id="out-fav">---</div></div>
+                <div class="item"><span class="label">好きな血統 / Favorite Pedigree</span><div class="val" id="out-blood">---</div></div>
+                <div class="item"><span class="label">好きな競馬場 / Favorite Racecourse</span><div class="val" id="out-bank">---</div></div>
+                
+                <div class="category-label">プレイの傾向 / Playstyle (Game)</div>
+                <div class="item"><span class="label">好きな脚質 / Favorite Strategy</span><div class="val" id="out-style">---</div></div>
+                <div class="item"><span class="label">騎乗スタイル / Riding Style</span><div class="val" id="out-way">---</div></div>
+                <div class="item"><span class="label">プレイ時間帯 / Playing Hours</span><div class="val" id="out-time">---</div></div>
             </div>
             <div class="footer-comment"><span id="out-comment">...よろしくお願いします</span></div>
         </div>
-        <div class="copyright">(C) Musyn Reagan</div>
+        <div class="copyright">(C) FullStride Jockey Card</div>
     </div>
 </div>
 
 <div class="panel">
     <div class="title-logo">
-        <h2>華耀天輪 <span style="color:var(--k-color)">己成</span>拵</h2>
-        <p>― KINARI GOSHIRAE : KEIRIN PROFILE CARD GENERATOR―</p>
+        <div class="title-logo">
+    <img src="title.png" alt="Title Logo" class="header-logo">
+</div>
+
     </div>
 
-    <div class="input-block">
-        <label class="g-title">基本設定</label>
-        <div style="display:grid; grid-template-columns: repeat(9, 1fr); gap:6px; margin-bottom:10px;">
-            <div class="c-btn" style="background:#fff; color:#000; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center; border:2px solid #000;" onclick="chgLane(1,'#f2f2f2','#000')"
->1</div>
-            <div class="c-btn" style="background:#000; color:#fff; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(2,'#000','#fff')">2</div>
-            <div class="c-btn" style="background:#f00; color:#fff; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(3,'#f00','#fff')">3</div>
-            <div class="c-btn" style="background:#00f; color:#fff; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(4,'#00f','#fff')">4</div>
-            <div class="c-btn" style="background:#dcb000; color:#000; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(5,'#dcb000','#000')">5</div>
-            <div class="c-btn" style="background:#080; color:#fff; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(6,'#080','#fff')">6</div>
-            <div class="c-btn" style="background:#f80; color:#fff; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(7,'#f80','#fff')">7</div>
-            <div class="c-btn" style="background:#fbc; color:#000; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(8,'#fbc','#000')">8</div>
-            <div class="c-btn" style="background:#808; color:#fff; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(9,'#808','#fff')">9</div>
-        </div>
-        <select id="in-gender" onchange="chgGender()"><option value="male">男性 (♂)</option><option value="female">女性 (♀)</option></select>
-        <input type="file" accept="image/*" onchange="loadImg(event)">
-        <input type="text" id="in-n" placeholder="お名前" oninput="upd()">
-        <input type="text" id="in-sns" placeholder="SNS ID (@...)" oninput="upd()">
-        <input type="text" id="in-exp" placeholder="競輪歴" oninput="upd()">
-    </div>
-
-    <div class="input-block">
-        <label class="g-title">戦術 & 推し</label>
-        <select id="in-style" onchange="upd()"><option value="---">好きな脚質を選択</option><option value="逃げ">逃げ</option><option value="捲り">捲り</option><option value="差し">差し</option><option value="マーク">マーク</option></select>
-        <input type="text" id="in-fav" placeholder="推し選手" oninput="upd()">
-        <input type="text" id="in-line" placeholder="推しライン" oninput="upd()">
-        <input type="text" id="in-bank" placeholder="好きなバンク" oninput="upd()">
-    </div>
-
-    <div class="input-block">
-        <label class="g-title">主戦域 & グレード</label>
-        <div class="check-grid" id="time-grp">
-            <label><input type="checkbox" value="モーニング" onchange="upd()">モーニング</label><label><input type="checkbox" value="デイ" onchange="upd()">デイ</label><label><input type="checkbox" value="ナイター" onchange="upd()">ナイター</label><label><input type="checkbox" value="ミッドナイト" onchange="upd()">ミッドナイト</label>
-        </div>
-        <div class="check-grid" id="grade-grp">
-            <label><input type="checkbox" value="GP" onchange="upd()">GP</label><label><input type="checkbox" value="G1" onchange="upd()">G1</label><label><input type="checkbox" value="G2" onchange="upd()">G2</label><label><input type="checkbox" value="G3" onchange="upd()">G3</label><label><input type="checkbox" value="F1" onchange="upd()">F1</label><label><input type="checkbox" value="F2" onchange="upd()">F2</label><label><input type="checkbox" value="ガールズ" onchange="upd()">ガールズ</label>
-        </div>
-    </div>
-
-    <textarea id="in-com" placeholder="一言メッセージ..." oninput="upd()"></textarea>
-    <button class="save-btn" onclick="save()">画像化して保存する📸</button>
-
-    <div class="footer-info">
-        <details class="how-to-use">
-            <summary>💡 詳しい使い方・項目説明</summary>
-            
-            <div style="margin-bottom: 20px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 2px solid #555; font-size: 13px; color: #aaa;">
-                <b style="color: var(--k-color);">このサイトは何か？</b><br>
-                詰まる話が自己紹介カードジェネレーターです。<br>
-                分かりづらい名前つけてごめんなさい、好きなんですこういうの。てへぺろ。
+    <div class="input-container">
+        <div class="input-block">
+            <label class="g-title">基本プロフィール / Basic</label>
+            <div style="display:grid; grid-template-columns: repeat(8, 1fr); gap:6px; margin-bottom:10px;">
+                <div class="c-btn" style="background:#fff; color:#000; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center; border:2px solid #000;" onclick="chgLane(1,'#f2f2f2','#000')">1</div>
+                <div class="c-btn" style="background:#000; color:#fff; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(2,'#000','#fff')">2</div>
+                <div class="c-btn" style="background:#f00; color:#fff; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(3,'#f00','#fff')">3</div>
+                <div class="c-btn" style="background:#00f; color:#fff; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(4,'#00f','#fff')">4</div>
+                <div class="c-btn" style="background:#dcb000; color:#000; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(5,'#dcb000','#000')">5</div>
+                <div class="c-btn" style="background:#080; color:#fff; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(6,'#080','#fff')">6</div>
+                <div class="c-btn" style="background:#f80; color:#fff; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(7,'#f80','#fff')">7</div>
+                <div class="c-btn" style="background:#fbc; color:#000; height:35px; cursor:pointer; font-weight:900; display:flex; align-items:center; justify-content:center;" onclick="chgLane(8,'#fbc','#000')">8</div>
             </div>
-
-            <ol>
-                <li><b>基本設定：</b> 車番（色）、性別、SNS ID、アイコン写真などを設定します。</li>
-                <li><b>戦術＆推し：</b> 脚質や推しの選手・ラインを記入します。</li>
-                <li><b>戦域：</b> 普段戦っている時間帯やグレードにチェック！</li>
-                <li><b>メッセージ：</b> 最下部の帯に載る、あなたの意気込みです。</li>
-                <li><b>保存：</b> 整ったら「📸画像化して保存」を押してください。</li>
-            </ol>
-            <div class="caution">
-                備考：入力する文字数があまりにも多いとめちゃくちゃになりますのでご注意🙏
-            </div>
-        </details>
-
-        <div class="simple-link-area">
-            LINK：<a href="https://huggingface.co/spaces/Jiz41/Jiz41r1t5u" target="_blank">競輪予想アシストツール 華耀天輪 真自在律</a>
+            <select id="in-gender" onchange="chgGender()"><option value="male">表示設定: ♂</option><option value="female">表示設定: ♀</option></select>
+            <input type="file" accept="image/*" onchange="loadImg(event)">
+            <input type="text" id="in-n" placeholder="お名前 / Name" oninput="upd()">
+            <input type="text" id="in-sns" placeholder="SNS ID (@...)" oninput="upd()">
+            <input type="text" id="in-exp" placeholder="馬との歩み（例：〇〇の世代から）" oninput="upd()">
+            <input type="text" id="in-hard" placeholder="主なハード（PS/Steam/Switch等）" oninput="upd()">
         </div>
 
-        <div class="rules-block">
-            <h4>利用規約 / Terms of Use</h4>
-            <ul>
-                <li>作成した画像は私的利用の範囲でSNS等で自由にご利用いただけます。</li>
-                <li>自作発言、公序良俗に反する使用を禁止します。</li>
-                <li>本ツール利用による不利益について制作者は一切の責任を負いません。</li>
-            </ul>
+        <div class="input-block">
+            <label class="g-title">競馬の好み / Favorite (Real)</label>
+            <input type="text" id="in-fav" placeholder="推し馬・騎手" oninput="upd()">
+            <input type="text" id="in-blood" placeholder="好きな血統" oninput="upd()">
+            <input type="text" id="in-bank" placeholder="好きな競馬場" oninput="upd()">
         </div>
-        <div class="m-copyright">© 2026 Musyn Reagan</div>
+
+        <div class="input-block">
+            <label class="g-title">プレイの傾向 / Playstyle (Game)</label>
+            <select id="in-style" onchange="upd()">
+                <option value="---">好きな脚質を選択</option>
+                <option value="大逃げ">大逃げ</option><option value="逃げ">逃げ</option><option value="先行">先行</option><option value="差し">差し</option><option value="追い込み">追い込み</option>
+            </select>
+            <input type="text" id="in-way" placeholder="騎乗スタイル（例：イン突き、剛腕）" oninput="upd()">
+            <input type="text" id="in-time" placeholder="よく遊んでる時間帯" oninput="upd()">
+        </div>
+
+        <textarea id="in-com" placeholder="一言メッセージ / Message" oninput="upd()"></textarea>
+        <button class="save-btn" onclick="save()">画像を保存する / Save Image📸</button>
+        <div class="m-copyright">© 2026 Musyn Reagan / FullStride Fan Kit</div>
     </div>
 </div>
 
 <script>
     let currentGender = "male";
-    function chgGender() {
-        currentGender = document.getElementById('in-gender').value;
-        const nameInput = document.getElementById('in-n');
-        if(!nameInput.value || nameInput.value === "ジョン・ドゥ" || nameInput.value === "ジェーン・ドゥ") {
-            nameInput.value = currentGender === "male" ? "ジョン・ドゥ" : "ジェーン・ドゥ";
-        }
-        upd();
-    }
+    function chgGender() { currentGender = document.getElementById('in-gender').value; upd(); }
     function adjustScale() {
         const container = document.querySelector('.card-container');
         const card = document.getElementById('card-wrap');
-        const finalScale = Math.min(container.offsetHeight / 580, container.offsetWidth / 850) * 0.9;
+        const finalScale = Math.min(container.offsetHeight / 580, container.offsetWidth / 850) * 0.95;
         card.style.transform = `scale(${finalScale})`;
     }
     window.addEventListener('resize', adjustScale);
     window.addEventListener('load', adjustScale);
-    function chgLane(no, bg, txt) { document.documentElement.style.setProperty('--k-color', bg); document.documentElement.style.setProperty('--txt-color', txt); document.getElementById('out-no').innerText = no; }
+    
+    function chgLane(no, bg, txt) { 
+        document.documentElement.style.setProperty('--k-color', bg); 
+        document.documentElement.style.setProperty('--txt-color', txt); 
+        document.getElementById('out-no').innerText = no; 
+    }
+    
     function loadImg(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(event) {
-        // 画像をBase64形式で読み込み、プレビューにセット
-        document.getElementById('preview').src = event.target.result;
-    };
-    reader.readAsDataURL(file);
-}
-
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(event) { document.getElementById('preview').src = event.target.result; };
+        reader.readAsDataURL(file);
+    }
     
     function upd() {
-        const defName = currentGender === "male" ? "ジョン・ドゥ" : "ジェーン・ドゥ";
-        document.getElementById('out-name').innerText = document.getElementById('in-n').value || defName;
-        document.getElementById('out-exp').innerText = "歴: " + (document.getElementById('in-exp').value || "---");
-        
+        document.getElementById('out-name').innerText = document.getElementById('in-n').value || "JOCKEY NAME";
+        document.getElementById('out-exp').innerText = "馬との歩み: " + (document.getElementById('in-exp').value || "---");
+        document.getElementById('out-hard').innerText = "Platform: " + (document.getElementById('in-hard').value || "---");
         const snsVal = document.getElementById('in-sns').value;
-        const snsEl = document.getElementById('out-sns');
-snsEl.innerText = snsVal ? "@" + snsVal.replace('@','') : "@---";
-snsEl.style.color = "#000"; // ここで黒に固定
-
+        document.getElementById('out-sns').innerText = snsVal ? "@" + snsVal.replace('@','') : "@---";
         
-        document.getElementById('out-gender').innerText = currentGender === "male" ? "♂" : "♀";
-        document.getElementById('out-style-fav').innerText = document.getElementById('in-style').value + " / " + (document.getElementById('in-fav').value || "---");
-        document.getElementById('out-line').innerText = document.getElementById('in-line').value || "---";
+        document.getElementById('out-fav').innerText = document.getElementById('in-fav').value || "---";
+        document.getElementById('out-blood').innerText = document.getElementById('in-blood').value || "---";
         document.getElementById('out-bank').innerText = document.getElementById('in-bank').value || "---";
         
-        // 文字サイズ可変ロジック付き一言欄更新
+        document.getElementById('out-style').innerText = document.getElementById('in-style').value;
+        document.getElementById('out-way').innerText = document.getElementById('in-way').value || "---";
+        document.getElementById('out-time').innerText = document.getElementById('in-time').value || "---";
+
         const commentEl = document.getElementById('out-comment');
         const commentVal = document.getElementById('in-com').value || "...よろしくお願いします";
         commentEl.innerText = commentVal;
-        
         const len = commentVal.length;
-        if (len > 55) { 
-            commentEl.style.fontSize = "14px"; 
-        } else if (len > 35) { 
-            commentEl.style.fontSize = "17px"; 
-        } else { 
-            commentEl.style.fontSize = "21px"; 
-        }
-
-        const ts = Array.from(document.querySelectorAll('#time-grp input:checked')).map(c => c.value);
-        document.getElementById('out-time').innerText = ts.length ? ts.join('/') : "---";
-        const gs = Array.from(document.querySelectorAll('#grade-grp input:checked')).map(c => c.value);
-        document.getElementById('out-grade').innerText = gs.length ? gs.join('/') : "---";
+        if (len > 55) { commentEl.style.fontSize = "14px"; } else if (len > 35) { commentEl.style.fontSize = "17px"; } else { commentEl.style.fontSize = "21px"; }
     }
 
     function save() { 
         html2canvas(document.querySelector("#card-wrap"), { scale: 3, useCORS: true, backgroundColor: "#ffffff" }).then(canvas => {
-            const link = document.createElement('a'); 
-            link.download = 'kinari-koshirae.png'; 
-            link.href = canvas.toDataURL(); 
-            link.click();
+            const link = document.createElement('a'); link.download = 'fullstride-jockey-card.png'; 
+            link.href = canvas.toDataURL(); link.click();
         });
     }
 </script>
