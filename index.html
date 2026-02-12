@@ -312,31 +312,31 @@
                 <div class="char-counter" id="counter-hard">0 / 30</div>
             </div>
             <div class="input-block">
-                <label class="g-title">競馬の好み / Favorite (Real Racing)</label>
-                <input type="text" id="in-fav" maxlength="30" placeholder="推し馬・騎手" title="Favorite Horse & Jockey">
-                <div class="char-counter" id="counter-fav">0 / 30</div>
-                <input type="text" id="in-blood" maxlength="30" placeholder="好きな血統" title="Favorite Bloodline">
-                <div class="char-counter" id="counter-blood">0 / 30</div>
-                <input type="text" id="in-bank" maxlength="30" placeholder="好きな競馬場" title="Favorite Racecourse">
-                <div class="char-counter" id="counter-bank">0 / 30</div>
-                <input type="text" id="in-coat" maxlength="30" placeholder="好きな毛色" title="Favorite Coat Color">
-                <div class="char-counter" id="counter-coat">0 / 30</div>
-            </div>
-            <div class="input-block">
-                <label class="g-title">プレイの傾向 / Playstyle (In-Game)</label>
-                <select id="in-style" title="Running Style Explanation">
-                    <option value="---">好きな脚質を選択</option>
-                    <option value="大逃げ" title="Breakaway lead strategy">大逃げ / Front Runner</option>
-                    <option value="逃げ" title="Lead from the gate">逃げ / Pace Setter</option>
-                    <option value="先行" title="Press the pace">先行 / Stalker</option>
-                    <option value="差し" title="Mid-pack to strike">差し / Closer</option>
-                    <option value="追い込み" title="Rally from behind">追い込み / Deep Closer</option>
-                </select>
-                <input type="text" id="in-way" maxlength="30" placeholder="騎乗スタイル" title="Riding Style">
-                <div class="char-counter" id="counter-way">0 / 30</div>
-                <input type="text" id="in-time" maxlength="15" placeholder="よく遊ぶ時間帯" title="Usual Play Time">
-                <div class="char-counter" id="counter-time">0 / 15</div>
-            </div>
+    <label class="g-title">競馬の好み / Favorite (Real Racing)</label>
+    <input type="text" id="in-fav" maxlength="30" placeholder="推し馬・騎手 / Fav Horse & Jockey" title="Favorite Horse & Jockey">
+    <div class="char-counter" id="counter-fav">0 / 30</div>
+    <input type="text" id="in-blood" maxlength="30" placeholder="好きな血統 / Fav Pedigree" title="Favorite Pedigree">
+    <div class="char-counter" id="counter-blood">0 / 30</div>
+    <input type="text" id="in-bank" maxlength="30" placeholder="好きな競馬場 / Fav Racecourse" title="Favorite Racecourse">
+    <div class="char-counter" id="counter-bank">0 / 30</div>
+    <input type="text" id="in-coat" maxlength="30" placeholder="好きな毛色 / Fav Coat" title="Favorite Coat">
+    <div class="char-counter" id="counter-coat">0 / 30</div>
+</div>
+<div class="input-block">
+    <label class="g-title">プレイの傾向 / Playstyle (In-Game)</label>
+    <select id="in-style" title="Running Style Explanation">
+        <option value="---">好きな脚質を選択 / Favorite Strategy</option>
+        <option value="大逃げ" title="Breakaway lead strategy">大逃げ / Front Runner</option>
+        <option value="逃げ" title="Lead from the gate">逃げ / Pace Setter</option>
+        <option value="先行" title="Press the pace">先行 / Stalker</option>
+        <option value="差し" title="Mid-pack to strike">差し / Closer</option>
+        <option value="追い込み" title="Rally from behind">追い込み / Deep Closer</option>
+    </select>
+    <input type="text" id="in-way" maxlength="30" placeholder="騎乗スタイル / Riding Style" title="Riding Style">
+    <div class="char-counter" id="counter-way">0 / 30</div>
+    <input type="text" id="in-time" maxlength="15" placeholder="よく遊ぶ時間帯 / Usual Play Time" title="Usual Play Time">
+    <div class="char-counter" id="counter-time">0 / 15</div>
+</div>
             <div class="input-block">
                 <label class="g-title">一言メッセージ / Message</label>
                 <textarea id="in-com" maxlength="138" rows="3" placeholder="一言メッセージ (138字以内)" title="Your Message (114 chars max)"></textarea>
@@ -620,21 +620,20 @@
                 wrapText(targetCtx, value, x + 12, y + 16, width - 30, 21, 2);
             }
             
-            drawItem(130, 199, '推し馬・騎手 / Fav Horse, Jockey', cardData.fav, 330);
-            drawItem(475, 199, '好きな血統 / Favorite Pedigree', cardData.blood, 330);
-            drawItem(130, 272, '好きな競馬場 / Favorite Racecourse', cardData.bank, 330);
-            drawItem(475, 272, '好きな毛色 / Favorite Coat', cardData.coat, 330);
-            
-            targetCtx.fillStyle = '#000000';
-            targetCtx.fillRect(130, 350, 690, 21);
-            targetCtx.fillStyle = '#ffffff';
-            targetCtx.font = '900 13px sans-serif';
-            targetCtx.fillText('プレイの傾向 / Playstyle (Game)', 142, 355);
-            
-            drawItem(130, 379, '好きな脚質 / Favorite Strategy', cardData.style, 330, 60);
-            drawItem(475, 379, '騎乗スタイル / Riding Style', cardData.way, 330, 60);
-            drawItem(130, 420, 'プレイ時間帯 / Playing Hours', cardData.time, 320, 35);
-            
+            drawItem(130, 199, '推し馬・騎手 / Fav Horse & Jockey', cardData.fav, 330);
+drawItem(475, 199, '好きな血統 / Fav Pedigree', cardData.blood, 330);
+drawItem(130, 272, '好きな競馬場 / Fav Racecourse', cardData.bank, 330);
+drawItem(475, 272, '好きな毛色 / Fav Coat', cardData.coat, 330);
+
+targetCtx.fillStyle = '#000000';
+targetCtx.fillRect(130, 350, 690, 21);
+targetCtx.fillStyle = '#ffffff';
+targetCtx.font = '900 13px sans-serif';
+targetCtx.fillText('プレイの傾向 / Playstyle (Game)', 142, 355);
+
+drawItem(130, 379, '好きな脚質 / Favorite Strategy', cardData.style, 330, 60);
+drawItem(475, 379, '騎乗スタイル / Riding Style', cardData.way, 330, 60);
+drawItem(130, 420, 'プレイ時間帯 / Usual Play Time', cardData.time, 320, 35);            
             targetCtx.restore();
             
             targetCtx.strokeStyle = '#000000';
@@ -653,7 +652,7 @@
             targetCtx.fillStyle = 'rgba(0, 0, 0, 0.35)';
             targetCtx.font = 'bold 11px sans-serif';
             targetCtx.textAlign = 'right';
-            targetCtx.fillText('© 2026 Musyn Reagan / FullStride Fan Kit', CARD_WIDTH - 12, CARD_HEIGHT - 12);
+            targetCtx.fillText('© 2026 Musyn Reagan, CARD_WIDTH - 12, CARD_HEIGHT - 12);
         }
 
         function updateCardData() {
