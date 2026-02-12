@@ -320,44 +320,44 @@
             <div class="input-block">
                 <label class="g-title">基本情報 / Basic Info</label>
                 <input type="file" accept="image/*" id="in-icon">
-                <input type="text" id="in-n" maxlength="20" placeholder="お名前 / Your Name (20 chars max)">
+                <input type="text" id="in-n" maxlength="20" placeholder="お名前 (20字以内)" title="Your Name (20 chars max)">
                 <div class="char-counter" id="counter-n">0 / 20</div>
-                <input type="text" id="in-sns" maxlength="30" placeholder="SNS ID / Social Media Handle (30 chars max)">
+                <input type="text" id="in-sns" maxlength="30" placeholder="SNS ID (30字以内)" title="Social Media Handle (30 chars max)">
                 <div class="char-counter" id="counter-sns">0 / 30</div>
-                <input type="text" id="in-exp" maxlength="40" placeholder="馬との歩み / Your Racing Journey (40 chars max)">
-                <div class="char-counter" id="counter-exp">0 / 40</div>
-                <input type="text" id="in-hard" maxlength="30" placeholder="主なハード / Main Platform (30 chars max)">
+                <input type="text" id="in-exp" maxlength="30" placeholder="馬との歩み (30字以内)" title="Your Racing Journey (30 chars max)">
+                <div class="char-counter" id="counter-exp">0 / 30</div>
+                <input type="text" id="in-hard" maxlength="30" placeholder="主なハード (30字以内)" title="Main Platform (30 chars max)">
                 <div class="char-counter" id="counter-hard">0 / 30</div>
             </div>
             <div class="input-block">
                 <label class="g-title">競馬の好み / Favorite (Real Racing)</label>
-                <input type="text" id="in-fav" maxlength="30" placeholder="推し馬・騎手 / Favorite Horse & Jockey">
+                <input type="text" id="in-fav" maxlength="30" placeholder="推し馬・騎手" title="Favorite Horse & Jockey">
                 <div class="char-counter" id="counter-fav">0 / 30</div>
-                <input type="text" id="in-blood" maxlength="30" placeholder="好きな血統 / Favorite Bloodline">
+                <input type="text" id="in-blood" maxlength="30" placeholder="好きな血統" title="Favorite Bloodline">
                 <div class="char-counter" id="counter-blood">0 / 30</div>
-                <input type="text" id="in-bank" maxlength="30" placeholder="好きな競馬場 / Favorite Racecourse">
+                <input type="text" id="in-bank" maxlength="30" placeholder="好きな競馬場" title="Favorite Racecourse">
                 <div class="char-counter" id="counter-bank">0 / 30</div>
-                <input type="text" id="in-coat" maxlength="30" placeholder="好きな毛色 / Favorite Coat Color">
+                <input type="text" id="in-coat" maxlength="30" placeholder="好きな毛色" title="Favorite Coat Color">
                 <div class="char-counter" id="counter-coat">0 / 30</div>
             </div>
             <div class="input-block">
                 <label class="g-title">プレイの傾向 / Playstyle (In-Game)</label>
-                <select id="in-style">
-                    <option value="---">好きな脚質を選択 / Select Running Style</option>
-                    <option value="大逃げ">大逃げ / Front Runner (Breakaway lead strategy)</option>
-                    <option value="逃げ">逃げ / Pace Setter (Lead from the gate)</option>
-                    <option value="先行">先行 / Stalker (Press the pace)</option>
-                    <option value="差し">差し / Closer (Mid-pack to strike)</option>
-                    <option value="追い込み">追い込み / Deep Closer (Rally from behind)</option>
+                <select id="in-style" title="Running Style Explanation">
+                    <option value="---">好きな脚質を選択</option>
+                    <option value="大逃げ" title="Breakaway lead strategy">大逃げ / Front Runner</option>
+                    <option value="逃げ" title="Lead from the gate">逃げ / Pace Setter</option>
+                    <option value="先行" title="Press the pace">先行 / Stalker</option>
+                    <option value="差し" title="Mid-pack to strike">差し / Closer</option>
+                    <option value="追い込み" title="Rally from behind">追い込み / Deep Closer</option>
                 </select>
-                <input type="text" id="in-way" maxlength="30" placeholder="騎乗スタイル / Riding Style">
+                <input type="text" id="in-way" maxlength="30" placeholder="騎乗スタイル" title="Riding Style">
                 <div class="char-counter" id="counter-way">0 / 30</div>
-                <input type="text" id="in-time" maxlength="50" placeholder="よく遊ぶ時間帯 / Usual Play Time">
+                <input type="text" id="in-time" maxlength="50" placeholder="よく遊ぶ時間帯" title="Usual Play Time">
                 <div class="char-counter" id="counter-time">0 / 50</div>
             </div>
             <div class="input-block">
                 <label class="g-title">一言メッセージ / Message</label>
-                <textarea id="in-com" maxlength="100" rows="3" placeholder="一言メッセージ / Your Message (100 chars max)"></textarea>
+                <textarea id="in-com" maxlength="100" rows="3" placeholder="一言メッセージ (100字以内)" title="Your Message (100 chars max)"></textarea>
                 <div class="char-counter" id="counter-com">0 / 100</div>
             </div>
             <button class="save-btn" id="save-btn">画像を保存する / Save Image 📸</button>
@@ -683,7 +683,7 @@
             // プレイの傾向項目
             drawItem(130, 379, '好きな脚質 / Favorite Strategy', cardData.style, 345);
             drawItem(475, 379, '騎乗スタイル / Riding Style', cardData.way, 345);
-            drawItem(130, 452, 'プレイ時間帯 / Playing Hours', cardData.time, 690);
+            drawItem(130, 445, 'プレイ時間帯 / Playing Hours', cardData.time, 690);
             
             // フッター上ボーダー
             ctx.strokeStyle = '#000000';
@@ -796,51 +796,65 @@
             saveBtn.textContent = '生成中...';
             loadingOverlay.classList.add('active');
             
-            try {
-                // 高解像度版を生成
-                const outputCanvas = document.createElement('canvas');
-                outputCanvas.width = CARD_WIDTH * 2;
-                outputCanvas.height = CARD_HEIGHT * 2;
-                const outputCtx = outputCanvas.getContext('2d');
-                
-                // スケールアップ
-                outputCtx.scale(2, 2);
-                
-                // 同じ描画処理を実行
-                const originalCtx = ctx;
-                ctx = outputCtx;
-                drawCard();
-                ctx = originalCtx;
-                
-                // ダウンロード
-                const timestamp = new Date().getTime();
-                const filename = `fullstride-card-gate${currentWaku}-${timestamp}.png`;
-                
-                outputCanvas.toBlob(function(blob) {
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.download = filename;
-                    link.href = url;
-                    link.click();
-                    URL.revokeObjectURL(url);
+            setTimeout(() => {
+                try {
+                    // 高解像度版を生成
+                    const outputCanvas = document.createElement('canvas');
+                    outputCanvas.width = CARD_WIDTH * 2;
+                    outputCanvas.height = CARD_HEIGHT * 2;
+                    const outputCtx = outputCanvas.getContext('2d');
                     
-                    showToast('画像を保存しました！', 'success');
+                    // 元のctxを保存
+                    const originalCanvas = canvas;
+                    const originalCtx = ctx;
+                    
+                    // 一時的にグローバルctxを切り替え
+                    ctx = outputCtx;
+                    ctx.scale(2, 2);
+                    
+                    // カードを描画
+                    drawCard();
+                    
+                    // ctxを元に戻す
+                    ctx = originalCtx;
+                    
+                    // ダウンロード
+                    const timestamp = new Date().getTime();
+                    const filename = `fullstride-card-gate${currentWaku}-${timestamp}.png`;
+                    
+                    outputCanvas.toBlob(function(blob) {
+                        if (!blob) {
+                            throw new Error('画像生成に失敗しました');
+                        }
+                        
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.download = filename;
+                        link.href = url;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        setTimeout(() => URL.revokeObjectURL(url), 100);
+                        
+                        showToast('画像を保存しました！', 'success');
+                        
+                        saveBtn.disabled = false;
+                        saveBtn.classList.remove('saving');
+                        saveBtn.textContent = '画像を保存する / Save Image 📸';
+                        loadingOverlay.classList.remove('active');
+                    }, 'image/png');
+                    
+                } catch (err) {
+                    console.error('保存エラー:', err);
+                    showToast('画像の保存に失敗しました', 'error');
                     
                     saveBtn.disabled = false;
                     saveBtn.classList.remove('saving');
                     saveBtn.textContent = '画像を保存する / Save Image 📸';
                     loadingOverlay.classList.remove('active');
-                });
-                
-            } catch (err) {
-                console.error('保存エラー:', err);
-                showToast('画像の保存に失敗しました', 'error');
-                
-                saveBtn.disabled = false;
-                saveBtn.classList.remove('saving');
-                saveBtn.textContent = '画像を保存する / Save Image 📸';
-                loadingOverlay.classList.remove('active');
-            }
+                }
+            }, 100);
         }
 
         // ========================================
@@ -865,7 +879,7 @@
         const inputCounterPairs = [
             { input: inputs.n, counter: counters.n, max: 20 },
             { input: inputs.sns, counter: counters.sns, max: 30 },
-            { input: inputs.exp, counter: counters.exp, max: 40 },
+            { input: inputs.exp, counter: counters.exp, max: 30 },
             { input: inputs.hard, counter: counters.hard, max: 30 },
             { input: inputs.fav, counter: counters.fav, max: 30 },
             { input: inputs.blood, counter: counters.blood, max: 30 },
