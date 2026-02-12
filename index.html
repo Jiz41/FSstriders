@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FS Striders - Player Profile Generator</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         /* ========================================
            CSS変数定義
@@ -12,14 +11,6 @@
         :root {
             --k-color: #e60012;
             --txt-color: #fff;
-            --card-width: 850px;
-            --card-height: 580px;
-            --header-height: 155px;
-            --footer-height: 110px;
-            --lane-width: 100px;
-            --spacing-base: 30px;
-            --spacing-small: 12px;
-            --border-width: 4px;
             --transition-speed: 0.3s;
         }
 
@@ -52,229 +43,13 @@
             flex-shrink: 0;
             border-bottom: 2px solid #333;
             position: relative;
-            overflow: visible;
+            overflow: hidden;
         }
 
-        #card-wrap {
-            width: var(--card-width);
-            height: var(--card-height);
-            border: var(--border-width) solid #000;
-            position: relative;
-            color: #000;
-            display: grid;
-            grid-template-columns: var(--lane-width) 1fr;
-            background: #ffffff;
-            flex-shrink: 0;
+        #preview-canvas {
+            border: 4px solid #000;
             transform-origin: center;
-            overflow: hidden;
-        }
-
-        /* 背景デザイン要素 */
-        .bg-design {
-            position: absolute;
-            inset: 0;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .bank-line {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 100%;
-            height: 100%;
-            background: #f2f2f2;
-            clip-path: polygon(40% 0, 100% 0, 100% 100%, 0% 100%);
-        }
-
-        .dot-pattern {
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(#ddd 1.5px, transparent 1.5px);
-            background-size: 12px 12px;
-            opacity: 1;
-        }
-
-        /* 枠番エリア */
-        .lane-box {
-            background: var(--k-color);
-            color: var(--txt-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 85px;
-            font-weight: 900;
-            border-right: var(--border-width) solid #000;
-            z-index: 10;
-            position: relative;
-            transition: background var(--transition-speed), color var(--transition-speed);
-        }
-
-        /* メインコンテンツエリア */
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            z-index: 5;
-            position: relative;
-            height: 100%;
-        }
-
-        /* ヘッダーエリア */
-        .header {
-            height: var(--header-height);
-            display: flex;
-            align-items: center;
-            padding: 0 var(--spacing-base);
-            border-bottom: var(--border-width) solid #000;
-            gap: 20px;
-            background: rgba(255, 255, 255, 0.5);
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-
-        .icon-frame {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            border: 5px solid var(--k-color);
-            overflow: hidden;
-            flex-shrink: 0;
-            background: #fff;
-            transition: border-color var(--transition-speed);
-        }
-
-        .icon-frame img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .name-area {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            overflow: hidden;
-            flex: 1;
-            min-width: 0;
-        }
-
-        .name-area h1 {
-            margin: 0;
-            font-size: 46px;
-            font-weight: 900;
-            color: #000;
-            line-height: 1.1;
-            word-wrap: break-word;
-            word-break: break-word;
-            overflow: hidden;
-            max-height: 60px;
-        }
-
-        .sub-info {
-            font-size: 13px;
-            font-weight: 800;
-            color: #333;
-            margin-top: 5px;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .sub-info span {
-            width: 100%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: block;
-        }
-
-        /* データグリッドエリア */
-        .data-grid {
-            padding: 10px var(--spacing-base);
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            flex-grow: 1;
-            align-content: start;
-            overflow: hidden;
-        }
-
-        .category-label {
-            grid-column: span 2;
-            font-size: 13px;
-            font-weight: 900;
-            color: #fff;
-            background: #000;
-            padding: 3px var(--spacing-small);
-            margin-top: 5px;
-            height: fit-content;
-        }
-
-        .item {
-            border-left: 6px solid var(--k-color);
-            padding-left: var(--spacing-small);
-            display: flex;
-            flex-direction: column;
-            max-height: 65px;
-            overflow: hidden;
-            transition: border-color var(--transition-speed);
-            min-width: 0;
-        }
-
-        .label {
-            font-size: 10px;
-            color: #444;
-            font-weight: 900;
-            line-height: 1.2;
-            margin-bottom: 1px;
-        }
-
-        .val {
-            font-size: 17px;
-            font-weight: 900;
-            color: #000;
-            line-height: 1.25;
-            word-wrap: break-word;
-            word-break: break-word;
-            overflow-wrap: break-word;
-            max-height: 43px;
-            overflow: hidden;
-            width: 100%;
-        }
-
-        /* フッターコメントエリア */
-        .footer-comment {
-            border-top: var(--border-width) solid #000;
-            padding: var(--spacing-small) var(--spacing-base);
-            background: #fff;
-            color: #000;
-            font-weight: 900;
-            height: var(--footer-height);
-            flex-shrink: 0;
-            display: flex;
-            align-items: flex-start;
-            overflow: hidden;
-        }
-
-        #out-comment {
-            width: 100%;
-            line-height: 1.3;
-            font-size: 21px;
-            word-wrap: break-word;
-            word-break: break-word;
-            overflow-wrap: break-word;
-            max-height: 82px;
-            overflow: hidden;
-        }
-
-        .copyright {
-            position: absolute;
-            bottom: 8px;
-            right: 12px;
-            font-size: 11px;
-            font-weight: bold;
-            color: rgba(0, 0, 0, 0.35);
-            z-index: 20;
+            image-rendering: crisp-edges;
         }
 
         /* ========================================
@@ -520,41 +295,7 @@
 
     <!-- カードプレビュー -->
     <div class="card-container">
-        <div id="card-wrap">
-            <div class="bg-design">
-                <div class="dot-pattern"></div>
-                <div class="bank-line"></div>
-            </div>
-            <div class="lane-box" id="out-no">3</div>
-            <div class="main-content">
-                <div class="header">
-                    <div class="icon-frame" id="out-icon-frame">
-                        <img id="preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ccc' d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="プロフィールアイコン">
-                    </div>
-                    <div class="name-area">
-                        <h1 id="out-name">JOCKEY NAME</h1>
-                        <div class="sub-info">
-                            <span id="out-exp">馬との歩み / Horse History: ---</span>
-                            <span id="out-hard">主なハード / Platform: ---</span>
-                            <span id="out-sns" style="color:#000; font-weight: 900;">@---</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="data-grid">
-                    <div class="category-label">競馬の好み / Favorite (Real)</div>
-                    <div class="item out-border"><span class="label">推し馬・騎手 / Fav Horse, Jockey</span><div class="val" id="out-fav">---</div></div>
-                    <div class="item out-border"><span class="label">好きな血統 / Favorite Pedigree</span><div class="val" id="out-blood">---</div></div>
-                    <div class="item out-border"><span class="label">好きな競馬場 / Favorite Racecourse</span><div class="val" id="out-bank">---</div></div>
-                    <div class="item out-border"><span class="label">好きな毛色 / Favorite Coat</span><div class="val" id="out-coat">---</div></div>
-                    <div class="category-label">プレイの傾向 / Playstyle (Game)</div>
-                    <div class="item out-border"><span class="label">好きな脚質 / Favorite Strategy</span><div class="val" id="out-style">---</div></div>
-                    <div class="item out-border"><span class="label">騎乗スタイル / Riding Style</span><div class="val" id="out-way">---</div></div>
-                    <div class="item out-border" style="grid-column: span 2;"><span class="label">プレイ時間帯 / Playing Hours</span><div class="val" id="out-time">---</div></div>
-                </div>
-                <div class="footer-comment"><span id="out-comment">...よろしくお願いします</span></div>
-            </div>
-            <div class="copyright">© 2026 Musyn Reagan / FullStride Fan Kit</div>
-        </div>
+        <canvas id="preview-canvas" width="850" height="580"></canvas>
     </div>
 
     <!-- 操作パネル -->
@@ -579,44 +320,44 @@
             <div class="input-block">
                 <label class="g-title">基本情報 / Basic Info</label>
                 <input type="file" accept="image/*" id="in-icon">
-                <input type="text" id="in-n" maxlength="20" placeholder="お名前 (20字以内)">
+                <input type="text" id="in-n" maxlength="20" placeholder="お名前 / Your Name (20 chars max)">
                 <div class="char-counter" id="counter-n">0 / 20</div>
-                <input type="text" id="in-sns" maxlength="30" placeholder="SNS ID (30字以内)">
+                <input type="text" id="in-sns" maxlength="30" placeholder="SNS ID / Social Media Handle (30 chars max)">
                 <div class="char-counter" id="counter-sns">0 / 30</div>
-                <input type="text" id="in-exp" maxlength="40" placeholder="馬との歩み (40字以内)">
+                <input type="text" id="in-exp" maxlength="40" placeholder="馬との歩み / Your Racing Journey (40 chars max)">
                 <div class="char-counter" id="counter-exp">0 / 40</div>
-                <input type="text" id="in-hard" maxlength="30" placeholder="主なハード (30字以内)">
+                <input type="text" id="in-hard" maxlength="30" placeholder="主なハード / Main Platform (30 chars max)">
                 <div class="char-counter" id="counter-hard">0 / 30</div>
             </div>
             <div class="input-block">
-                <label class="g-title">競馬の好み / Favorite (Real)</label>
-                <input type="text" id="in-fav" maxlength="30" placeholder="推し馬・騎手">
+                <label class="g-title">競馬の好み / Favorite (Real Racing)</label>
+                <input type="text" id="in-fav" maxlength="30" placeholder="推し馬・騎手 / Favorite Horse & Jockey">
                 <div class="char-counter" id="counter-fav">0 / 30</div>
-                <input type="text" id="in-blood" maxlength="30" placeholder="好きな血統">
+                <input type="text" id="in-blood" maxlength="30" placeholder="好きな血統 / Favorite Bloodline">
                 <div class="char-counter" id="counter-blood">0 / 30</div>
-                <input type="text" id="in-bank" maxlength="30" placeholder="好きな競馬場">
+                <input type="text" id="in-bank" maxlength="30" placeholder="好きな競馬場 / Favorite Racecourse">
                 <div class="char-counter" id="counter-bank">0 / 30</div>
-                <input type="text" id="in-coat" maxlength="30" placeholder="好きな毛色">
+                <input type="text" id="in-coat" maxlength="30" placeholder="好きな毛色 / Favorite Coat Color">
                 <div class="char-counter" id="counter-coat">0 / 30</div>
             </div>
             <div class="input-block">
-                <label class="g-title">プレイの傾向 / Playstyle (Game)</label>
+                <label class="g-title">プレイの傾向 / Playstyle (In-Game)</label>
                 <select id="in-style">
-                    <option value="---">好きな脚質を選択</option>
-                    <option value="大逃げ">大逃げ / Ultra Escape</option>
-                    <option value="逃げ">逃げ / Escape</option>
-                    <option value="先行">先行 / Leader</option>
-                    <option value="差し">差し / Betweeners</option>
-                    <option value="追い込み">追い込み / Closer</option>
+                    <option value="---">好きな脚質を選択 / Select Running Style</option>
+                    <option value="大逃げ">大逃げ / Front Runner (Breakaway lead strategy)</option>
+                    <option value="逃げ">逃げ / Pace Setter (Lead from the gate)</option>
+                    <option value="先行">先行 / Stalker (Press the pace)</option>
+                    <option value="差し">差し / Closer (Mid-pack to strike)</option>
+                    <option value="追い込み">追い込み / Deep Closer (Rally from behind)</option>
                 </select>
-                <input type="text" id="in-way" maxlength="30" placeholder="騎乗スタイル">
+                <input type="text" id="in-way" maxlength="30" placeholder="騎乗スタイル / Riding Style">
                 <div class="char-counter" id="counter-way">0 / 30</div>
-                <input type="text" id="in-time" maxlength="50" placeholder="よく遊ぶ時間帯">
+                <input type="text" id="in-time" maxlength="50" placeholder="よく遊ぶ時間帯 / Usual Play Time">
                 <div class="char-counter" id="counter-time">0 / 50</div>
             </div>
             <div class="input-block">
                 <label class="g-title">一言メッセージ / Message</label>
-                <textarea id="in-com" maxlength="100" rows="3" placeholder="一言メッセージ (100字以内)"></textarea>
+                <textarea id="in-com" maxlength="100" rows="3" placeholder="一言メッセージ / Your Message (100 chars max)"></textarea>
                 <div class="char-counter" id="counter-com">0 / 100</div>
             </div>
             <button class="save-btn" id="save-btn">画像を保存する / Save Image 📸</button>
@@ -646,50 +387,56 @@
         const DEFAULT_PLACEHOLDER = "---";
         const DEFAULT_COMMENT = "...よろしくお願いします";
 
+        const CARD_WIDTH = 850;
+        const CARD_HEIGHT = 580;
+
+        // ========================================
+        // グローバル変数
+        // ========================================
+        let currentWaku = "3";
+        let userIconImage = null;
+        let updateTimer = null;
+
+        // カードデータ
+        const cardData = {
+            waku: "3",
+            name: "JOCKEY NAME",
+            sns: "@---",
+            exp: "馬との歩み / Horse History: ---",
+            hard: "主なハード / Platform: ---",
+            fav: "---",
+            blood: "---",
+            bank: "---",
+            coat: "---",
+            style: "---",
+            way: "---",
+            time: "---",
+            comment: "...よろしくお願いします"
+        };
+
         // ========================================
         // DOM要素のキャッシュ
         // ========================================
-        const elements = {
-            // 出力要素
-            outNo: document.getElementById('out-no'),
-            outIconFrame: document.getElementById('out-icon-frame'),
-            outName: document.getElementById('out-name'),
-            outExp: document.getElementById('out-exp'),
-            outHard: document.getElementById('out-hard'),
-            outSns: document.getElementById('out-sns'),
-            outFav: document.getElementById('out-fav'),
-            outBlood: document.getElementById('out-blood'),
-            outBank: document.getElementById('out-bank'),
-            outCoat: document.getElementById('out-coat'),
-            outStyle: document.getElementById('out-style'),
-            outWay: document.getElementById('out-way'),
-            outTime: document.getElementById('out-time'),
-            outComment: document.getElementById('out-comment'),
-            preview: document.getElementById('preview'),
-            cardWrap: document.getElementById('card-wrap'),
+        const canvas = document.getElementById('preview-canvas');
+        const ctx = canvas.getContext('2d');
 
-            // 入力要素
-            inWaku: document.getElementById('in-waku'),
-            inIcon: document.getElementById('in-icon'),
-            inN: document.getElementById('in-n'),
-            inSns: document.getElementById('in-sns'),
-            inExp: document.getElementById('in-exp'),
-            inHard: document.getElementById('in-hard'),
-            inFav: document.getElementById('in-fav'),
-            inBlood: document.getElementById('in-blood'),
-            inBank: document.getElementById('in-bank'),
-            inCoat: document.getElementById('in-coat'),
-            inStyle: document.getElementById('in-style'),
-            inWay: document.getElementById('in-way'),
-            inTime: document.getElementById('in-time'),
-            inCom: document.getElementById('in-com'),
-
-            // UI要素
-            saveBtn: document.getElementById('save-btn'),
-            loadingOverlay: document.getElementById('loading-overlay')
+        const inputs = {
+            waku: document.getElementById('in-waku'),
+            icon: document.getElementById('in-icon'),
+            n: document.getElementById('in-n'),
+            sns: document.getElementById('in-sns'),
+            exp: document.getElementById('in-exp'),
+            hard: document.getElementById('in-hard'),
+            fav: document.getElementById('in-fav'),
+            blood: document.getElementById('in-blood'),
+            bank: document.getElementById('in-bank'),
+            coat: document.getElementById('in-coat'),
+            style: document.getElementById('in-style'),
+            way: document.getElementById('in-way'),
+            time: document.getElementById('in-time'),
+            com: document.getElementById('in-com')
         };
 
-        // 文字数カウンター要素
         const counters = {
             n: document.getElementById('counter-n'),
             sns: document.getElementById('counter-sns'),
@@ -704,13 +451,13 @@
             com: document.getElementById('counter-com')
         };
 
+        const saveBtn = document.getElementById('save-btn');
+        const loadingOverlay = document.getElementById('loading-overlay');
+
         // ========================================
         // ユーティリティ関数
         // ========================================
         
-        /**
-         * トースト通知を表示
-         */
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
@@ -725,9 +472,6 @@
             }, 3000);
         }
 
-        /**
-         * 文字数カウンターを更新
-         */
         function updateCounter(input, counter, maxLength) {
             const length = input.value.length;
             counter.textContent = `${length} / ${maxLength}`;
@@ -740,74 +484,287 @@
             }
         }
 
-        /**
-         * テキストのフォントサイズを動的に調整
-         */
-        function adjustFontSize(element, text, baseSize, threshold1, threshold2, size1, size2) {
-            const length = text.length;
-            if (length > threshold1) {
-                element.style.fontSize = size1;
-            } else if (length > threshold2) {
-                element.style.fontSize = size2;
-            } else {
-                element.style.fontSize = baseSize;
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
+            const words = text.split('');
+            let line = '';
+            let lines = [];
+            let testLine = '';
+            
+            for (let i = 0; i < words.length; i++) {
+                testLine = line + words[i];
+                const metrics = ctx.measureText(testLine);
+                
+                if (metrics.width > maxWidth && line !== '') {
+                    lines.push(line);
+                    line = words[i];
+                } else {
+                    line = testLine;
+                }
+            }
+            lines.push(line);
+            
+            // 最大行数で切り捨て
+            if (lines.length > maxLines) {
+                lines = lines.slice(0, maxLines);
+                const lastLine = lines[maxLines - 1];
+                if (lastLine.length > 3) {
+                    lines[maxLines - 1] = lastLine.substring(0, lastLine.length - 3) + '...';
+                }
+            }
+            
+            for (let i = 0; i < lines.length; i++) {
+                ctx.fillText(lines[i], x, y + (i * lineHeight));
             }
         }
 
         // ========================================
-        // 枠番カラー変更
+        // Canvas描画関数
         // ========================================
+        
+        function drawCard() {
+            const theme = WAKU_COLORS[currentWaku];
+            
+            // キャンバスクリア
+            ctx.clearRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
+            
+            // 背景
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
+            
+            // 背景デザイン - 斜めライン
+            ctx.fillStyle = '#f2f2f2';
+            ctx.beginPath();
+            ctx.moveTo(340, 0);
+            ctx.lineTo(CARD_WIDTH, 0);
+            ctx.lineTo(CARD_WIDTH, CARD_HEIGHT);
+            ctx.lineTo(0, CARD_HEIGHT);
+            ctx.closePath();
+            ctx.fill();
+            
+            // 背景デザイン - ドットパターン
+            ctx.fillStyle = '#dddddd';
+            for (let x = 0; x < CARD_WIDTH; x += 12) {
+                for (let y = 0; y < CARD_HEIGHT; y += 12) {
+                    ctx.beginPath();
+                    ctx.arc(x, y, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            // 枠線
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 4;
+            ctx.strokeRect(2, 2, CARD_WIDTH - 4, CARD_HEIGHT - 4);
+            
+            // 枠番ボックス
+            ctx.fillStyle = theme.bg;
+            ctx.fillRect(0, 0, 100, CARD_HEIGHT);
+            
+            // 枠番ボックス右ボーダー
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(100, 0);
+            ctx.lineTo(100, CARD_HEIGHT);
+            ctx.stroke();
+            
+            // 枠番テキスト
+            ctx.fillStyle = theme.tx;
+            ctx.font = '900 85px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(currentWaku, 50, CARD_HEIGHT / 2);
+            
+            // ヘッダー背景
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.fillRect(100, 0, CARD_WIDTH - 100, 155);
+            
+            // ヘッダー下ボーダー
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(100, 155);
+            ctx.lineTo(CARD_WIDTH, 155);
+            ctx.stroke();
+            
+            // アイコンフレーム
+            ctx.strokeStyle = theme.bg;
+            ctx.lineWidth = 5;
+            ctx.beginPath();
+            ctx.arc(185, 77.5, 55, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            
+            // アイコン画像
+            if (userIconImage) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(185, 77.5, 50, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.clip();
+                
+                const size = 100;
+                ctx.drawImage(userIconImage, 135, 27.5, size, size);
+                ctx.restore();
+            } else {
+                // デフォルトアイコン
+                ctx.fillStyle = '#cccccc';
+                ctx.beginPath();
+                ctx.arc(185, 65, 15, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(185, 95, 25, 0, Math.PI * 2, false);
+                ctx.arc(185, 100, 20, 0, Math.PI * 2, true);
+                ctx.fill();
+            }
+            
+            // 名前
+            ctx.fillStyle = '#000000';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            
+            const nameLength = cardData.name.length;
+            let nameFontSize = 46;
+            if (nameLength > 15) nameFontSize = 28;
+            else if (nameLength > 10) nameFontSize = 36;
+            
+            ctx.font = `900 ${nameFontSize}px sans-serif`;
+            wrapText(ctx, cardData.name, 260, 35, 560, nameFontSize * 1.1, 2);
+            
+            // サブ情報
+            ctx.font = '800 13px sans-serif';
+            ctx.fillStyle = '#333333';
+            ctx.fillText(cardData.exp, 260, 90);
+            ctx.fillText(cardData.hard, 260, 107);
+            
+            ctx.fillStyle = '#000000';
+            ctx.font = '900 13px sans-serif';
+            ctx.fillText(cardData.sns, 260, 124);
+            
+            // カテゴリラベル1
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(130, 170, 690, 21);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '900 13px sans-serif';
+            ctx.fillText('競馬の好み / Favorite (Real)', 142, 175);
+            
+            // データ項目を描画する関数
+            function drawItem(x, y, label, value, width) {
+                // 左ボーダー
+                ctx.fillStyle = theme.bg;
+                ctx.fillRect(x, y, 6, 65);
+                
+                // ラベル
+                ctx.fillStyle = '#444444';
+                ctx.font = '900 10px sans-serif';
+                ctx.fillText(label, x + 12, y + 2);
+                
+                // 値
+                ctx.fillStyle = '#000000';
+                ctx.font = '900 17px sans-serif';
+                wrapText(ctx, value, x + 12, y + 16, width - 20, 21, 2);
+            }
+            
+            // 競馬の好み項目
+            drawItem(130, 199, '推し馬・騎手 / Fav Horse, Jockey', cardData.fav, 345);
+            drawItem(475, 199, '好きな血統 / Favorite Pedigree', cardData.blood, 345);
+            drawItem(130, 272, '好きな競馬場 / Favorite Racecourse', cardData.bank, 345);
+            drawItem(475, 272, '好きな毛色 / Favorite Coat', cardData.coat, 345);
+            
+            // カテゴリラベル2
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(130, 350, 690, 21);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '900 13px sans-serif';
+            ctx.fillText('プレイの傾向 / Playstyle (Game)', 142, 355);
+            
+            // プレイの傾向項目
+            drawItem(130, 379, '好きな脚質 / Favorite Strategy', cardData.style, 345);
+            drawItem(475, 379, '騎乗スタイル / Riding Style', cardData.way, 345);
+            drawItem(130, 452, 'プレイ時間帯 / Playing Hours', cardData.time, 690);
+            
+            // フッター上ボーダー
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.moveTo(100, 470);
+            ctx.lineTo(CARD_WIDTH, 470);
+            ctx.stroke();
+            
+            // コメント
+            ctx.fillStyle = '#000000';
+            const commentLength = cardData.comment.length;
+            let commentFontSize = 21;
+            if (commentLength > 60) commentFontSize = 15;
+            else if (commentLength > 30) commentFontSize = 18;
+            
+            ctx.font = `900 ${commentFontSize}px sans-serif`;
+            wrapText(ctx, cardData.comment, 130, 482, 690, commentFontSize * 1.3, 3);
+            
+            // コピーライト
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText('© 2026 Musyn Reagan / FullStride Fan Kit', CARD_WIDTH - 12, CARD_HEIGHT - 8);
+        }
+
+        // ========================================
+        // データ更新関数
+        // ========================================
+        
+        function updateCardData() {
+            cardData.waku = currentWaku;
+            cardData.name = inputs.n.value || "JOCKEY NAME";
+            
+            const snsVal = inputs.sns.value;
+            cardData.sns = snsVal ? "@" + snsVal.replace('@', '') : "@---";
+            
+            cardData.exp = "馬との歩み / Horse History: " + (inputs.exp.value || DEFAULT_PLACEHOLDER);
+            cardData.hard = "主なハード / Platform: " + (inputs.hard.value || DEFAULT_PLACEHOLDER);
+            cardData.fav = inputs.fav.value || DEFAULT_PLACEHOLDER;
+            cardData.blood = inputs.blood.value || DEFAULT_PLACEHOLDER;
+            cardData.bank = inputs.bank.value || DEFAULT_PLACEHOLDER;
+            cardData.coat = inputs.coat.value || DEFAULT_PLACEHOLDER;
+            cardData.style = inputs.style.value;
+            cardData.way = inputs.way.value || DEFAULT_PLACEHOLDER;
+            cardData.time = inputs.time.value || DEFAULT_PLACEHOLDER;
+            cardData.comment = inputs.com.value || DEFAULT_COMMENT;
+        }
+
+        function updatePreview() {
+            clearTimeout(updateTimer);
+            updateTimer = setTimeout(() => {
+                updateCardData();
+                drawCard();
+            }, 50);
+        }
+
         function updateWaku() {
-            const val = elements.inWaku.value;
-            const theme = WAKU_COLORS[val];
+            currentWaku = inputs.waku.value;
+            const theme = WAKU_COLORS[currentWaku];
             
-            // 枠番表示を更新
-            elements.outNo.textContent = val;
-            
-            // CSS変数を更新
             document.documentElement.style.setProperty('--k-color', theme.bg);
             document.documentElement.style.setProperty('--txt-color', theme.tx);
             
-            // 枠番ボックスのスタイルを更新
-            elements.outNo.style.background = theme.bg;
-            elements.outNo.style.color = theme.tx;
-            
-            // アイコンフレームの色を更新
-            elements.outIconFrame.style.borderColor = theme.bg;
-            
-            // 項目のボーダー色を更新
-            document.querySelectorAll('.out-border').forEach(el => {
-                el.style.borderColor = theme.bg;
-            });
-            
-            // ラベルの色を更新（白枠の場合は薄いグレーに）
             document.querySelectorAll('.g-title').forEach(el => {
                 const color = theme.bg === "#ffffff" ? "#ccc" : theme.bg;
                 el.style.color = color;
                 el.style.borderColor = color;
             });
+            
+            updatePreview();
         }
 
         // ========================================
-        // カードスケール調整
+        // 画像処理
         // ========================================
-        function adjustScale() {
-            const container = document.querySelector('.card-container');
-            const card = elements.cardWrap;
-            const scaleX = container.offsetWidth / 860;
-            const scaleY = container.offsetHeight / 590;
-            const scale = Math.min(scaleX, scaleY, 1.0);
-            card.style.transform = `scale(${scale})`;
-        }
-
-        // ========================================
-        // 画像読み込み
-        // ========================================
+        
         function loadImage(e) {
             const file = e.target.files[0];
             if (!file) return;
             
-            // ファイルサイズチェック（5MB以下）
             if (file.size > 5 * 1024 * 1024) {
                 showToast('画像サイズは5MB以下にしてください', 'error');
                 e.target.value = '';
@@ -816,7 +773,12 @@
             
             const reader = new FileReader();
             reader.onload = function(event) {
-                elements.preview.src = event.target.result;
+                const img = new Image();
+                img.onload = function() {
+                    userIconImage = img;
+                    updatePreview();
+                };
+                img.src = event.target.result;
             };
             reader.onerror = function() {
                 showToast('画像の読み込みに失敗しました', 'error');
@@ -825,131 +787,93 @@
         }
 
         // ========================================
-        // プレビュー更新
-        // ========================================
-        let updateTimer = null;
-
-        function updatePreview() {
-            // デバウンス処理
-            clearTimeout(updateTimer);
-            updateTimer = setTimeout(() => {
-                // 名前
-                const nameVal = elements.inN.value || "JOCKEY NAME";
-                elements.outName.textContent = nameVal;
-                adjustFontSize(elements.outName, nameVal, "46px", 15, 10, "28px", "36px");
-
-                // 基本情報
-                elements.outExp.textContent = "馬との歩み / Horse History: " + (elements.inExp.value || DEFAULT_PLACEHOLDER);
-                elements.outHard.textContent = "主なハード / Platform: " + (elements.inHard.value || DEFAULT_PLACEHOLDER);
-                
-                const snsVal = elements.inSns.value;
-                elements.outSns.textContent = snsVal ? "@" + snsVal.replace('@', '') : "@" + DEFAULT_PLACEHOLDER;
-
-                // 競馬の好み
-                elements.outFav.textContent = elements.inFav.value || DEFAULT_PLACEHOLDER;
-                elements.outBlood.textContent = elements.inBlood.value || DEFAULT_PLACEHOLDER;
-                elements.outBank.textContent = elements.inBank.value || DEFAULT_PLACEHOLDER;
-                elements.outCoat.textContent = elements.inCoat.value || DEFAULT_PLACEHOLDER;
-
-                // プレイの傾向
-                elements.outStyle.textContent = elements.inStyle.value;
-                elements.outWay.textContent = elements.inWay.value || DEFAULT_PLACEHOLDER;
-                elements.outTime.textContent = elements.inTime.value || DEFAULT_PLACEHOLDER;
-
-                // コメント
-                const commentVal = elements.inCom.value || DEFAULT_COMMENT;
-                elements.outComment.textContent = commentVal;
-                adjustFontSize(elements.outComment, commentVal, "21px", 60, 30, "15px", "18px");
-            }, 50);
-        }
-
-        // ========================================
         // 画像保存
         // ========================================
-        async function saveImage() {
-            const target = elements.cardWrap;
-            const btn = elements.saveBtn;
-            const overlay = elements.loadingOverlay;
-            
-            // ボタンを無効化
-            btn.disabled = true;
-            btn.classList.add('saving');
-            btn.textContent = '生成中...';
-            overlay.classList.add('active');
-            
-            // スケールを一時的にリセット
-            const originalTransform = target.style.transform;
-            target.style.transform = "none";
+        
+        function saveImage() {
+            saveBtn.disabled = true;
+            saveBtn.classList.add('saving');
+            saveBtn.textContent = '生成中...';
+            loadingOverlay.classList.add('active');
             
             try {
-                // 少し待機してレンダリングを安定させる
-                await new Promise(resolve => setTimeout(resolve, 100));
+                // 高解像度版を生成
+                const outputCanvas = document.createElement('canvas');
+                outputCanvas.width = CARD_WIDTH * 2;
+                outputCanvas.height = CARD_HEIGHT * 2;
+                const outputCtx = outputCanvas.getContext('2d');
                 
-                const canvas = await html2canvas(target, {
-                    scale: 2,
-                    useCORS: true,
-                    backgroundColor: "#ffffff",
-                    width: 850,
-                    height: 580,
-                    x: 0,
-                    y: 0,
-                    scrollX: 0,
-                    scrollY: 0,
-                    logging: false,
-                    imageTimeout: 0,
-                    removeContainer: true
-                });
+                // スケールアップ
+                outputCtx.scale(2, 2);
                 
-                // ファイル名を生成
-                const waku = elements.inWaku.value;
-                const timestamp = new Date().getTime();
-                const filename = `fullstride-card-gate${waku}-${timestamp}.png`;
+                // 同じ描画処理を実行
+                const originalCtx = ctx;
+                ctx = outputCtx;
+                drawCard();
+                ctx = originalCtx;
                 
                 // ダウンロード
-                const link = document.createElement('a');
-                link.download = filename;
-                link.href = canvas.toDataURL("image/png");
-                link.click();
+                const timestamp = new Date().getTime();
+                const filename = `fullstride-card-gate${currentWaku}-${timestamp}.png`;
                 
-                showToast('画像を保存しました！', 'success');
+                outputCanvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.download = filename;
+                    link.href = url;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                    
+                    showToast('画像を保存しました！', 'success');
+                    
+                    saveBtn.disabled = false;
+                    saveBtn.classList.remove('saving');
+                    saveBtn.textContent = '画像を保存する / Save Image 📸';
+                    loadingOverlay.classList.remove('active');
+                });
                 
             } catch (err) {
                 console.error('保存エラー:', err);
                 showToast('画像の保存に失敗しました', 'error');
-            } finally {
-                // 元に戻す
-                target.style.transform = originalTransform;
-                adjustScale();
-                btn.disabled = false;
-                btn.classList.remove('saving');
-                btn.textContent = '画像を保存する / Save Image 📸';
-                overlay.classList.remove('active');
+                
+                saveBtn.disabled = false;
+                saveBtn.classList.remove('saving');
+                saveBtn.textContent = '画像を保存する / Save Image 📸';
+                loadingOverlay.classList.remove('active');
             }
+        }
+
+        // ========================================
+        // スケール調整
+        // ========================================
+        
+        function adjustScale() {
+            const container = document.querySelector('.card-container');
+            const scaleX = container.offsetWidth / (CARD_WIDTH + 8);
+            const scaleY = container.offsetHeight / (CARD_HEIGHT + 8);
+            const scale = Math.min(scaleX, scaleY, 1.0);
+            canvas.style.transform = `scale(${scale})`;
         }
 
         // ========================================
         // イベントリスナー設定
         // ========================================
         
-        // 枠番変更
-        elements.inWaku.addEventListener('change', updateWaku);
-
-        // 画像アップロード
-        elements.inIcon.addEventListener('change', loadImage);
-
-        // テキスト入力（文字数カウンター付き）
+        inputs.waku.addEventListener('change', updateWaku);
+        inputs.icon.addEventListener('change', loadImage);
+        
         const inputCounterPairs = [
-            { input: elements.inN, counter: counters.n, max: 20 },
-            { input: elements.inSns, counter: counters.sns, max: 30 },
-            { input: elements.inExp, counter: counters.exp, max: 40 },
-            { input: elements.inHard, counter: counters.hard, max: 30 },
-            { input: elements.inFav, counter: counters.fav, max: 30 },
-            { input: elements.inBlood, counter: counters.blood, max: 30 },
-            { input: elements.inBank, counter: counters.bank, max: 30 },
-            { input: elements.inCoat, counter: counters.coat, max: 30 },
-            { input: elements.inWay, counter: counters.way, max: 30 },
-            { input: elements.inTime, counter: counters.time, max: 50 },
-            { input: elements.inCom, counter: counters.com, max: 100 }
+            { input: inputs.n, counter: counters.n, max: 20 },
+            { input: inputs.sns, counter: counters.sns, max: 30 },
+            { input: inputs.exp, counter: counters.exp, max: 40 },
+            { input: inputs.hard, counter: counters.hard, max: 30 },
+            { input: inputs.fav, counter: counters.fav, max: 30 },
+            { input: inputs.blood, counter: counters.blood, max: 30 },
+            { input: inputs.bank, counter: counters.bank, max: 30 },
+            { input: inputs.coat, counter: counters.coat, max: 30 },
+            { input: inputs.way, counter: counters.way, max: 30 },
+            { input: inputs.time, counter: counters.time, max: 50 },
+            { input: inputs.com, counter: counters.com, max: 100 }
         ];
 
         inputCounterPairs.forEach(({ input, counter, max }) => {
@@ -959,24 +883,20 @@
             });
         });
 
-        // セレクト変更
-        elements.inStyle.addEventListener('change', updatePreview);
-
-        // 保存ボタン
-        elements.saveBtn.addEventListener('click', saveImage);
-
-        // ウィンドウリサイズ
+        inputs.style.addEventListener('change', updatePreview);
+        saveBtn.addEventListener('click', saveImage);
         window.addEventListener('resize', adjustScale);
 
         // ========================================
         // 初期化
         // ========================================
+        
         window.addEventListener('load', () => {
             adjustScale();
             updateWaku();
-            updatePreview();
+            updateCardData();
+            drawCard();
             
-            // 全カウンターを初期化
             inputCounterPairs.forEach(({ input, counter, max }) => {
                 updateCounter(input, counter, max);
             });
