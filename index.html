@@ -5,18 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FS Striders - Player Profile Generator</title>
     <style>
-        /* ========================================
-           CSS変数定義
-           ======================================== */
         :root {
             --k-color: #e60012;
             --txt-color: #fff;
             --transition-speed: 0.3s;
         }
 
-        /* ========================================
-           基本レイアウト
-           ======================================== */
         * { box-sizing: border-box; }
         
         body {
@@ -358,9 +352,6 @@
     </div>
 
     <script>
-        // ========================================
-        // 定数定義
-        // ========================================
         const WAKU_COLORS = {
             "1": { bg: "#ffffff", tx: "#000000" },
             "2": { bg: "#000000", tx: "#ffffff" },
@@ -378,12 +369,8 @@
         const CARD_WIDTH = 850;
         const CARD_HEIGHT = 580;
 
-        // 事前生成用キャンバス（ドットパターン）
         let dotPatternCanvas = null;
 
-        // ========================================
-        // グローバル変数
-        // ========================================
         let currentWaku = "3";
         let userIconImage = null;
         let updateTimer = null;
@@ -404,7 +391,6 @@
             comment: "...よろしくお願いします"
         };
 
-        // DOMキャッシュ
         const canvas = document.getElementById('preview-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -442,9 +428,6 @@
         const saveBtn = document.getElementById('save-btn');
         const loadingOverlay = document.getElementById('loading-overlay');
 
-        // ========================================
-        // ユーティリティ
-        // ========================================
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
@@ -497,7 +480,6 @@
             lines.forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight));
         }
 
-        // ドットパターン事前生成
         function createDotPattern() {
             const patCanvas = document.createElement('canvas');
             patCanvas.width = CARD_WIDTH;
@@ -515,19 +497,14 @@
             dotPatternCanvas = patCanvas;
         }
 
-        // ========================================
-        // メイン描画
-        // ========================================
         function drawCard(targetCtx = ctx) {
             const theme = WAKU_COLORS[currentWaku];
             
             targetCtx.clearRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
             
-            // 背景白
             targetCtx.fillStyle = '#ffffff';
             targetCtx.fillRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
             
-            // 斜め背景
             targetCtx.fillStyle = '#f2f2f2';
             targetCtx.beginPath();
             targetCtx.moveTo(340, 0);
@@ -537,17 +514,14 @@
             targetCtx.closePath();
             targetCtx.fill();
             
-            // ドットパターン（事前生成したものを使う）
             if (dotPatternCanvas) {
                 targetCtx.drawImage(dotPatternCanvas, 0, 0);
             }
             
-            // 外枠
             targetCtx.strokeStyle = '#000000';
             targetCtx.lineWidth = 4;
             targetCtx.strokeRect(2, 2, CARD_WIDTH - 4, CARD_HEIGHT - 4);
             
-            // 枠番エリア
             targetCtx.fillStyle = theme.bg;
             targetCtx.fillRect(0, 0, 100, CARD_HEIGHT);
             targetCtx.strokeStyle = '#000000';
@@ -563,7 +537,6 @@
             targetCtx.textBaseline = 'middle';
             targetCtx.fillText(currentWaku, 50, CARD_HEIGHT / 2);
             
-            // ヘッダー半透明
             targetCtx.fillStyle = 'rgba(255, 255, 255, 0.5)';
             targetCtx.fillRect(100, 0, CARD_WIDTH - 100, 155);
             targetCtx.strokeStyle = '#000000';
@@ -573,7 +546,6 @@
             targetCtx.lineTo(CARD_WIDTH, 155);
             targetCtx.stroke();
             
-            // アイコン枠
             targetCtx.strokeStyle = theme.bg;
             targetCtx.lineWidth = 5;
             targetCtx.beginPath();
@@ -583,7 +555,6 @@
             targetCtx.fillStyle = '#ffffff';
             targetCtx.fill();
             
-            // アイコン描画（中心合わせ）
             if (userIconImage) {
                 targetCtx.save();
                 targetCtx.beginPath();
@@ -593,7 +564,6 @@
                 targetCtx.drawImage(userIconImage, 135, 27.5, 100, 100);
                 targetCtx.restore();
             } else {
-                // デフォルトアイコン（少しマシに）
                 targetCtx.fillStyle = '#cccccc';
                 targetCtx.beginPath();
                 targetCtx.arc(185, 77.5, 40, 0, Math.PI * 2);
@@ -605,7 +575,6 @@
                 targetCtx.fillText('?', 185, 77.5);
             }
             
-            // 名前
             targetCtx.fillStyle = '#000000';
             targetCtx.textAlign = 'left';
             targetCtx.textBaseline = 'top';
@@ -615,7 +584,6 @@
             targetCtx.font = `900 ${nameFontSize}px sans-serif`;
             wrapText(targetCtx, cardData.name, 260, 35, 560, nameFontSize * 1.1, 2);
             
-            // サブ情報
             targetCtx.font = '800 13px sans-serif';
             targetCtx.fillStyle = '#333333';
             targetCtx.fillText(cardData.exp, 260, 90);
@@ -625,15 +593,13 @@
             targetCtx.font = '900 13px sans-serif';
             targetCtx.fillText(cardData.sns, 260, 124);
             
-            // データグリッド（クリッピングで右端防止）
             targetCtx.save();
             targetCtx.beginPath();
-            targetCtx.rect(100, 165, CARD_WIDTH - 100 - 10, CARD_HEIGHT - 165);
+            targetCtx.rect(100, 165, CARD_WIDTH - 100 - 20, CARD_HEIGHT - 165 - 60);  // 下側余裕を大幅に
             targetCtx.clip();
             
             const gridStartY = 165;
             
-            // カテゴリヘッダー1
             targetCtx.fillStyle = '#000000';
             targetCtx.fillRect(130, 170, 690, 21);
             targetCtx.fillStyle = '#ffffff';
@@ -653,7 +619,6 @@
                 wrapText(targetCtx, value, x + 12, y + 16, width - 30, 21, 2);
             }
             
-            // 項目描画（幅狭め）
             drawItem(130, 199, '推し馬・騎手 / Fav Horse, Jockey', cardData.fav, 330);
             drawItem(475, 199, '好きな血統 / Favorite Pedigree', cardData.blood, 330);
             drawItem(130, 272, '好きな競馬場 / Favorite Racecourse', cardData.bank, 330);
@@ -667,11 +632,10 @@
             
             drawItem(130, 379, '好きな脚質 / Favorite Strategy', cardData.style, 330, 60);
             drawItem(475, 379, '騎乗スタイル / Riding Style', cardData.way, 330, 60);
-            drawItem(130, 447, 'プレイ時間帯 / Playing Hours', cardData.time, 320, 60); // ここ特に狭め
+            drawItem(130, 435, 'プレイ時間帯 / Playing Hours', cardData.time, 320, 40);  // ここ調整
             
             targetCtx.restore();
             
-            // フッター
             targetCtx.strokeStyle = '#000000';
             targetCtx.lineWidth = 4;
             targetCtx.beginPath();
@@ -691,14 +655,11 @@
             targetCtx.fillText('© 2026 Musyn Reagan / FullStride Fan Kit', CARD_WIDTH - 12, CARD_HEIGHT - 12);
         }
 
-        // ========================================
-        // データ更新
-        // ========================================
         function updateCardData() {
             cardData.waku = currentWaku;
             cardData.name = inputs.n.value.trim() || "JOCKEY NAME";
             
-            let snsVal = inputs.sns.value.trim().replace(/^@+/, '@'); // @@防止
+            let snsVal = inputs.sns.value.trim().replace(/^@+/, '@');
             if (!snsVal || snsVal === '@') snsVal = '@---';
             cardData.sns = snsVal;
             
@@ -738,9 +699,6 @@
             updatePreview();
         }
 
-        // ========================================
-        // 画像ロード
-        // ========================================
         function loadImage(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -764,9 +722,6 @@
             reader.readAsDataURL(file);
         }
 
-        // ========================================
-        // 保存
-        // ========================================
         function saveImage() {
             saveBtn.disabled = true;
             saveBtn.classList.add('saving');
@@ -813,12 +768,9 @@
                     saveBtn.textContent = '画像を保存する / Save Image 📸';
                     loadingOverlay.classList.remove('active');
                 }
-            }, 0); // setTimeout不要なら0でもOK
+            }, 0);
         }
 
-        // ========================================
-        // スケール調整
-        // ========================================
         function adjustScale() {
             const container = document.querySelector('.card-container');
             const scaleX = container.offsetWidth / (CARD_WIDTH + 8);
@@ -827,9 +779,6 @@
             canvas.style.transform = `scale(${scale})`;
         }
 
-        // ========================================
-        // イベント
-        // ========================================
         inputs.waku.addEventListener('change', updateWaku);
         inputs.icon.addEventListener('change', loadImage);
         
@@ -858,9 +807,8 @@
         saveBtn.addEventListener('click', saveImage);
         window.addEventListener('resize', adjustScale);
 
-        // 初期化
         window.addEventListener('load', () => {
-            createDotPattern(); // ドット事前生成
+            createDotPattern();
             adjustScale();
             updateWaku();
             updateCardData();
