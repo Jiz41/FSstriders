@@ -30,9 +30,6 @@
             overflow: hidden;
         }
 
-        /* ========================================
-           カードプレビューエリア
-           ======================================== */
         .card-container {
             width: 100%;
             height: 50vh;
@@ -52,9 +49,6 @@
             image-rendering: crisp-edges;
         }
 
-        /* ========================================
-           操作パネルエリア
-           ======================================== */
         .panel {
             width: 100%;
             flex-grow: 1;
@@ -189,7 +183,6 @@
             line-height: 1.6;
         }
 
-        /* ローディングオーバーレイ */
         .loading-overlay {
             display: none;
             position: fixed;
@@ -228,7 +221,6 @@
             font-weight: 900;
         }
 
-        /* 通知トースト */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -259,7 +251,6 @@
             border-left-color: #e60012;
         }
 
-        /* レスポンシブ対応 */
         @media screen and (orientation: landscape) {
             body {
                 flex-direction: row;
@@ -287,18 +278,15 @@
     </style>
 </head>
 <body>
-    <!-- ローディングオーバーレイ -->
     <div class="loading-overlay" id="loading-overlay">
         <div class="spinner"></div>
         <div class="loading-text">画像を生成中...</div>
     </div>
 
-    <!-- カードプレビュー -->
     <div class="card-container">
         <canvas id="preview-canvas" width="850" height="580"></canvas>
     </div>
 
-    <!-- 操作パネル -->
     <div class="panel">
         <div class="title-image-area">
             <img src="title.png" alt="FullStride Profile Generator">
@@ -390,6 +378,9 @@
         const CARD_WIDTH = 850;
         const CARD_HEIGHT = 580;
 
+        // 事前生成用キャンバス（ドットパターン）
+        let dotPatternCanvas = null;
+
         // ========================================
         // グローバル変数
         // ========================================
@@ -397,7 +388,6 @@
         let userIconImage = null;
         let updateTimer = null;
 
-        // カードデータ
         const cardData = {
             waku: "3",
             name: "JOCKEY NAME",
@@ -414,9 +404,7 @@
             comment: "...よろしくお願いします"
         };
 
-        // ========================================
-        // DOM要素のキャッシュ
-        // ========================================
+        // DOMキャッシュ
         const canvas = document.getElementById('preview-canvas');
         const ctx = canvas.getContext('2d');
 
@@ -455,9 +443,8 @@
         const loadingOverlay = document.getElementById('loading-overlay');
 
         // ========================================
-        // ユーティリティ関数
+        // ユーティリティ
         // ========================================
-        
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
@@ -477,61 +464,70 @@
             counter.textContent = `${length} / ${maxLength}`;
             
             counter.classList.remove('warning', 'danger');
-            if (length > maxLength * 0.9) {
-                counter.classList.add('danger');
-            } else if (length > maxLength * 0.7) {
-                counter.classList.add('warning');
-            }
+            if (length > maxLength * 0.9) counter.classList.add('danger');
+            else if (length > maxLength * 0.7) counter.classList.add('warning');
         }
 
         function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
-            const words = text.split('');
+            const chars = text.split('');
             let line = '';
             let lines = [];
-            let testLine = '';
             
-            for (let i = 0; i < words.length; i++) {
-                testLine = line + words[i];
+            for (let i = 0; i < chars.length; i++) {
+                const testLine = line + chars[i];
                 const metrics = ctx.measureText(testLine);
                 
                 if (metrics.width > maxWidth && line !== '') {
                     lines.push(line);
-                    line = words[i];
+                    line = chars[i];
                 } else {
                     line = testLine;
                 }
             }
             lines.push(line);
             
-            // 最大行数で切り捨て
             if (lines.length > maxLines) {
                 lines = lines.slice(0, maxLines);
-                const lastLine = lines[maxLines - 1];
-                if (lastLine.length > 3) {
-                    lines[maxLines - 1] = lastLine.substring(0, lastLine.length - 3) + '...';
+                let last = lines[maxLines - 1];
+                if (last.length > 3) {
+                    lines[maxLines - 1] = last.slice(0, -3) + '...';
                 }
             }
             
-            for (let i = 0; i < lines.length; i++) {
-                ctx.fillText(lines[i], x, y + (i * lineHeight));
+            lines.forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight));
+        }
+
+        // ドットパターン事前生成
+        function createDotPattern() {
+            const patCanvas = document.createElement('canvas');
+            patCanvas.width = CARD_WIDTH;
+            patCanvas.height = CARD_HEIGHT;
+            const patCtx = patCanvas.getContext('2d');
+            
+            patCtx.fillStyle = '#dddddd';
+            for (let x = 0; x < CARD_WIDTH; x += 12) {
+                for (let y = 0; y < CARD_HEIGHT; y += 12) {
+                    patCtx.beginPath();
+                    patCtx.arc(x, y, 1.5, 0, Math.PI * 2);
+                    patCtx.fill();
+                }
             }
+            dotPatternCanvas = patCanvas;
         }
 
         // ========================================
-        // Canvas描画関数
+        // メイン描画
         // ========================================
-        
         function drawCard(targetCtx = ctx) {
             const theme = WAKU_COLORS[currentWaku];
             
-            // キャンバスクリア
             targetCtx.clearRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
             
-            // 背景
+            // 背景白
             targetCtx.fillStyle = '#ffffff';
             targetCtx.fillRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
             
-            // 背景デザイン - 斜めライン
+            // 斜め背景
             targetCtx.fillStyle = '#f2f2f2';
             targetCtx.beginPath();
             targetCtx.moveTo(340, 0);
@@ -541,26 +537,19 @@
             targetCtx.closePath();
             targetCtx.fill();
             
-            // 背景デザイン - ドットパターン
-            targetCtx.fillStyle = '#dddddd';
-            for (let x = 0; x < CARD_WIDTH; x += 12) {
-                for (let y = 0; y < CARD_HEIGHT; y += 12) {
-                    targetCtx.beginPath();
-                    targetCtx.arc(x, y, 1.5, 0, Math.PI * 2);
-                    targetCtx.fill();
-                }
+            // ドットパターン（事前生成したものを使う）
+            if (dotPatternCanvas) {
+                targetCtx.drawImage(dotPatternCanvas, 0, 0);
             }
             
-            // 枠線
+            // 外枠
             targetCtx.strokeStyle = '#000000';
             targetCtx.lineWidth = 4;
             targetCtx.strokeRect(2, 2, CARD_WIDTH - 4, CARD_HEIGHT - 4);
             
-            // 枠番ボックス
+            // 枠番エリア
             targetCtx.fillStyle = theme.bg;
             targetCtx.fillRect(0, 0, 100, CARD_HEIGHT);
-            
-            // 枠番ボックス右ボーダー
             targetCtx.strokeStyle = '#000000';
             targetCtx.lineWidth = 4;
             targetCtx.beginPath();
@@ -568,18 +557,15 @@
             targetCtx.lineTo(100, CARD_HEIGHT);
             targetCtx.stroke();
             
-            // 枠番テキスト
             targetCtx.fillStyle = theme.tx;
             targetCtx.font = '900 85px sans-serif';
             targetCtx.textAlign = 'center';
             targetCtx.textBaseline = 'middle';
             targetCtx.fillText(currentWaku, 50, CARD_HEIGHT / 2);
             
-            // ヘッダー背景 (155px高さ)
+            // ヘッダー半透明
             targetCtx.fillStyle = 'rgba(255, 255, 255, 0.5)';
             targetCtx.fillRect(100, 0, CARD_WIDTH - 100, 155);
-            
-            // ヘッダー下ボーダー
             targetCtx.strokeStyle = '#000000';
             targetCtx.lineWidth = 4;
             targetCtx.beginPath();
@@ -587,7 +573,7 @@
             targetCtx.lineTo(CARD_WIDTH, 155);
             targetCtx.stroke();
             
-            // アイコンフレーム (中心: 185, 77.5)
+            // アイコン枠
             targetCtx.strokeStyle = theme.bg;
             targetCtx.lineWidth = 5;
             targetCtx.beginPath();
@@ -597,43 +583,39 @@
             targetCtx.fillStyle = '#ffffff';
             targetCtx.fill();
             
-            // アイコン画像
+            // アイコン描画（中心合わせ）
             if (userIconImage) {
                 targetCtx.save();
                 targetCtx.beginPath();
                 targetCtx.arc(185, 77.5, 50, 0, Math.PI * 2);
                 targetCtx.closePath();
                 targetCtx.clip();
-                
-                const size = 100;
-                targetCtx.drawImage(userIconImage, 135, 27.5, size, size);
+                targetCtx.drawImage(userIconImage, 135, 27.5, 100, 100);
                 targetCtx.restore();
             } else {
-                // デフォルトアイコン
+                // デフォルトアイコン（少しマシに）
                 targetCtx.fillStyle = '#cccccc';
                 targetCtx.beginPath();
-                targetCtx.arc(185, 65, 15, 0, Math.PI * 2);
+                targetCtx.arc(185, 77.5, 40, 0, Math.PI * 2);
                 targetCtx.fill();
-                targetCtx.beginPath();
-                targetCtx.arc(185, 95, 25, 0, Math.PI * 2, false);
-                targetCtx.arc(185, 100, 20, 0, Math.PI * 2, true);
-                targetCtx.fill();
+                targetCtx.fillStyle = '#888888';
+                targetCtx.font = 'bold 60px sans-serif';
+                targetCtx.textAlign = 'center';
+                targetCtx.textBaseline = 'middle';
+                targetCtx.fillText('?', 185, 77.5);
             }
             
-            // 名前 (開始位置: 260, 35)
+            // 名前
             targetCtx.fillStyle = '#000000';
             targetCtx.textAlign = 'left';
             targetCtx.textBaseline = 'top';
             
             const nameLength = cardData.name.length;
-            let nameFontSize = 46;
-            if (nameLength > 15) nameFontSize = 28;
-            else if (nameLength > 10) nameFontSize = 36;
-            
+            let nameFontSize = nameLength > 15 ? 28 : nameLength > 10 ? 36 : 46;
             targetCtx.font = `900 ${nameFontSize}px sans-serif`;
             wrapText(targetCtx, cardData.name, 260, 35, 560, nameFontSize * 1.1, 2);
             
-            // サブ情報 (開始位置調整)
+            // サブ情報
             targetCtx.font = '800 13px sans-serif';
             targetCtx.fillStyle = '#333333';
             targetCtx.fillText(cardData.exp, 260, 90);
@@ -643,57 +625,53 @@
             targetCtx.font = '900 13px sans-serif';
             targetCtx.fillText(cardData.sns, 260, 124);
             
-            // データグリッド開始位置 (Y: 155 + 10 = 165)
+            // データグリッド（クリッピングで右端防止）
+            targetCtx.save();
+            targetCtx.beginPath();
+            targetCtx.rect(100, 165, CARD_WIDTH - 100 - 10, CARD_HEIGHT - 165);
+            targetCtx.clip();
+            
             const gridStartY = 165;
             
-            // カテゴリラベル1 (Y: 165 + 5 = 170)
+            // カテゴリヘッダー1
             targetCtx.fillStyle = '#000000';
             targetCtx.fillRect(130, 170, 690, 21);
             targetCtx.fillStyle = '#ffffff';
             targetCtx.font = '900 13px sans-serif';
             targetCtx.fillText('競馬の好み / Favorite (Real)', 142, 175);
             
-            // データ項目を描画する関数
             function drawItem(x, y, label, value, width, height = 60) {
-                // 左ボーダー
                 targetCtx.fillStyle = theme.bg;
                 targetCtx.fillRect(x, y, 6, height);
                 
-                // ラベル
                 targetCtx.fillStyle = '#444444';
                 targetCtx.font = '900 10px sans-serif';
                 targetCtx.fillText(label, x + 12, y + 2);
                 
-                // 値
                 targetCtx.fillStyle = '#000000';
                 targetCtx.font = '900 17px sans-serif';
-                wrapText(targetCtx, value, x + 12, y + 16, width - 20, 21, 2);
+                wrapText(targetCtx, value, x + 12, y + 16, width - 30, 21, 2);
             }
             
-            // 競馬の好み項目 (Y: 170 + 21 + 8 = 199)
-            drawItem(130, 199, '推し馬・騎手 / Fav Horse, Jockey', cardData.fav, 345);
-            drawItem(475, 199, '好きな血統 / Favorite Pedigree', cardData.blood, 345);
+            // 項目描画（幅狭め）
+            drawItem(130, 199, '推し馬・騎手 / Fav Horse, Jockey', cardData.fav, 330);
+            drawItem(475, 199, '好きな血統 / Favorite Pedigree', cardData.blood, 330);
+            drawItem(130, 272, '好きな競馬場 / Favorite Racecourse', cardData.bank, 330);
+            drawItem(475, 272, '好きな毛色 / Favorite Coat', cardData.coat, 330);
             
-            // 2行目 (Y: 199 + 65 + 8 = 272)
-            drawItem(130, 272, '好きな競馬場 / Favorite Racecourse', cardData.bank, 345);
-            drawItem(475, 272, '好きな毛色 / Favorite Coat', cardData.coat, 345);
-            
-            // カテゴリラベル2 (Y: 272 + 65 + 8 + 5 = 350)
             targetCtx.fillStyle = '#000000';
             targetCtx.fillRect(130, 350, 690, 21);
             targetCtx.fillStyle = '#ffffff';
             targetCtx.font = '900 13px sans-serif';
             targetCtx.fillText('プレイの傾向 / Playstyle (Game)', 142, 355);
             
-            // プレイの傾向項目 (Y: 350 + 21 + 8 = 379)
-            drawItem(130, 379, '好きな脚質 / Favorite Strategy', cardData.style, 345, 60);
-            drawItem(475, 379, '騎乗スタイル / Riding Style', cardData.way, 345, 60);
+            drawItem(130, 379, '好きな脚質 / Favorite Strategy', cardData.style, 330, 60);
+            drawItem(475, 379, '騎乗スタイル / Riding Style', cardData.way, 330, 60);
+            drawItem(130, 447, 'プレイ時間帯 / Playing Hours', cardData.time, 320, 60); // ここ特に狭め
             
-            // プレイ時間帯 (Y: 447で配置、幅を345に制限して右端に収める)
-            drawItem(130, 447, 'プレイ時間帯 / Playing Hours', cardData.time, 345, 60);
+            targetCtx.restore();
             
-            // フッター開始位置 (580 - 110 = 470)
-            // フッター上ボーダー
+            // フッター
             targetCtx.strokeStyle = '#000000';
             targetCtx.lineWidth = 4;
             targetCtx.beginPath();
@@ -701,17 +679,12 @@
             targetCtx.lineTo(CARD_WIDTH, 470);
             targetCtx.stroke();
             
-            // コメント (開始: 470 + 12 = 482)
             targetCtx.fillStyle = '#000000';
             const commentLength = cardData.comment.length;
-            let commentFontSize = 21;
-            if (commentLength > 60) commentFontSize = 15;
-            else if (commentLength > 30) commentFontSize = 18;
-            
+            let commentFontSize = commentLength > 60 ? 15 : commentLength > 30 ? 18 : 21;
             targetCtx.font = `900 ${commentFontSize}px sans-serif`;
             wrapText(targetCtx, cardData.comment, 130, 482, 690, commentFontSize * 1.3, 3);
             
-            // コピーライト (Y座標を上げてカード内に確実に表示)
             targetCtx.fillStyle = 'rgba(0, 0, 0, 0.35)';
             targetCtx.font = 'bold 11px sans-serif';
             targetCtx.textAlign = 'right';
@@ -719,26 +692,26 @@
         }
 
         // ========================================
-        // データ更新関数
+        // データ更新
         // ========================================
-        
         function updateCardData() {
             cardData.waku = currentWaku;
-            cardData.name = inputs.n.value || "JOCKEY NAME";
+            cardData.name = inputs.n.value.trim() || "JOCKEY NAME";
             
-            const snsVal = inputs.sns.value;
-            cardData.sns = snsVal ? "@" + snsVal.replace('@', '') : "@---";
+            let snsVal = inputs.sns.value.trim().replace(/^@+/, '@'); // @@防止
+            if (!snsVal || snsVal === '@') snsVal = '@---';
+            cardData.sns = snsVal;
             
-            cardData.exp = "馬との歩み / Horse History: " + (inputs.exp.value || DEFAULT_PLACEHOLDER);
-            cardData.hard = "主なハード / Platform: " + (inputs.hard.value || DEFAULT_PLACEHOLDER);
-            cardData.fav = inputs.fav.value || DEFAULT_PLACEHOLDER;
-            cardData.blood = inputs.blood.value || DEFAULT_PLACEHOLDER;
-            cardData.bank = inputs.bank.value || DEFAULT_PLACEHOLDER;
-            cardData.coat = inputs.coat.value || DEFAULT_PLACEHOLDER;
-            cardData.style = inputs.style.value;
-            cardData.way = inputs.way.value || DEFAULT_PLACEHOLDER;
-            cardData.time = inputs.time.value || DEFAULT_PLACEHOLDER;
-            cardData.comment = inputs.com.value || DEFAULT_COMMENT;
+            cardData.exp = "馬との歩み / Horse History: " + (inputs.exp.value.trim() || DEFAULT_PLACEHOLDER);
+            cardData.hard = "主なハード / Platform: " + (inputs.hard.value.trim() || DEFAULT_PLACEHOLDER);
+            cardData.fav = inputs.fav.value.trim() || DEFAULT_PLACEHOLDER;
+            cardData.blood = inputs.blood.value.trim() || DEFAULT_PLACEHOLDER;
+            cardData.bank = inputs.bank.value.trim() || DEFAULT_PLACEHOLDER;
+            cardData.coat = inputs.coat.value.trim() || DEFAULT_PLACEHOLDER;
+            cardData.style = inputs.style.value || "---";
+            cardData.way = inputs.way.value.trim() || DEFAULT_PLACEHOLDER;
+            cardData.time = inputs.time.value.trim() || DEFAULT_PLACEHOLDER;
+            cardData.comment = inputs.com.value.trim() || DEFAULT_COMMENT;
         }
 
         function updatePreview() {
@@ -766,9 +739,8 @@
         }
 
         // ========================================
-        // 画像処理
+        // 画像ロード
         // ========================================
-        
         function loadImage(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -788,16 +760,13 @@
                 };
                 img.src = event.target.result;
             };
-            reader.onerror = function() {
-                showToast('画像の読み込みに失敗しました', 'error');
-            };
+            reader.onerror = () => showToast('画像の読み込みに失敗しました', 'error');
             reader.readAsDataURL(file);
         }
 
         // ========================================
-        // 画像保存
+        // 保存
         // ========================================
-        
         function saveImage() {
             saveBtn.disabled = true;
             saveBtn.classList.add('saving');
@@ -806,26 +775,19 @@
             
             setTimeout(() => {
                 try {
-                    // 高解像度版を生成
                     const outputCanvas = document.createElement('canvas');
                     outputCanvas.width = CARD_WIDTH * 2;
                     outputCanvas.height = CARD_HEIGHT * 2;
                     const outputCtx = outputCanvas.getContext('2d');
                     
-                    // 2倍スケール
                     outputCtx.scale(2, 2);
-                    
-                    // カードを描画（引数でctxを渡す）
                     drawCard(outputCtx);
                     
-                    // ダウンロード
                     const timestamp = new Date().getTime();
-                    const filename = `fullstride-card-gate${currentWaku}-${timestamp}.png`;
+                    const filename = `fullstride-card-gate\( {currentWaku}- \){timestamp}.png`;
                     
-                    outputCanvas.toBlob(function(blob) {
-                        if (!blob) {
-                            throw new Error('画像生成に失敗しました');
-                        }
+                    outputCanvas.toBlob(blob => {
+                        if (!blob) throw new Error('画像生成失敗');
                         
                         const url = URL.createObjectURL(blob);
                         const link = document.createElement('a');
@@ -834,8 +796,7 @@
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
-                        
-                        setTimeout(() => URL.revokeObjectURL(url), 100);
+                        URL.revokeObjectURL(url);
                         
                         showToast('画像を保存しました！', 'success');
                         
@@ -844,23 +805,20 @@
                         saveBtn.textContent = '画像を保存する / Save Image 📸';
                         loadingOverlay.classList.remove('active');
                     }, 'image/png');
-                    
                 } catch (err) {
                     console.error('保存エラー:', err);
                     showToast('画像の保存に失敗しました', 'error');
-                    
                     saveBtn.disabled = false;
                     saveBtn.classList.remove('saving');
                     saveBtn.textContent = '画像を保存する / Save Image 📸';
                     loadingOverlay.classList.remove('active');
                 }
-            }, 100);
+            }, 0); // setTimeout不要なら0でもOK
         }
 
         // ========================================
         // スケール調整
         // ========================================
-        
         function adjustScale() {
             const container = document.querySelector('.card-container');
             const scaleX = container.offsetWidth / (CARD_WIDTH + 8);
@@ -870,9 +828,8 @@
         }
 
         // ========================================
-        // イベントリスナー設定
+        // イベント
         // ========================================
-        
         inputs.waku.addEventListener('change', updateWaku);
         inputs.icon.addEventListener('change', loadImage);
         
@@ -901,11 +858,9 @@
         saveBtn.addEventListener('click', saveImage);
         window.addEventListener('resize', adjustScale);
 
-        // ========================================
         // 初期化
-        // ========================================
-        
         window.addEventListener('load', () => {
+            createDotPattern(); // ドット事前生成
             adjustScale();
             updateWaku();
             updateCardData();
