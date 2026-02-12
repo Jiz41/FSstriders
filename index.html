@@ -595,10 +595,8 @@
             
             targetCtx.save();
             targetCtx.beginPath();
-            targetCtx.rect(100, 165, CARD_WIDTH - 100 - 20, CARD_HEIGHT - 165 - 60);  // 下側余裕を大幅に
+            targetCtx.rect(100, 165, CARD_WIDTH - 100 - 30, CARD_HEIGHT - 165 - 100);
             targetCtx.clip();
-            
-            const gridStartY = 165;
             
             targetCtx.fillStyle = '#000000';
             targetCtx.fillRect(130, 170, 690, 21);
@@ -608,7 +606,7 @@
             
             function drawItem(x, y, label, value, width, height = 60) {
                 targetCtx.fillStyle = theme.bg;
-                targetCtx.fillRect(x, y, 6, height);
+                targetCtx.fillRect(x, y, 6, height - 15); // 下に余裕を持たせる
                 
                 targetCtx.fillStyle = '#444444';
                 targetCtx.font = '900 10px sans-serif';
@@ -632,7 +630,7 @@
             
             drawItem(130, 379, '好きな脚質 / Favorite Strategy', cardData.style, 330, 60);
             drawItem(475, 379, '騎乗スタイル / Riding Style', cardData.way, 330, 60);
-            drawItem(130, 435, 'プレイ時間帯 / Playing Hours', cardData.time, 320, 40);  // ここ調整
+            drawItem(130, 420, 'プレイ時間帯 / Playing Hours', cardData.time, 320, 35);
             
             targetCtx.restore();
             
