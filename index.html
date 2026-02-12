@@ -339,7 +339,7 @@
             </div>
             <div class="input-block">
                 <label class="g-title">一言メッセージ / Message</label>
-                <textarea id="in-com" maxlength="114" rows="3" placeholder="一言メッセージ (114字以内)" title="Your Message (114 chars max)"></textarea>
+                <textarea id="in-com" maxlength="138" rows="3" placeholder="一言メッセージ (114字以内)" title="Your Message (114 chars max)"></textarea>
                 <div class="char-counter" id="counter-com">0 / 114</div>
             </div>
             <button class="save-btn" id="save-btn">画像を保存する / Save Image 📸</button>
@@ -740,7 +740,7 @@
                     drawCard(outputCtx);
                     
                     const timestamp = new Date().getTime();
-                    const filename = `fullstride-card-gate\( {currentWaku}- \){timestamp}.png`;
+                    const filename = `fsstriders\( {currentWaku}- \){timestamp}.png`;
                     
                     outputCanvas.toBlob(blob => {
                         if (!blob) throw new Error('画像生成失敗');
