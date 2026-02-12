@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FS Striders - Player Profile Generator</title>
+
+    <!-- 
+        ========================================
+        スタイル定義
+        ========================================
+        - テーマカラー: 赤(#e60012)を基調に統一
+        - レスポンシブ: 縦長は上下分割、横長は左右分割
+        - ダークテーマで統一感を出す
+    -->
     <style>
         :root {
             --k-color: #e60012;
@@ -272,15 +281,33 @@
     </style>
 </head>
 <body>
+    <!-- 
+        ========================================
+        ローディングオーバーレイ
+        ========================================
+        画像保存時に表示されるスピナーとテキスト
+    -->
     <div class="loading-overlay" id="loading-overlay">
         <div class="spinner"></div>
         <div class="loading-text">画像を生成中...</div>
     </div>
 
+    <!-- 
+        ========================================
+        プレビューエリア
+        ========================================
+        Canvasで描画されるカードの表示領域
+    -->
     <div class="card-container">
         <canvas id="preview-canvas" width="850" height="580"></canvas>
     </div>
 
+    <!-- 
+        ========================================
+        操作パネル
+        ========================================
+        入力フォームと保存ボタン
+    -->
     <div class="panel">
         <div class="title-image-area">
             <img src="title.png" alt="FullStride Profile Generator">
@@ -299,19 +326,21 @@
                     <option value="8">8枠 (桃) / 8th Gate (Pink)</option>
                 </select>
             </div>
-<div class="input-block">
-    <label class="g-title">基本情報 / Basic Info</label>
-    <p style="font-size: 13px; color: #888; margin: 0 0 10px 0;">プロフィール画像を選択 (任意) / Select Profile Icon (Optional)</p>
-    <input type="file" accept="image/*" id="in-icon">
-    <input type="text" id="in-n" maxlength="20" placeholder="お名前 / Your Name" title="Your Name">
-    <div class="char-counter" id="counter-n">0 / 20</div>
-    <input type="text" id="in-sns" maxlength="30" placeholder="SNS ID / SNS Handle" title="Social Media Handle">
-    <div class="char-counter" id="counter-sns">0 / 30</div>
-    <input type="text" id="in-exp" maxlength="30" placeholder="馬との歩み / Horse History" title="Your Racing Journey">
-    <div class="char-counter" id="counter-exp">0 / 30</div>
-    <input type="text" id="in-hard" maxlength="30" placeholder="主なハード / Main Platform" title="Main Platform">
-    <div class="char-counter" id="counter-hard">0 / 30</div>
-</div>
+
+            <div class="input-block">
+                <label class="g-title">基本情報 / Basic Info</label>
+                <p style="font-size: 13px; color: #888; margin: 0 0 10px 0;">プロフィール画像を選択 (任意) / Select Profile Icon (Optional)</p>
+                <input type="file" accept="image/*" id="in-icon">
+                <input type="text" id="in-n" maxlength="20" placeholder="お名前 / Your Name" title="Your Name">
+                <div class="char-counter" id="counter-n">0 / 20</div>
+                <input type="text" id="in-sns" maxlength="30" placeholder="SNS ID / SNS Handle" title="Social Media Handle">
+                <div class="char-counter" id="counter-sns">0 / 30</div>
+                <input type="text" id="in-exp" maxlength="30" placeholder="馬との歩み / Horse History" title="Your Racing Journey">
+                <div class="char-counter" id="counter-exp">0 / 30</div>
+                <input type="text" id="in-hard" maxlength="30" placeholder="主なハード / Main Platform" title="Main Platform">
+                <div class="char-counter" id="counter-hard">0 / 30</div>
+            </div>
+
             <div class="input-block">
                 <label class="g-title">競馬の好み / Favorite (Real Racing)</label>
                 <input type="text" id="in-fav" maxlength="30" placeholder="推し馬・騎手 / Fav Horse & Jockey" title="Favorite Horse & Jockey">
@@ -323,6 +352,7 @@
                 <input type="text" id="in-coat" maxlength="30" placeholder="好きな毛色 / Fav Coat" title="Favorite Coat">
                 <div class="char-counter" id="counter-coat">0 / 30</div>
             </div>
+
             <div class="input-block">
                 <label class="g-title">プレイの傾向 / Playstyle (In-Game)</label>
                 <select id="in-style" title="Running Style Explanation">
@@ -338,12 +368,15 @@
                 <input type="text" id="in-time" maxlength="15" placeholder="よく遊ぶ時間帯 / Usual Play Time" title="Usual Play Time">
                 <div class="char-counter" id="counter-time">0 / 15</div>
             </div>
+
             <div class="input-block">
                 <label class="g-title">一言メッセージ / Message</label>
                 <textarea id="in-com" maxlength="138" rows="3" placeholder="一言メッセージ (138字以内)" title="Your Message (138 chars max)"></textarea>
                 <div class="char-counter" id="counter-com">0 / 138</div>
             </div>
+
             <button class="save-btn" id="save-btn">画像を保存する / Save Image 📸</button>
+
             <div class="m-copyright">
                 本ツールはファンによる非公式ジェネレータです。<br>
                 『FULL STRIDE』の名称は、BLUE BULLETの商標または登録商標です。<br>
@@ -353,6 +386,9 @@
     </div>
 
     <script>
+        // ========================================
+        // 定数定義
+        // ========================================
         const WAKU_COLORS = {
             "1": { bg: "#ffffff", tx: "#000000" },
             "2": { bg: "#000000", tx: "#ffffff" },
