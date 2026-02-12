@@ -339,8 +339,8 @@
             </div>
             <div class="input-block">
                 <label class="g-title">一言メッセージ / Message</label>
-                <textarea id="in-com" maxlength="100" rows="3" placeholder="一言メッセージ (100字以内)" title="Your Message (100 chars max)"></textarea>
-                <div class="char-counter" id="counter-com">0 / 100</div>
+                <textarea id="in-com" maxlength="114" rows="3" placeholder="一言メッセージ (114字以内)" title="Your Message (114 chars max)"></textarea>
+                <div class="char-counter" id="counter-com">0 / 114</div>
             </div>
             <button class="save-btn" id="save-btn">画像を保存する / Save Image 📸</button>
             <div class="m-copyright">
@@ -633,7 +633,7 @@
             
             drawItem(130, 379, '好きな脚質 / Favorite Strategy', cardData.style, 330, 60);
             drawItem(475, 379, '騎乗スタイル / Riding Style', cardData.way, 330, 60);
-            drawItem(130, 420, 'プレイ時間帯 / Playing Hours', cardData.time, 320, 35);  // ここを420に上げて間を狭く
+            drawItem(130, 420, 'プレイ時間帯 / Playing Hours', cardData.time, 320, 35);
             
             targetCtx.restore();
             
@@ -794,7 +794,7 @@
             { input: inputs.coat, counter: counters.coat, max: 30 },
             { input: inputs.way, counter: counters.way, max: 30 },
             { input: inputs.time, counter: counters.time, max: 15 },
-            { input: inputs.com, counter: counters.com, max: 100 }
+            { input: inputs.com, counter: counters.com, max: 114 }
         ];
 
         inputCounterPairs.forEach(({ input, counter, max }) => {
