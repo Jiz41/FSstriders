@@ -65,11 +65,38 @@
             overflow: hidden;
         }
 
-        .title-image-area img {
+                /* --- タイトルエリア：動画とフェードの設定 --- */
+        .title-image-area {
+            position: relative; /* 子要素の基準点 */
+            width: 100%;
+            height: 100px;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .title-image-area video {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover; /* 領域に合わせてトリミング */
             display: block;
+        }
+
+        /* 6.5秒周期で黒にフェードアウトする幕 */
+        .fade-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            pointer-events: none; /* クリックを透過 */
+            animation: blackFade 6.5s infinite linear;
+        }
+
+        @keyframes blackFade {
+            0%   { opacity: 0; }
+            85%  { opacity: 0; } /* 5.5秒付近まで表示 */
+            100% { opacity: 1; } /* 最後の1秒で黒へ */
         }
 
         .input-container {
@@ -283,7 +310,8 @@
 
     <div class="panel">
         <div class="title-image-area">
-            <img src="title.png" alt="FullStride Profile Generator">
+            <video src="title-movie.mp4" autoplay muted loop playsinline></video>
+<div class="fade-overlay"></div>
         </div>
         <div class="input-container">
             <div class="input-block">
