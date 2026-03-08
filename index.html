@@ -93,10 +93,12 @@
             animation: blackFade 6.5s infinite linear;
         }
 
+                /* 6.5秒周期：黒(始) → 透明 → 黒(終) の循環 */
         @keyframes blackFade {
-            0%   { opacity: 0; }
-            85%  { opacity: 0; } /* 5.5秒付近まで表示 */
-            100% { opacity: 1; } /* 最後の1秒で黒へ */
+            0%   { opacity: 1; }   /* 始端：真っ黒 */
+            10%  { opacity: 0; }   /* 約0.6秒かけて表示 */
+            85%  { opacity: 0; }   /* 5.5秒付近まで維持 */
+            100% { opacity: 1; }   /* 最後の1秒で再び黒へ */
         }
 
         .input-container {
