@@ -53,53 +53,53 @@
         }
 
         .title-image-area {
-            width: 100%;
-            height: 100px;
-            min-height: 100px;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #000;
-            border-bottom: 1px solid #333;
-            overflow: hidden;
-        }
+    position: relative;
+    width: 100%;
+    height: 100px;
+    background: #000;
+    overflow: hidden;
+}
 
-                /* --- タイトルエリア：動画とフェードの設定 --- */
-        .title-image-area {
-            position: relative; /* 子要素の基準点 */
-            width: 100%;
-            height: 100px;
-            background: #000;
-            overflow: hidden;
-        }
+.title-image-area .bg-video {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(12px);
+    transform: scale(1.1);
+    opacity: 0.7;
+}
 
-        .title-image-area video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* 領域に合わせてトリミング */
-            display: block;
-        }
+.title-image-area .main-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    transform-origin: center center;
+    width: 450px;
+    height: 200px;
+    object-fit: cover;
+    z-index: 1;
+}
 
-        /* 6.5秒周期で黒にフェードアウトする幕 */
-        .fade-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            pointer-events: none; /* クリックを透過 */
-            animation: blackFade 6.5s infinite linear;
-        }
+.fade-overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    pointer-events: none;
+    animation: blackFade 6.5s infinite linear;
+    z-index: 2;
+}
 
-                /* 6.5秒周期：黒(始) → 透明 → 黒(終) の循環 */
-        @keyframes blackFade {
-            0%   { opacity: 1; }   /* 始端：真っ黒 */
-            10%  { opacity: 0; }   /* 約0.6秒かけて表示 */
-            85%  { opacity: 0; }   /* 5.5秒付近まで維持 */
-            100% { opacity: 1; }   /* 最後の1秒で再び黒へ */
-        }
+@keyframes blackFade {
+    0%   { opacity: 1; }
+    10%  { opacity: 0; }
+    85%  { opacity: 0; }
+    100% { opacity: 1; }
+}
 
         .input-container {
             padding: 20px;
@@ -312,9 +312,10 @@
 
     <div class="panel">
         <div class="title-image-area">
-            <video src="title-movie.mp4" autoplay muted loop playsinline></video>
-<div class="fade-overlay"></div>
-        </div>
+  <video class="bg-video" autoplay muted loop playsinline src="title.mp4"></video>
+  <video class="main-video" autoplay muted loop playsinline src="title.mp4"></video>
+  <div class="fade-overlay"></div>
+</div>
         <div class="input-container">
             <div class="input-block">
                 <label class="g-title">枠番設定 / Gate Settings</label>
