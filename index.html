@@ -859,17 +859,21 @@
         saveBtn.addEventListener('click', saveImage);
         window.addEventListener('resize', adjustScale);
 
-        window.addEventListener('load', () => {
-            createDotPattern();
-            adjustScale();
-            updateWaku();
-            updateCardData();
-            drawCard();
-            
-            inputCounterPairs.forEach(({ input, counter, max }) => {
-                updateCounter(input, counter, max);
-            });
-        });
+window.addEventListener('load', () => {
+    createDotPattern();
+    adjustScale();
+    updateWaku();
+    updateCardData();
+    drawCard();
+    
+    inputCounterPairs.forEach(({ input, counter, max }) => {
+        updateCounter(input, counter, max);
+    });
+
+    document.querySelectorAll('.title-image-area video').forEach(v => {
+        v.play().catch(() => {});
+    });
+});
     </script>
 </body>
 </html>
