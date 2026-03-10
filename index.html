@@ -873,6 +873,18 @@ window.addEventListener('load', () => {
     document.querySelectorAll('.title-image-area video').forEach(v => {
         v.play().catch(() => {});
     });
+
+    document.addEventListener('touchstart', function playOnTouch() {
+        document.querySelectorAll('.title-image-area video').forEach(v => {
+            v.play().catch(() => {});
+        });
+    }, { once: true });
+
+    document.addEventListener('click', function playOnClick() {
+        document.querySelectorAll('.title-image-area video').forEach(v => {
+            v.play().catch(() => {});
+        });
+    }, { once: true });
 });
     </script>
 </body>
