@@ -346,6 +346,11 @@ textarea:focus {
     line-height: 1.6;
 }
 
+.m-copyright a {
+    color: var(--k-color);
+    text-decoration: none;
+}
+
 .loading-overlay {
     display: none;
     position: fixed;
