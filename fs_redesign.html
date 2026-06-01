@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FS Striders - Player Profile Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* ========== 変数 ========== */
+        :root {
+            --k-color: #e60012;
+            --k-color-tx: #fff;
+            --gold: #c8a96e;
+            --gold-lt: #e8d5a3;
+            --ink: #0c0c0c;
+            --ink-mid: #141414;
+            --ink-soft: #1c1c1c;
+            --rule: rgba(255,255,255,0.07);
+            --rule-gold: rgba(200,169,110,0.2);
+            --txt: #e8e8e8;
+            --txt-dim: #666;
+            --transition-speed: 0.3s;
+        }
+
+        /* ========== リセット ========== */
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--ink);
+            color: var(--txt);
+            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 300;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            /* 極薄ノイズ */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+        }
+
+        /* ========== カードエリア ========== */
+        .card-container {
+            width: 100%;
+            height: 50vh;
+            background: #080808;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            border-bottom: 1px solid var(--rule-gold);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* モックカード */
+        .mock-card {
+            width: 85%;
+            max-width: 425px;
+            aspect-ratio: 850/580;
+            background: #f5f5f0;
+            border-radius: 2px;
+            box-shadow: 0 8px 48px rgba(0,0,0,0.7), 0 2px 8px rgba(0,0,0,0.5);
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .mock-waku {
+            width: 12%;
+            background: var(--k-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(20px, 4vw, 36px);
+            font-weight: 900;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .mock-body {
+            flex: 1;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .mock-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .mock-icon {
+            width: clamp(32px, 6vw, 50px);
+            height: clamp(32px, 6vw, 50px);
+            border-radius: 50%;
+            background: #ddd;
+            border: 2px solid var(--k-color);
+            flex-shrink: 0;
+        }
+
+        .mock-name-block { flex: 1; }
+        .mock-name { height: 10px; background: #222; border-radius: 1px; width: 60%; margin-bottom: 5px; }
+        .mock-sub-line { height: 6px; background: #bbb; border-radius: 1px; width: 80%; margin-bottom: 3px; }
+
+        .mock-section-bar {
+            height: 14px;
+            background: #1a1a1a;
+            border-radius: 0;
+            margin: 4px 0 2px;
+        }
+
+        .mock-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .mock-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            border-left: 2px solid var(--k-color);
+            padding-left: 4px;
+        }
+
+        .mock-item-label { height: 5px; background: #aaa; border-radius: 1px; width: 70%; }
+        .mock-item-val   { height: 8px; background: #444; border-radius: 1px; width: 90%; }
+
+        .mock-comment-area {
+            border-top: 1px solid #aaa;
+            padding-top: 5px;
+            height: 20px;
+            background: repeating-linear-gradient(
+                transparent, transparent 5px, #ddd 5px, #ddd 6px
+            );
+        }
+
+        /* ========== パネル ========== */
+        .panel {
+            width: 100%;
+            flex-grow: 1;
+            overflow-y: auto;
+            background: var(--ink);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ========== バナー ========== */
+        .title-image-area {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            background: #000;
+            overflow: hidden;
+            flex-shrink: 0;
+            border-bottom: 1px solid var(--rule-gold);
+        }
+
+        .banner-anim {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .bp-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            will-change: opacity;
+        }
+
+        .bp-text-a {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 8px; z-index: 2;
+            animation: bp-show-a 16s ease-in-out infinite;
+        }
+        @keyframes bp-show-a {
+            0%{opacity:0} 4%{opacity:1} 21%{opacity:1} 25%{opacity:0} 100%{opacity:0}
+        }
+
+        .bp-img-a { z-index:1; animation: bp-show-b 16s ease-in-out infinite; }
+        @keyframes bp-show-b {
+            0%{opacity:0} 25%{opacity:0} 29%{opacity:1} 46%{opacity:1} 50%{opacity:0} 100%{opacity:0}
+        }
+
+        .bp-text-b {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 8px; z-index: 2;
+            animation: bp-show-c 16s ease-in-out infinite;
+        }
+        @keyframes bp-show-c {
+            0%{opacity:0} 50%{opacity:0} 54%{opacity:1} 71%{opacity:1} 75%{opacity:0} 100%{opacity:0}
+        }
+
+        .bp-img-b { z-index:1; animation: bp-show-d 16s ease-in-out infinite; }
+        @keyframes bp-show-d {
+            0%{opacity:0} 75%{opacity:0} 79%{opacity:1} 96%{opacity:1} 100%{opacity:0}
+        }
+
+        .bp-photo {
+            width:100%; height:100%;
+            object-fit:cover; object-position:center;
+            animation: bp-kenburns 4s ease-in-out infinite alternate;
+        }
+        @keyframes bp-kenburns {
+            0%{transform:scale(1.0)} 100%{transform:scale(1.06)}
+        }
+
+        .bp-vignette {
+            position:absolute; inset:0;
+            background:
+                linear-gradient(to right,  rgba(0,0,0,0.55) 0%, transparent 28%, transparent 72%, rgba(0,0,0,0.55) 100%),
+                linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.45) 100%);
+            z-index:2; pointer-events:none;
+        }
+
+        .bp-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(20px, 5vw, 38px);
+            font-weight: 400;
+            letter-spacing: 0.35em;
+            white-space: nowrap;
+            text-align: center;
+            line-height: 1.1;
+            background: linear-gradient(160deg, var(--gold) 0%, var(--gold-lt) 35%, #fff 50%, var(--gold-lt) 65%, var(--gold) 100%);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: bp-gold-shimmer 5s linear infinite;
+        }
+        @keyframes bp-gold-shimmer {
+            0%{background-position:200% center} 100%{background-position:-200% center}
+        }
+
+        .bp-title::after {
+            content:'';
+            display:block;
+            width:40%; height:1px;
+            margin:6px auto 0;
+            background:linear-gradient(to right, transparent, var(--gold), transparent);
+        }
+
+        .bp-sub {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(8px, 1.6vw, 11px);
+            font-weight: 300;
+            font-style: italic;
+            letter-spacing: 0.5em;
+            white-space: nowrap;
+            text-align: center;
+            color: rgba(200,169,110,0.6);
+            text-transform: uppercase;
+        }
+
+        /* ========== 入力パネル ========== */
+        .input-container {
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .input-block {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            padding: 24px 0;
+            background: transparent;
+            border-top: 1px solid var(--rule);
+        }
+
+        .input-block:first-child {
+            border-top: none;
+            padding-top: 8px;
+        }
+
+        /* ========== ラベル ========== */
+        label.g-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 11px;
+            font-weight: 400;
+            color: var(--gold);
+            letter-spacing: 0.45em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color var(--transition-speed);
+        }
+
+        label.g-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--rule-gold);
+        }
+
+        /* ========== 入力欄 ========== */
+        input,
+        select,
+        textarea {
+            padding: 10px 0;
+            border-radius: 0;
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: transparent;
+            color: var(--txt);
+            font-size: 15px;
+            font-weight: 300;
+            width: 100%;
+            font-family: 'Noto Sans JP', sans-serif;
+            transition: border-color 0.25s;
+            -webkit-appearance: none;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-bottom-color: var(--k-color);
+        }
+
+        select option { background: var(--ink-mid); }
+
+        textarea { resize: none; line-height: 1.8; }
+
+        .upload-hint {
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            color: var(--txt-dim);
+            margin: 0;
+        }
+
+        .char-counter {
+            font-size: 10px;
+            color: var(--txt-dim);
+            text-align: right;
+            margin-top: -10px;
+            letter-spacing: 0.05em;
+        }
+
+        .char-counter.warning { color: #f39800; }
+        .char-counter.danger  { color: var(--k-color); }
+
+        /* ========== 保存ボタン ========== */
+        .save-btn {
+            padding: 18px;
+            background: transparent;
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 16px;
+            font-weight: 400;
+            letter-spacing: 0.4em;
+            cursor: pointer;
+            border-radius: 1px;
+            margin-top: 24px;
+            text-transform: uppercase;
+            transition: background var(--transition-speed), color var(--transition-speed), box-shadow 0.2s;
+        }
+
+        .save-btn:hover {
+            background: var(--gold);
+            color: var(--ink);
+            box-shadow: 0 4px 24px rgba(200,169,110,0.2);
+        }
+
+        .save-btn:active { transform: scale(0.99); }
+
+        .save-btn:disabled,
+        .save-btn.saving {
+            border-color: #444;
+            color: #444;
+            cursor: not-allowed;
+            background: transparent;
+        }
+
+        /* ========== コピーライト ========== */
+        .m-copyright {
+            text-align: center;
+            margin: 32px 0 48px;
+            padding-top: 24px;
+            border-top: 1px solid var(--rule);
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: 11px;
+            font-style: italic;
+            color: #3a3a3a;
+            line-height: 2;
+            letter-spacing: 0.08em;
+        }
+
+        .m-copyright a {
+            color: rgba(200,169,110,0.45);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .m-copyright a:hover { color: var(--gold); }
+
+        /* ========== ローディング ========== */
+        .loading-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 9999;
+            justify-content: center; align-items: center;
+            flex-direction: column; gap: 20px;
+        }
+
+        .loading-overlay.active { display: flex; }
+
+        .spinner {
+            width: 40px; height: 40px;
+            border: 1px solid #333;
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+        }
+
+        .loading-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            color: var(--gold);
+            font-size: 14px;
+            letter-spacing: 0.2em;
+        }
+
+        /* ========== トースト ========== */
+        .toast {
+            position: fixed;
+            bottom: 30px; right: 20px;
+            background: var(--ink-mid);
+            color: var(--txt);
+            padding: 14px 20px;
+            border-radius: 1px;
+            border-left: 2px solid var(--gold);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.6);
+            font-size: 13px;
+            letter-spacing: 0.05em;
+            z-index: 10000;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .toast.show    { opacity:1; transform:translateY(0); }
+        .toast.success { border-left-color: #009944; }
+        .toast.error   { border-left-color: var(--k-color); }
+
+        /* ========== アニメーション ========== */
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ========== レスポンシブ ========== */
+        @media screen and (orientation: landscape) {
+            body { flex-direction: row; }
+            .card-container {
+                width: 45%; height: 100vh;
+                border-right: 1px solid var(--rule-gold);
+                border-bottom: none;
+            }
+            .panel { width: 55%; height: 100vh; }
+        }
+
+        @media screen and (max-width: 480px) {
+            .input-container { padding: 20px 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">generating...</div>
+    </div>
+
+    <!-- モックカードエリア -->
+    <div class="card-container">
+        <div class="mock-card">
+            <div class="mock-waku" style="background:#e60012;color:#fff;">3</div>
+            <div class="mock-body">
+                <div class="mock-header">
+                    <div class="mock-icon"></div>
+                    <div class="mock-name-block">
+                        <div class="mock-name"></div>
+                        <div class="mock-sub-line"></div>
+                        <div class="mock-sub-line" style="width:50%"></div>
+                    </div>
+                </div>
+                <div class="mock-section-bar"></div>
+                <div class="mock-grid">
+                    <div class="mock-item"><div class="mock-item-label"></div><div class="mock-item-val"></div></div>
+                    <div class="mock-item"><div class="mock-item-label"></div><div class="mock-item-val"></div></div>
+                    <div class="mock-item"><div class="mock-item-label"></div><div class="mock-item-val"></div></div>
+                    <div class="mock-item"><div class="mock-item-label"></div><div class="mock-item-val"></div></div>
+                </div>
+                <div class="mock-section-bar"></div>
+                <div class="mock-grid">
+                    <div class="mock-item"><div class="mock-item-label"></div><div class="mock-item-val"></div></div>
+                    <div class="mock-item"><div class="mock-item-label"></div><div class="mock-item-val"></div></div>
+                </div>
+                <div class="mock-comment-area"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="title-image-area">
+            <div class="banner-anim" aria-hidden="true">
+                <div class="bp-slide bp-text-a">
+                    <div class="bp-title">FS STRIDERS</div>
+                    <div class="bp-sub">Player Profile Generator</div>
+                </div>
+                <div class="bp-slide bp-img-a">
+                    <img class="bp-photo" src="umahidari.jpg" alt="">
+                    <div class="bp-vignette"></div>
+                </div>
+                <div class="bp-slide bp-text-b">
+                    <div class="bp-title">FS STRIDERS</div>
+                    <div class="bp-sub">Player Profile Generator</div>
+                </div>
+                <div class="bp-slide bp-img-b">
+                    <img class="bp-photo" src="umagoal.png" alt="">
+                    <div class="bp-vignette"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <div class="input-block">
+                <label class="g-title">枠番設定 / Gate</label>
+                <select id="in-waku">
+                    <option value="1">1枠 (白) / 1st Gate (White)</option>
+                    <option value="2">2枠 (黒) / 2nd Gate (Black)</option>
+                    <option value="3" selected>3枠 (赤) / 3rd Gate (Red)</option>
+                    <option value="4">4枠 (青) / 4th Gate (Blue)</option>
+                    <option value="5">5枠 (黄) / 5th Gate (Yellow)</option>
+                    <option value="6">6枠 (緑) / 6th Gate (Green)</option>
+                    <option value="7">7枠 (橙) / 7th Gate (Orange)</option>
+                    <option value="8">8枠 (桃) / 8th Gate (Pink)</option>
+                </select>
+            </div>
+
+            <div class="input-block">
+                <label class="g-title">基本情報 / Basic Info</label>
+                <p class="upload-hint">プロフィール画像を選択 (任意) / Select Profile Icon (Optional)</p>
+                <input type="file" accept="image/*">
+                <input type="text" maxlength="20" placeholder="お名前 / Your Name">
+                <div class="char-counter">0 / 20</div>
+                <input type="text" maxlength="30" placeholder="SNS ID / SNS Handle">
+                <div class="char-counter">0 / 30</div>
+                <input type="text" maxlength="30" placeholder="馬との歩み / Horse History">
+                <div class="char-counter">0 / 30</div>
+                <input type="text" maxlength="30" placeholder="主なハード / Main Platform">
+                <div class="char-counter">0 / 30</div>
+            </div>
+
+            <div class="input-block">
+                <label class="g-title">競馬の好み / Favorite</label>
+                <input type="text" maxlength="30" placeholder="推し馬・騎手 / Fav Horse & Jockey">
+                <div class="char-counter">0 / 30</div>
+                <input type="text" maxlength="30" placeholder="好きな血統 / Fav Pedigree">
+                <div class="char-counter">0 / 30</div>
+                <input type="text" maxlength="30" placeholder="好きな競馬場 / Fav Racecourse">
+                <div class="char-counter">0 / 30</div>
+                <input type="text" maxlength="30" placeholder="好きな毛色 / Fav Coat">
+                <div class="char-counter">0 / 30</div>
+            </div>
+
+            <div class="input-block">
+                <label class="g-title">プレイの傾向 / Playstyle</label>
+                <select>
+                    <option value="---">好きな脚質を選択 / Favorite Strategy</option>
+                    <option>大逃げ / Front Runner</option>
+                    <option>逃げ / Pace Setter</option>
+                    <option>先行 / Stalker</option>
+                    <option>差し / Closer</option>
+                    <option>追い込み / Deep Closer</option>
+                </select>
+                <input type="text" maxlength="30" placeholder="騎乗スタイル / Riding Style">
+                <div class="char-counter">0 / 30</div>
+                <input type="text" maxlength="15" placeholder="よく遊ぶ時間帯 / Usual Play Time">
+                <div class="char-counter">0 / 15</div>
+            </div>
+
+            <div class="input-block">
+                <label class="g-title">一言メッセージ / Message</label>
+                <textarea maxlength="138" rows="3" placeholder="一言メッセージ (138字以内)"></textarea>
+                <div class="char-counter">0 / 138</div>
+            </div>
+
+            <button class="save-btn">Save Image / 画像を保存する</button>
+
+            <div class="m-copyright">
+                本ツールはファンによる非公式ジェネレータです。<br>
+                『FULL STRIDE』の名称は、<a href="https://x.com/BlueBullet_Inc" target="_blank" rel="noopener">BLUE BULLET</a>の商標または登録商標です。<br>
+                Created by ©<a href="https://x.com/Mushyn_Reagan" target="_blank" rel="noopener">Musyn Reagan</a> / <a href="https://x.com/Kayoutouidou01" target="_blank" rel="noopener">華耀東夷堂</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
