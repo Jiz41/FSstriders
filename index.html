@@ -201,17 +201,18 @@
             100% { left: 110%; }
         }
 
-        /* メインフェーズ（0.77〜4秒）: グリッド背景 */
+        /* メインフェーズ（0.77〜4秒）: フォント・色サイクリング */
         .bp-main {
             position: absolute;
             inset: 0;
-            background:
-                linear-gradient(rgba(155,0,0,0.2) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(155,0,0,0.2) 1px, transparent 1px),
-                #000;
-            background-size: 28px 28px, 28px 28px, 100% 100%;
+            background: #000;
             z-index: 1;
             opacity: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             overflow: hidden;
             animation: bp-vis-main 5s linear infinite;
         }
@@ -223,102 +224,21 @@
             80.1% { opacity: 0; }
             100%  { opacity: 0; }
         }
-        /* SVG（曲線・ワイヤーフレーム馬） */
-        .bp-svg {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-        }
-        /* 馬の微細点滅 */
-        .bp-horse-grp {
-            animation: bp-horse-blink 3.1s ease-in-out infinite;
-        }
-        .bp-horse-grp:last-of-type {
-            animation-duration: 2.7s;
-            animation-delay: 0.9s;
-        }
-        @keyframes bp-horse-blink {
-            0%, 100% { opacity: 0.82; }
-            46%      { opacity: 0.82; }
-            49%      { opacity: 0.2;  }
-            52%      { opacity: 0.82; }
-            83%      { opacity: 0.82; }
-            86%      { opacity: 0.42; }
-            89%      { opacity: 0.82; }
-        }
-        /* メインタイトルテキスト */
-        .bp-main-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            z-index: 3;
-            pointer-events: none;
-        }
-        .bp-main-title {
-            color: #e60012;
-            font-family: 'Courier New', Courier, monospace;
+        /* タイトル・サブタイトル（JSがfont/colorをランダム切り替え） */
+        .bp-cycle-title {
+            font-size: clamp(20px, 5vw, 42px);
             font-weight: bold;
-            font-size: clamp(16px, 4vw, 34px);
-            letter-spacing: 0.3em;
-            text-shadow: 0 0 18px rgba(230,0,18,0.65), 0 0 4px rgba(230,0,18,0.4);
+            letter-spacing: 0.25em;
             white-space: nowrap;
+            text-align: center;
+            line-height: 1.1;
         }
-        .bp-main-sub {
-            color: rgba(200,80,80,0.85);
-            font-family: 'Courier New', Courier, monospace;
-            font-size: clamp(7px, 1.4vw, 12px);
-            letter-spacing: 0.22em;
-            margin-top: 5px;
+        .bp-cycle-sub {
+            font-size: clamp(9px, 1.9vw, 17px);
+            letter-spacing: 0.18em;
             white-space: nowrap;
-        }
-        /* 左上「ビデオ入力」ラベル */
-        .bp-video-label {
-            position: absolute;
-            top: 7px;
-            left: 9px;
-            color: rgba(200,0,0,0.4);
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 8px;
-            letter-spacing: 0.12em;
-            z-index: 3;
-            pointer-events: none;
-        }
-        /* 十字マーカー */
-        .bp-cross {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            z-index: 3;
-            pointer-events: none;
-            animation: bp-cross-blink 1.5s steps(1) infinite;
-        }
-        .bp-cross::before,
-        .bp-cross::after {
-            content: '';
-            position: absolute;
-            background: #e60012;
-        }
-        .bp-cross::before {
-            width: 10px;
-            height: 1.5px;
-            top: 50%;
-            left: 0;
-            transform: translateY(-50%);
-        }
-        .bp-cross::after {
-            width: 1.5px;
-            height: 10px;
-            left: 50%;
-            top: 0;
-            transform: translateX(-50%);
-        }
-        @keyframes bp-cross-blink {
-            0%  { opacity: 1; }
-            50% { opacity: 0; }
-            100%{ opacity: 1; }
+            text-align: center;
+            opacity: 0.92;
         }
 
         .input-container {
@@ -558,34 +478,10 @@
                     <div class="bp-gb"></div>
                     <div class="bp-gb"></div>
                 </div>
-                <!-- フェーズ3: メインタイトル画面 -->
+                <!-- フェーズ3: フォント・色サイクリング -->
                 <div class="bp-main">
-                    <svg class="bp-svg" viewBox="0 0 400 160" preserveAspectRatio="xMidYMid slice">
-                        <!-- 右斜め上への緩やかな曲線 -->
-                        <path d="M-10,150 Q120,95 250,58 Q340,30 420,5" stroke="rgba(180,0,0,0.5)" stroke-width="1.5" fill="none"/>
-                        <!-- 左の馬（右向き・中心へ） -->
-                        <g class="bp-horse-grp" transform="translate(-5,42) scale(1.5)">
-                            <path d="M5,44 L6,39 L9,33 L13,27 L19,22 L23,25 L21,35 L15,41 L7,41 L5,44 M17,22 L15,18 L20,20 L19,22 M19,22 L27,24 L35,28 L68,26 L72,30 M72,30 L79,21 L84,27 L81,36 L75,38 M15,41 L23,44 L31,47 L35,51 L68,49 L72,42 L72,30 M33,51 L31,64 L29,76 M39,52 L37,64 L35,76 M65,49 L63,63 L61,76 M71,51 L71,63 L71,76 M28,64 L32,64 M34,64 L38,64 M60,63 L64,63 M70,63 L72,63" stroke="#00dd55" stroke-width="0.8" fill="none"/>
-                        </g>
-                        <!-- 右の馬（左向き・中心へ、ミラー） -->
-                        <g class="bp-horse-grp" transform="translate(405,42) scale(-1.5,1.5)">
-                            <path d="M5,44 L6,39 L9,33 L13,27 L19,22 L23,25 L21,35 L15,41 L7,41 L5,44 M17,22 L15,18 L20,20 L19,22 M19,22 L27,24 L35,28 L68,26 L72,30 M72,30 L79,21 L84,27 L81,36 L75,38 M15,41 L23,44 L31,47 L35,51 L68,49 L72,42 L72,30 M33,51 L31,64 L29,76 M39,52 L37,64 L35,76 M65,49 L63,63 L61,76 M71,51 L71,63 L71,76 M28,64 L32,64 M34,64 L38,64 M60,63 L64,63 M70,63 L72,63" stroke="#00dd55" stroke-width="0.8" fill="none"/>
-                        </g>
-                    </svg>
-                    <!-- タイトルテキスト -->
-                    <div class="bp-main-text">
-                        <div class="bp-main-title">FS STRIDERS</div>
-                        <div class="bp-main-sub">Player Profile Generator</div>
-                    </div>
-                    <!-- 左上ラベル -->
-                    <div class="bp-video-label">ビデオ入力</div>
-                    <!-- 十字マーカー（不規則点滅） -->
-                    <div class="bp-cross" style="top:14%;left:22%;animation-delay:0.0s;animation-duration:1.3s"></div>
-                    <div class="bp-cross" style="top:65%;left:19%;animation-delay:0.5s;animation-duration:1.8s"></div>
-                    <div class="bp-cross" style="top:18%;right:22%;animation-delay:0.9s;animation-duration:1.1s"></div>
-                    <div class="bp-cross" style="top:70%;right:20%;animation-delay:0.3s;animation-duration:2.0s"></div>
-                    <div class="bp-cross" style="top:45%;left:13%;animation-delay:0.7s;animation-duration:0.9s"></div>
-                    <div class="bp-cross" style="top:30%;right:13%;animation-delay:1.2s;animation-duration:1.5s"></div>
+                    <div class="bp-cycle-title" id="bp-cycle-title">FS STRIDERS</div>
+                    <div class="bp-cycle-sub"   id="bp-cycle-sub">Player Profile Generator</div>
                 </div>
             </div>
         </div>
@@ -1205,28 +1101,70 @@
                 updateCounter(input, counter, max);
             });
 
-            // 動画再生を試みる（一時停止中のみ実行）
-            function tryPlayVideos() {
-                document.querySelectorAll('.title-image-area video').forEach(v => {
-                    if (v.paused) v.play().catch(() => {});
-                });
+            // ========== バナー: フォント・色サイクリング ==========
+            const BP_FONTS = [
+                "'Courier New', Courier, monospace",
+                "Georgia, 'Times New Roman', serif",
+                "Impact, 'Arial Black', sans-serif",
+                "Arial, Helvetica, sans-serif",
+                "Verdana, Geneva, sans-serif",
+                "'Lucida Console', Monaco, monospace",
+                "Tahoma, Geneva, sans-serif",
+                "Palatino, 'Book Antiqua', serif",
+                "'Trebuchet MS', Helvetica, sans-serif",
+                "'Arial Black', Gadget, sans-serif",
+                "'Times New Roman', Times, serif",
+                "Garamond, Baskerville, serif",
+            ];
+            const BP_COLORS_TITLE = [
+                '#ffffff', '#e60012', '#ff3333',
+                '#00ffee', '#33ccff', '#00ccff',
+                '#ffff00', '#ffdb00', '#ffee33',
+                '#ff66cc', '#cc33ff', '#ff44aa',
+                '#f39800', '#ff6600', '#ffaa00',
+                '#00ff66', '#33ff99', '#00dd55',
+                '#ff4444', '#4499ff',
+            ];
+            const BP_COLORS_SUB = [
+                '#aaaaaa', '#cc6666', '#ff9999',
+                '#66cccc', '#99ddff', '#88ccee',
+                '#cccc66', '#ffffaa', '#eedd77',
+                '#cc99ff', '#ffaacc', '#ddaaee',
+                '#ffcc99', '#ffddbb', '#99ffcc',
+                '#ccffee', '#ffccee', '#ccddff',
+            ];
+
+            const bpTitle = document.getElementById('bp-cycle-title');
+            const bpSub   = document.getElementById('bp-cycle-sub');
+
+            function bpRand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+            // 前回と同じフォント・色が続かないよう直前値を保持
+            let prevTitleFont = '', prevSubFont = '';
+            let prevTitleColor = '', prevSubColor = '';
+
+            function bpCycle() {
+                let f, c;
+
+                f = bpRand(BP_FONTS);
+                while (f === prevTitleFont) f = bpRand(BP_FONTS);
+                c = bpRand(BP_COLORS_TITLE);
+                while (c === prevTitleColor) c = bpRand(BP_COLORS_TITLE);
+                bpTitle.style.fontFamily = prevTitleFont = f;
+                bpTitle.style.color      = prevTitleColor = c;
+
+                f = bpRand(BP_FONTS);
+                while (f === prevSubFont) f = bpRand(BP_FONTS);
+                c = bpRand(BP_COLORS_SUB);
+                while (c === prevSubColor) c = bpRand(BP_COLORS_SUB);
+                bpSub.style.fontFamily = prevSubFont = f;
+                bpSub.style.color      = prevSubColor = c;
+
+                // 70〜180ms のランダム間隔でサイクル
+                setTimeout(bpCycle, 70 + Math.random() * 110);
             }
 
-            // データ読み込み完了時に再生
-            document.querySelectorAll('.title-image-area video').forEach(v => {
-                v.addEventListener('canplay',    tryPlayVideos);
-                v.addEventListener('loadeddata', tryPlayVideos);
-            });
-
-            tryPlayVideos();
-
-            // ユーザー操作後にも再試行（モバイル自動再生制限への対応）
-            document.addEventListener('touchstart', tryPlayVideos, { once: true });
-            document.addEventListener('click',      tryPlayVideos, { once: true });
-            document.addEventListener('scroll',     tryPlayVideos, { once: true });
-
-            // 遅延ロードへの保険（2秒後）
-            setTimeout(tryPlayVideos, 2000);
+            if (bpTitle && bpSub) bpCycle();
         });
     </script>
 </body>
