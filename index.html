@@ -307,8 +307,8 @@
 
     <div class="panel">
         <div class="title-image-area">
-            <video class="bg-video" autoplay muted loop playsinline src="title.mp4"></video>
-            <video class="main-video" autoplay muted loop playsinline src="title.mp4"></video>
+            <video class="bg-video" autoplay muted loop playsinline webkit-playsinline preload="auto" src="title.mp4"></video>
+            <video class="main-video" autoplay muted loop playsinline webkit-playsinline preload="auto" src="title.mp4"></video>
             <div class="fade-overlay"></div>
         </div>
 
@@ -927,21 +927,28 @@
                 updateCounter(input, counter, max);
             });
 
+            // 動画再生を試みる（一時停止中のみ実行）
+            function tryPlayVideos() {
+                document.querySelectorAll('.title-image-area video').forEach(v => {
+                    if (v.paused) v.play().catch(() => {});
+                });
+            }
+
+            // データ読み込み完了時に再生
             document.querySelectorAll('.title-image-area video').forEach(v => {
-                v.play().catch(() => {});
+                v.addEventListener('canplay',    tryPlayVideos);
+                v.addEventListener('loadeddata', tryPlayVideos);
             });
 
-            document.addEventListener('touchstart', function playOnTouch() {
-                document.querySelectorAll('.title-image-area video').forEach(v => {
-                    v.play().catch(() => {});
-                });
-            }, { once: true });
+            tryPlayVideos();
 
-            document.addEventListener('click', function playOnClick() {
-                document.querySelectorAll('.title-image-area video').forEach(v => {
-                    v.play().catch(() => {});
-                });
-            }, { once: true });
+            // ユーザー操作後にも再試行（モバイル自動再生制限への対応）
+            document.addEventListener('touchstart', tryPlayVideos, { once: true });
+            document.addEventListener('click',      tryPlayVideos, { once: true });
+            document.addEventListener('scroll',     tryPlayVideos, { once: true });
+
+            // 遅延ロードへの保険（2秒後）
+            setTimeout(tryPlayVideos, 2000);
         });
     </script>
 </body>
