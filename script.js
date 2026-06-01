@@ -114,11 +114,11 @@ function createDotPattern() {
     patCanvas.height = CARD_HEIGHT;
     const patCtx = patCanvas.getContext('2d');
 
-    patCtx.fillStyle = '#dddddd';
+    patCtx.fillStyle = '#e8e8e8';
     for (let x = 0; x < CARD_WIDTH; x += DOT_PITCH) {
         for (let y = 0; y < CARD_HEIGHT; y += DOT_PITCH) {
             patCtx.beginPath();
-            patCtx.arc(x, y, 1.5, 0, Math.PI * 2);
+            patCtx.arc(x, y, 1.2, 0, Math.PI * 2);
             patCtx.fill();
         }
     }
@@ -251,7 +251,7 @@ function drawCard(targetCtx = ctx) {
         targetCtx.fillStyle = theme.bg;
         targetCtx.fillRect(x, y, 6, height);
 
-        targetCtx.fillStyle = '#444444';
+        targetCtx.fillStyle = '#888888';
         targetCtx.font = '900 10px sans-serif';
         targetCtx.fillText(label, x + 12, y + 2);
 
@@ -286,8 +286,8 @@ function drawCard(targetCtx = ctx) {
     targetCtx.restore();
 
     // コメント区切り線
-    targetCtx.strokeStyle = '#000000';
-    targetCtx.lineWidth = 4;
+    targetCtx.strokeStyle = '#555555';
+    targetCtx.lineWidth = 1;
     targetCtx.beginPath();
     targetCtx.moveTo(WAKU_BAR_WIDTH, COMMENT_LINE_Y);
     targetCtx.lineTo(CARD_WIDTH, COMMENT_LINE_Y);
