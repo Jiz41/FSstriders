@@ -151,10 +151,13 @@ function drawCard(targetCtx = ctx) {
         targetCtx.drawImage(dotPatternCanvas, 0, 0);
     }
 
-    // カード外枠
+    // カード外枠（ダブルライン）
     targetCtx.strokeStyle = '#000000';
-    targetCtx.lineWidth = 4;
+    targetCtx.lineWidth = 2;
     targetCtx.strokeRect(2, 2, CARD_WIDTH - 4, CARD_HEIGHT - 4);
+    targetCtx.strokeStyle = '#cccccc';
+    targetCtx.lineWidth = 1;
+    targetCtx.strokeRect(6, 6, CARD_WIDTH - 12, CARD_HEIGHT - 12);
 
     // 枠番カラーバー
     targetCtx.fillStyle = theme.bg;
@@ -183,7 +186,7 @@ function drawCard(targetCtx = ctx) {
     targetCtx.lineTo(CARD_WIDTH, HEADER_HEIGHT);
     targetCtx.stroke();
 
-    // アイコン枠（枠色ボーダー）
+    // アイコン枠（ダブルリング: 外=枠色、内=白細線）
     targetCtx.strokeStyle = theme.bg;
     targetCtx.lineWidth = 5;
     targetCtx.beginPath();
@@ -193,6 +196,12 @@ function drawCard(targetCtx = ctx) {
     // アイコン背景（白）
     targetCtx.fillStyle = '#ffffff';
     targetCtx.fill();
+
+    targetCtx.strokeStyle = '#ffffff';
+    targetCtx.lineWidth = 1;
+    targetCtx.beginPath();
+    targetCtx.arc(ICON_X, ICON_Y, 52, 0, Math.PI * 2);
+    targetCtx.stroke();
 
     // アイコン描画（画像 or プレースホルダー）
     if (userIconImage) {
@@ -261,9 +270,9 @@ function drawCard(targetCtx = ctx) {
     }
 
     // 競馬の好みセクション
-    targetCtx.fillStyle = '#000000';
+    targetCtx.fillStyle = '#1a1a1a';
     targetCtx.fillRect(CONTENT_LEFT, HEADER_HEIGHT + 15, CONTENT_WIDTH, 21);
-    targetCtx.fillStyle = '#ffffff';
+    targetCtx.fillStyle = '#e8e8e8';
     targetCtx.font = '900 13px sans-serif';
     targetCtx.fillText('競馬の好み / Favorite (Real)', CONTENT_LEFT + 12, HEADER_HEIGHT + 20);
 
@@ -273,9 +282,9 @@ function drawCard(targetCtx = ctx) {
     drawItem(COL2_X,       272, '好きな毛色 / Fav Coat',               cardData.coat,  330);
 
     // プレイの傾向セクション
-    targetCtx.fillStyle = '#000000';
+    targetCtx.fillStyle = '#1a1a1a';
     targetCtx.fillRect(CONTENT_LEFT, 350, CONTENT_WIDTH, 21);
-    targetCtx.fillStyle = '#ffffff';
+    targetCtx.fillStyle = '#e8e8e8';
     targetCtx.font = '900 13px sans-serif';
     targetCtx.fillText('プレイの傾向 / Playstyle (Game)', CONTENT_LEFT + 12, 355);
 
@@ -301,7 +310,7 @@ function drawCard(targetCtx = ctx) {
     wrapText(targetCtx, cardData.comment, CONTENT_LEFT, COMMENT_LINE_Y + 12, CONTENT_WIDTH, commentFontSize * 1.3, 3);
 
     // コピーライト
-    targetCtx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+    targetCtx.fillStyle = 'rgba(0, 0, 0, 0.18)';
     targetCtx.font = 'bold 11px sans-serif';
     targetCtx.textAlign = 'right';
     targetCtx.fillText('© 2026 Musyn Reagan', CARD_WIDTH - 12, CARD_HEIGHT - 12);
