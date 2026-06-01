@@ -448,6 +448,122 @@ textarea:focus {
     border-left-color: #e60012;
 }
 
+/* ========== トリミングモーダル ========== */
+.crop-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.92);
+    z-index: 9998;
+    align-items: center;
+    justify-content: center;
+}
+
+.crop-modal.active {
+    display: flex;
+}
+
+.crop-modal-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 28px 24px;
+    background: #0d0d0d;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    width: min(304px, 92vw);
+    user-select: none;
+}
+
+.crop-hint {
+    font-size: 11px;
+    color: #555;
+    letter-spacing: 0.05em;
+    margin: 0;
+    text-align: center;
+    font-style: italic;
+}
+
+#crop-canvas {
+    border: none;
+    border-radius: 50%;
+    cursor: grab;
+    touch-action: none;
+    display: block;
+}
+
+#crop-canvas:active {
+    cursor: grabbing;
+}
+
+.crop-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.crop-zoom-icon {
+    color: #555;
+    font-size: 18px;
+    line-height: 1;
+    flex-shrink: 0;
+    width: 14px;
+    text-align: center;
+}
+
+#crop-slider {
+    flex: 1;
+    padding: 0;
+    border: none;
+    border-bottom: none;
+    background: transparent;
+    accent-color: var(--k-color);
+    cursor: pointer;
+    height: 4px;
+    font-weight: 300;
+}
+
+.crop-buttons {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+.crop-btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 4px;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 14px;
+    letter-spacing: 0.2em;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.crop-cancel-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #666;
+}
+
+.crop-cancel-btn:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ccc;
+}
+
+.crop-confirm-btn {
+    background: transparent;
+    border: 1px solid var(--k-color);
+    color: var(--k-color);
+}
+
+.crop-confirm-btn:hover {
+    background: var(--k-color);
+    color: #0c0c0c;
+}
+
 /* ========== アニメーション ========== */
 @keyframes spin {
     to { transform: rotate(360deg); }

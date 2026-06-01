@@ -105,6 +105,14 @@ const counters = {
 const saveBtn        = document.getElementById('save-btn');
 const loadingOverlay = document.getElementById('loading-overlay');
 
+// ========== トリミングUI DOM参照 ==========
+const cropModal      = document.getElementById('crop-modal');
+const cropCanvas     = document.getElementById('crop-canvas');
+const cropCtx        = cropCanvas.getContext('2d');
+const cropSlider     = document.getElementById('crop-slider');
+const cropConfirmBtn = document.getElementById('crop-confirm');
+const cropCancelBtn  = document.getElementById('crop-cancel');
+
 // ========== 初期化 ==========
 
 // ドット柄パターンをオフスクリーンキャンバスに生成
@@ -365,7 +373,7 @@ function updateWaku() {
     updatePreview();
 }
 
-// プロフィール画像を読み込む
+// プロフィール画像を読み込む（トリミングモーダルへ渡す）
 function loadImage(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -380,14 +388,174 @@ function loadImage(e) {
     reader.onload = function(event) {
         const img = new Image();
         img.onload = function() {
-            userIconImage = img;
-            updatePreview();
+            openCropModal(img);
         };
         img.src = event.target.result;
     };
     reader.onerror = () => showToast('画像の読み込みに失敗しました', 'error');
     reader.readAsDataURL(file);
 }
+
+// ========== トリミングUI ==========
+const CROP_SIZE   = 240;
+const CROP_RADIUS = 120;
+
+let cropSourceImage    = null;
+let cropOffsetX        = 0;
+let cropOffsetY        = 0;
+let cropScale          = 1;
+let cropIsDragging     = false;
+let cropDragStartX     = 0;
+let cropDragStartY     = 0;
+let cropDragStartOX    = 0;
+let cropDragStartOY    = 0;
+let cropRafId          = null;
+
+function openCropModal(img) {
+    cropSourceImage = img;
+    cropOffsetX = 0;
+    cropOffsetY = 0;
+    // 短辺が円径に収まる初期スケール
+    const minDim  = Math.min(img.naturalWidth, img.naturalHeight);
+    const initScale = CROP_SIZE / minDim;
+    cropScale = initScale;
+    cropSlider.min   = initScale;
+    cropSlider.max   = initScale * 4;
+    cropSlider.step  = initScale * 0.01;
+    cropSlider.value = initScale;
+    cropModal.classList.add('active');
+    scheduleCropDraw();
+}
+
+function closeCropModal() {
+    cropModal.classList.remove('active');
+    cropSourceImage = null;
+    if (cropRafId !== null) {
+        cancelAnimationFrame(cropRafId);
+        cropRafId = null;
+    }
+}
+
+function drawCropPreview() {
+    cropRafId = null;
+    if (!cropSourceImage) return;
+
+    cropCtx.clearRect(0, 0, CROP_SIZE, CROP_SIZE);
+
+    // 暗背景
+    cropCtx.fillStyle = '#111';
+    cropCtx.fillRect(0, 0, CROP_SIZE, CROP_SIZE);
+
+    // 円形クリップで画像描画
+    cropCtx.save();
+    cropCtx.beginPath();
+    cropCtx.arc(CROP_RADIUS, CROP_RADIUS, CROP_RADIUS, 0, Math.PI * 2);
+    cropCtx.clip();
+
+    const drawW = cropSourceImage.naturalWidth  * cropScale;
+    const drawH = cropSourceImage.naturalHeight * cropScale;
+    cropCtx.drawImage(
+        cropSourceImage,
+        CROP_RADIUS + cropOffsetX - drawW / 2,
+        CROP_RADIUS + cropOffsetY - drawH / 2,
+        drawW, drawH
+    );
+    cropCtx.restore();
+
+    // 円枠
+    cropCtx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+    cropCtx.lineWidth = 1;
+    cropCtx.beginPath();
+    cropCtx.arc(CROP_RADIUS, CROP_RADIUS, CROP_RADIUS - 1, 0, Math.PI * 2);
+    cropCtx.stroke();
+}
+
+function scheduleCropDraw() {
+    if (cropRafId === null) {
+        cropRafId = requestAnimationFrame(drawCropPreview);
+    }
+}
+
+// ドラッグ（マウス）
+cropCanvas.addEventListener('mousedown', e => {
+    cropIsDragging  = true;
+    cropDragStartX  = e.clientX;
+    cropDragStartY  = e.clientY;
+    cropDragStartOX = cropOffsetX;
+    cropDragStartOY = cropOffsetY;
+    e.preventDefault();
+});
+
+window.addEventListener('mousemove', e => {
+    if (!cropIsDragging) return;
+    cropOffsetX = cropDragStartOX + (e.clientX - cropDragStartX);
+    cropOffsetY = cropDragStartOY + (e.clientY - cropDragStartY);
+    scheduleCropDraw();
+});
+
+window.addEventListener('mouseup', () => { cropIsDragging = false; });
+
+// タッチ操作
+cropCanvas.addEventListener('touchstart', e => {
+    const t = e.touches[0];
+    cropIsDragging  = true;
+    cropDragStartX  = t.clientX;
+    cropDragStartY  = t.clientY;
+    cropDragStartOX = cropOffsetX;
+    cropDragStartOY = cropOffsetY;
+    e.preventDefault();
+}, { passive: false });
+
+window.addEventListener('touchmove', e => {
+    if (!cropIsDragging) return;
+    const t = e.touches[0];
+    cropOffsetX = cropDragStartOX + (t.clientX - cropDragStartX);
+    cropOffsetY = cropDragStartOY + (t.clientY - cropDragStartY);
+    scheduleCropDraw();
+}, { passive: true });
+
+window.addEventListener('touchend', () => { cropIsDragging = false; });
+
+// スライダー
+cropSlider.addEventListener('input', () => {
+    cropScale = parseFloat(cropSlider.value);
+    scheduleCropDraw();
+});
+
+// 確定：オフスクリーンCanvasで切り出しuserIconImageにセット
+cropConfirmBtn.addEventListener('click', () => {
+    const outSize = ICON_RADIUS_INNER * 2;
+    const ratio   = outSize / CROP_SIZE;
+
+    const offCanvas    = document.createElement('canvas');
+    offCanvas.width    = outSize;
+    offCanvas.height   = outSize;
+    const offCtx       = offCanvas.getContext('2d');
+
+    offCtx.beginPath();
+    offCtx.arc(outSize / 2, outSize / 2, outSize / 2, 0, Math.PI * 2);
+    offCtx.clip();
+
+    const drawW = cropSourceImage.naturalWidth  * cropScale * ratio;
+    const drawH = cropSourceImage.naturalHeight * cropScale * ratio;
+    offCtx.drawImage(
+        cropSourceImage,
+        (outSize / 2) + cropOffsetX * ratio - drawW / 2,
+        (outSize / 2) + cropOffsetY * ratio - drawH / 2,
+        drawW, drawH
+    );
+
+    const finalImg = new Image();
+    finalImg.onload = () => {
+        userIconImage = finalImg;
+        closeCropModal();
+        updatePreview();
+    };
+    finalImg.src = offCanvas.toDataURL('image/png');
+});
+
+// キャンセル
+cropCancelBtn.addEventListener('click', closeCropModal);
 
 // カードを2倍解像度で画像出力する
 function saveImage() {
