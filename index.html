@@ -87,158 +87,121 @@
             z-index: 1;
         }
 
-        /* ========== バナーアニメーション（5秒ループ） ========== */
+        /* ========== バナーアニメーション（8秒ループ） ========== */
         .banner-anim {
             position: absolute;
             inset: 0;
             overflow: hidden;
-        }
-
-        /* ロゴフェーズ（0〜0.5秒 / 4.5〜5秒） */
-        .bp-logo {
-            position: absolute;
-            inset: 0;
             background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
-            animation: bp-vis-logo 5s linear infinite;
-        }
-        .bp-logo-text {
-            color: #fff;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            font-size: clamp(14px, 3.5vw, 30px);
-            letter-spacing: 0.4em;
-            white-space: nowrap;
-        }
-        @keyframes bp-vis-logo {
-            0%   { opacity: 1; }
-            10%  { opacity: 1; }
-            13%  { opacity: 0; }
-            87%  { opacity: 0; }
-            90%  { opacity: 1; }
-            100% { opacity: 1; }
         }
 
-        /* グリッチフェーズ（0.5〜0.77秒 / 4〜4.5秒） */
-        .bp-glitch {
+        /* アンビエント光: 左右に揺れる深紅と深青のオーブ */
+        .banner-anim::before {
+            content: '';
             position: absolute;
-            inset: 0;
-            background: #000;
-            z-index: 4;
-            opacity: 0;
-            overflow: hidden;
-            animation: bp-vis-glitch 5s linear infinite;
+            width: 70%;
+            height: 200%;
+            top: -50%;
+            left: 15%;
+            background: radial-gradient(ellipse at center, rgba(140,0,18,0.22) 0%, transparent 65%);
+            animation: bp-orb-a 8s ease-in-out infinite alternate;
+            pointer-events: none;
         }
-        @keyframes bp-vis-glitch {
-            0%    { opacity: 0; }
-            9.9%  { opacity: 0; }
-            10%   { opacity: 1; }
-            16%   { opacity: 0; }
-            79.9% { opacity: 0; }
-            80%   { opacity: 1; }
-            90%   { opacity: 0; }
-            100%  { opacity: 0; }
-        }
-        /* 色ズレ文字（赤チャンネル・シアンチャンネル） */
-        .bp-glitch::before,
-        .bp-glitch::after {
-            content: 'FS STRIDERS';
+        .banner-anim::after {
+            content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            font-size: clamp(14px, 3.5vw, 30px);
-            letter-spacing: 0.4em;
-            white-space: nowrap;
+            width: 55%;
+            height: 200%;
+            top: -50%;
+            right: 5%;
+            background: radial-gradient(ellipse at center, rgba(10,10,60,0.22) 0%, transparent 65%);
+            animation: bp-orb-b 11s ease-in-out infinite alternate-reverse;
+            pointer-events: none;
         }
-        .bp-glitch::before {
-            color: #ff2020;
-            opacity: 0.9;
-            animation: bp-glitch-r 0.13s steps(1) infinite;
+        @keyframes bp-orb-a {
+            0%   { transform: translateX(-20%); }
+            100% { transform: translateX(20%);  }
         }
-        .bp-glitch::after {
-            color: #20ffee;
-            opacity: 0.9;
-            animation: bp-glitch-c 0.17s steps(1) infinite;
-        }
-        @keyframes bp-glitch-r {
-            0%  { clip-path: inset(20% 0 50% 0); transform: translate(calc(-50% - 5px), calc(-50% + 3px)); }
-            25% { clip-path: inset(60% 0 10% 0); transform: translate(calc(-50% + 3px), calc(-50% - 5px)); }
-            50% { clip-path: inset(5%  0 80% 0); transform: translate(calc(-50% - 8px), -50%); }
-            75% { clip-path: inset(40% 0 30% 0); transform: translate(calc(-50% + 1px), calc(-50% + 6px)); }
-        }
-        @keyframes bp-glitch-c {
-            0%  { clip-path: inset(50% 0 20% 0); transform: translate(calc(-50% + 5px), calc(-50% - 3px)); }
-            25% { clip-path: inset(10% 0 60% 0); transform: translate(calc(-50% - 3px), calc(-50% + 5px)); }
-            50% { clip-path: inset(80% 0 5%  0); transform: translate(calc(-50% + 8px), -50%); }
-            75% { clip-path: inset(30% 0 40% 0); transform: translate(calc(-50% - 1px), calc(-50% - 6px)); }
-        }
-        /* 走査線バー */
-        .bp-gb {
-            position: absolute;
-            width: 45%;
-            height: 3px;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255,30,30,0.85) 35%,
-                rgba(30,255,240,0.85) 65%,
-                transparent
-            );
-            animation: bp-gb-slide 0.1s linear infinite;
-        }
-        .bp-gb:nth-child(1) { top: 12%; animation-duration: 0.11s; animation-delay: 0.000s; }
-        .bp-gb:nth-child(2) { top: 32%; animation-duration: 0.09s; animation-delay: 0.020s; height: 6px; }
-        .bp-gb:nth-child(3) { top: 54%; animation-duration: 0.13s; animation-delay: 0.045s; }
-        .bp-gb:nth-child(4) { top: 74%; animation-duration: 0.08s; animation-delay: 0.010s; height: 2px; }
-        .bp-gb:nth-child(5) { top: 90%; animation-duration: 0.10s; animation-delay: 0.035s; height: 4px; }
-        @keyframes bp-gb-slide {
-            0%   { left: -50%; }
-            100% { left: 110%; }
+        @keyframes bp-orb-b {
+            0%   { transform: translateX(15%);  }
+            100% { transform: translateX(-20%); }
         }
 
-        /* メインフェーズ（0.77〜4秒）: フォント・色サイクリング */
         .bp-main {
             position: absolute;
             inset: 0;
-            background: #000;
-            z-index: 1;
-            opacity: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            overflow: hidden;
-            animation: bp-vis-main 5s linear infinite;
+            z-index: 1;
         }
-        @keyframes bp-vis-main {
-            0%    { opacity: 0; }
-            15.9% { opacity: 0; }
-            16%   { opacity: 1; }
-            80%   { opacity: 1; }
-            80.1% { opacity: 0; }
-            100%  { opacity: 0; }
-        }
-        /* タイトル・サブタイトル（JSがfont/colorをランダム切り替え） */
+
+        /* タイトル: シマーグラデーション + 3D奥行きシャドウ + フェードループ */
         .bp-cycle-title {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             font-size: clamp(20px, 5vw, 42px);
-            font-weight: bold;
-            letter-spacing: 0.25em;
+            font-weight: 900;
+            letter-spacing: 0.3em;
             white-space: nowrap;
             text-align: center;
             line-height: 1.1;
+            /* 流れるシマーグラデーション */
+            background: linear-gradient(
+                105deg,
+                rgba(210,210,210,0.85)  0%,
+                #ffffff                 22%,
+                rgba(255,185,185,1.0)   40%,
+                #ffffff                 57%,
+                rgba(255,205,205,0.9)   73%,
+                #ffffff                 87%,
+                rgba(210,210,210,0.85) 100%
+            );
+            background-size: 220% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            /* 赤系の落ちるシャドウで3D感 */
+            filter:
+                drop-shadow(0 1px 0 rgba(180,0,15,0.65))
+                drop-shadow(0 3px 0 rgba(120,0,10,0.4))
+                drop-shadow(0 7px 14px rgba(200,0,18,0.45))
+                drop-shadow(0 18px 35px rgba(180,0,12,0.18));
+            animation:
+                bp-shimmer    3.5s linear      infinite,
+                bp-title-loop 8s   ease-in-out infinite;
         }
+        @keyframes bp-shimmer {
+            0%   { background-position: 200% center; }
+            100% { background-position: -200% center; }
+        }
+        @keyframes bp-title-loop {
+            0%   { opacity: 0; letter-spacing: 0.06em; }
+            12%  { opacity: 1; letter-spacing: 0.3em;  }
+            73%  { opacity: 1; letter-spacing: 0.3em;  }
+            86%  { opacity: 0; letter-spacing: 0.34em; }
+            100% { opacity: 0; letter-spacing: 0.06em; }
+        }
+
+        /* サブタイトル: 少し遅れてスライドイン */
         .bp-cycle-sub {
-            font-size: clamp(9px, 1.9vw, 17px);
-            letter-spacing: 0.18em;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: clamp(9px, 1.9vw, 16px);
+            font-weight: 300;
+            letter-spacing: 0.38em;
             white-space: nowrap;
             text-align: center;
-            opacity: 0.92;
+            color: rgba(210,160,160,0.82);
+            text-transform: uppercase;
+            animation: bp-sub-loop 8s ease-in-out infinite;
+        }
+        @keyframes bp-sub-loop {
+            0%   { opacity: 0; transform: translateY(6px);  }
+            18%  { opacity: 1; transform: translateY(0);    }
+            73%  { opacity: 1; transform: translateY(0);    }
+            84%  { opacity: 0; transform: translateY(-4px); }
+            100% { opacity: 0; transform: translateY(6px);  }
         }
 
         .input-container {
@@ -464,24 +427,11 @@
             <!-- 動画バナーはモバイル自動再生の互換性問題によりコメントアウト -->
             <!-- <video class="bg-video" autoplay muted loop playsinline webkit-playsinline preload="auto" src="title.mp4"></video> -->
             <!-- <video class="main-video" autoplay muted loop playsinline webkit-playsinline preload="auto" src="title.mp4"></video> -->
-            <!-- 代替: CSSアニメーションバナー（5秒ループ） -->
+            <!-- 代替: CSSアニメーションバナー（8秒ループ） -->
             <div class="banner-anim" aria-hidden="true">
-                <!-- フェーズ1・5: 黒地にFS STRIDERSのみ -->
-                <div class="bp-logo">
-                    <span class="bp-logo-text">FS STRIDERS</span>
-                </div>
-                <!-- フェーズ2・4: グリッチトランジション -->
-                <div class="bp-glitch">
-                    <div class="bp-gb"></div>
-                    <div class="bp-gb"></div>
-                    <div class="bp-gb"></div>
-                    <div class="bp-gb"></div>
-                    <div class="bp-gb"></div>
-                </div>
-                <!-- フェーズ3: フォント・色サイクリング -->
                 <div class="bp-main">
-                    <div class="bp-cycle-title" id="bp-cycle-title">FS STRIDERS</div>
-                    <div class="bp-cycle-sub"   id="bp-cycle-sub">Player Profile Generator</div>
+                    <div class="bp-cycle-title">FS STRIDERS</div>
+                    <div class="bp-cycle-sub">Player Profile Generator</div>
                 </div>
             </div>
         </div>
@@ -1101,70 +1051,6 @@
                 updateCounter(input, counter, max);
             });
 
-            // ========== バナー: フォント・色サイクリング ==========
-            const BP_FONTS = [
-                "'Courier New', Courier, monospace",
-                "Georgia, 'Times New Roman', serif",
-                "Impact, 'Arial Black', sans-serif",
-                "Arial, Helvetica, sans-serif",
-                "Verdana, Geneva, sans-serif",
-                "'Lucida Console', Monaco, monospace",
-                "Tahoma, Geneva, sans-serif",
-                "Palatino, 'Book Antiqua', serif",
-                "'Trebuchet MS', Helvetica, sans-serif",
-                "'Arial Black', Gadget, sans-serif",
-                "'Times New Roman', Times, serif",
-                "Garamond, Baskerville, serif",
-            ];
-            const BP_COLORS_TITLE = [
-                '#ffffff', '#e60012', '#ff3333',
-                '#00ffee', '#33ccff', '#00ccff',
-                '#ffff00', '#ffdb00', '#ffee33',
-                '#ff66cc', '#cc33ff', '#ff44aa',
-                '#f39800', '#ff6600', '#ffaa00',
-                '#00ff66', '#33ff99', '#00dd55',
-                '#ff4444', '#4499ff',
-            ];
-            const BP_COLORS_SUB = [
-                '#aaaaaa', '#cc6666', '#ff9999',
-                '#66cccc', '#99ddff', '#88ccee',
-                '#cccc66', '#ffffaa', '#eedd77',
-                '#cc99ff', '#ffaacc', '#ddaaee',
-                '#ffcc99', '#ffddbb', '#99ffcc',
-                '#ccffee', '#ffccee', '#ccddff',
-            ];
-
-            const bpTitle = document.getElementById('bp-cycle-title');
-            const bpSub   = document.getElementById('bp-cycle-sub');
-
-            function bpRand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-
-            // 前回と同じフォント・色が続かないよう直前値を保持
-            let prevTitleFont = '', prevSubFont = '';
-            let prevTitleColor = '', prevSubColor = '';
-
-            function bpCycle() {
-                let f, c;
-
-                f = bpRand(BP_FONTS);
-                while (f === prevTitleFont) f = bpRand(BP_FONTS);
-                c = bpRand(BP_COLORS_TITLE);
-                while (c === prevTitleColor) c = bpRand(BP_COLORS_TITLE);
-                bpTitle.style.fontFamily = prevTitleFont = f;
-                bpTitle.style.color      = prevTitleColor = c;
-
-                f = bpRand(BP_FONTS);
-                while (f === prevSubFont) f = bpRand(BP_FONTS);
-                c = bpRand(BP_COLORS_SUB);
-                while (c === prevSubColor) c = bpRand(BP_COLORS_SUB);
-                bpSub.style.fontFamily = prevSubFont = f;
-                bpSub.style.color      = prevSubColor = c;
-
-                // 70〜180ms のランダム間隔でサイクル
-                setTimeout(bpCycle, 70 + Math.random() * 110);
-            }
-
-            if (bpTitle && bpSub) bpCycle();
         });
     </script>
 </body>
