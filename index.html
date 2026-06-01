@@ -87,7 +87,8 @@
             z-index: 1;
         }
 
-        /* ========== バナーアニメーション（8秒ループ） ========== */
+        /* ========== バナースライドショー（16秒ループ） ========== */
+        /* テキスト→馬→テキスト→馬 の4フェーズ、各4秒 */
         .banner-anim {
             position: absolute;
             inset: 0;
@@ -95,113 +96,149 @@
             background: #000;
         }
 
-        /* アンビエント光: 左右に揺れる深紅と深青のオーブ */
-        .banner-anim::before {
-            content: '';
-            position: absolute;
-            width: 70%;
-            height: 200%;
-            top: -50%;
-            left: 15%;
-            background: radial-gradient(ellipse at center, rgba(140,0,18,0.22) 0%, transparent 65%);
-            animation: bp-orb-a 8s ease-in-out infinite alternate;
-            pointer-events: none;
-        }
-        .banner-anim::after {
-            content: '';
-            position: absolute;
-            width: 55%;
-            height: 200%;
-            top: -50%;
-            right: 5%;
-            background: radial-gradient(ellipse at center, rgba(10,10,60,0.22) 0%, transparent 65%);
-            animation: bp-orb-b 11s ease-in-out infinite alternate-reverse;
-            pointer-events: none;
-        }
-        @keyframes bp-orb-a {
-            0%   { transform: translateX(-20%); }
-            100% { transform: translateX(20%);  }
-        }
-        @keyframes bp-orb-b {
-            0%   { transform: translateX(15%);  }
-            100% { transform: translateX(-20%); }
-        }
-
-        .bp-main {
+        /* 共通スライドレイヤー */
+        .bp-slide {
             position: absolute;
             inset: 0;
+            opacity: 0;
+            will-change: opacity;
+        }
+
+        /* ===== フェーズA: テキスト (0-4s / 0%-25%) ===== */
+        .bp-text-a {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 10px;
-            z-index: 1;
+            z-index: 2;
+            animation: bp-show-a 16s ease-in-out infinite;
+        }
+        @keyframes bp-show-a {
+            0%   { opacity: 0; }
+            4%   { opacity: 1; }
+            21%  { opacity: 1; }
+            25%  { opacity: 0; }
+            100% { opacity: 0; }
         }
 
-        /* タイトル: シマーグラデーション + 3D奥行きシャドウ + フェードループ */
-        .bp-cycle-title {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            font-size: clamp(20px, 5vw, 42px);
-            font-weight: 900;
-            letter-spacing: 0.3em;
+        /* ===== フェーズB: umahidari.jpg (4-8s / 25%-50%) ===== */
+        .bp-img-a {
+            z-index: 1;
+            animation: bp-show-b 16s ease-in-out infinite;
+        }
+        @keyframes bp-show-b {
+            0%   { opacity: 0; }
+            25%  { opacity: 0; }
+            29%  { opacity: 1; }
+            46%  { opacity: 1; }
+            50%  { opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+        /* ===== フェーズC: テキスト (8-12s / 50%-75%) ===== */
+        .bp-text-b {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            z-index: 2;
+            animation: bp-show-c 16s ease-in-out infinite;
+        }
+        @keyframes bp-show-c {
+            0%   { opacity: 0; }
+            50%  { opacity: 0; }
+            54%  { opacity: 1; }
+            71%  { opacity: 1; }
+            75%  { opacity: 0; }
+            100% { opacity: 0; }
+        }
+
+        /* ===== フェーズD: umagoal.png (12-16s / 75%-100%) ===== */
+        .bp-img-b {
+            z-index: 1;
+            animation: bp-show-d 16s ease-in-out infinite;
+        }
+        @keyframes bp-show-d {
+            0%   { opacity: 0; }
+            75%  { opacity: 0; }
+            79%  { opacity: 1; }
+            96%  { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* ===== 画像レイヤー共通 ===== */
+        .bp-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            /* Ken Burns: わずかにズームイン */
+            animation: bp-kenburns 4s ease-in-out infinite alternate;
+        }
+        @keyframes bp-kenburns {
+            0%   { transform: scale(1.0); }
+            100% { transform: scale(1.06); }
+        }
+
+        /* 画像上の左右ビネット（JRA風 高級感） */
+        .bp-vignette {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(to right,  rgba(0,0,0,0.55) 0%, transparent 28%, transparent 72%, rgba(0,0,0,0.55) 100%),
+                linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.45) 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* ===== テキストスタイル（JRA公式風） ===== */
+        .bp-title {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: clamp(18px, 4.5vw, 38px);
+            font-weight: 700;
+            letter-spacing: 0.28em;
             white-space: nowrap;
             text-align: center;
             line-height: 1.1;
-            /* 流れるシマーグラデーション */
             background: linear-gradient(
-                105deg,
-                rgba(210,210,210,0.85)  0%,
-                #ffffff                 22%,
-                rgba(255,185,185,1.0)   40%,
-                #ffffff                 57%,
-                rgba(255,205,205,0.9)   73%,
-                #ffffff                 87%,
-                rgba(210,210,210,0.85) 100%
+                160deg,
+                #c8a96e 0%, #e8d5a3 30%, #ffffff 50%, #e8d5a3 70%, #c8a96e 100%
             );
-            background-size: 220% 100%;
+            background-size: 200% 100%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            /* 赤系の落ちるシャドウで3D感 */
             filter:
-                drop-shadow(0 1px 0 rgba(180,0,15,0.65))
-                drop-shadow(0 3px 0 rgba(120,0,10,0.4))
-                drop-shadow(0 7px 14px rgba(200,0,18,0.45))
-                drop-shadow(0 18px 35px rgba(180,0,12,0.18));
-            animation:
-                bp-shimmer    3.5s linear      infinite,
-                bp-title-loop 8s   ease-in-out infinite;
+                drop-shadow(0 1px 0 rgba(100,70,0,0.6))
+                drop-shadow(0 4px 12px rgba(180,130,30,0.25));
+            animation: bp-gold-shimmer 5s linear infinite;
         }
-        @keyframes bp-shimmer {
+        @keyframes bp-gold-shimmer {
             0%   { background-position: 200% center; }
             100% { background-position: -200% center; }
         }
-        @keyframes bp-title-loop {
-            0%   { opacity: 0; letter-spacing: 0.06em; }
-            12%  { opacity: 1; letter-spacing: 0.3em;  }
-            73%  { opacity: 1; letter-spacing: 0.3em;  }
-            86%  { opacity: 0; letter-spacing: 0.34em; }
-            100% { opacity: 0; letter-spacing: 0.06em; }
+
+        /* タイトル下のゴールドライン */
+        .bp-title::after {
+            content: '';
+            display: block;
+            width: 40%;
+            height: 1px;
+            margin: 8px auto 0;
+            background: linear-gradient(to right, transparent, #c8a96e, transparent);
         }
 
-        /* サブタイトル: 少し遅れてスライドイン */
-        .bp-cycle-sub {
+        .bp-sub {
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            font-size: clamp(9px, 1.9vw, 16px);
+            font-size: clamp(8px, 1.7vw, 13px);
             font-weight: 300;
-            letter-spacing: 0.38em;
+            letter-spacing: 0.42em;
             white-space: nowrap;
             text-align: center;
-            color: rgba(210,160,160,0.82);
+            color: rgba(200,169,110,0.75);
             text-transform: uppercase;
-            animation: bp-sub-loop 8s ease-in-out infinite;
-        }
-        @keyframes bp-sub-loop {
-            0%   { opacity: 0; transform: translateY(6px);  }
-            18%  { opacity: 1; transform: translateY(0);    }
-            73%  { opacity: 1; transform: translateY(0);    }
-            84%  { opacity: 0; transform: translateY(-4px); }
-            100% { opacity: 0; transform: translateY(6px);  }
         }
 
         .input-container {
@@ -427,11 +464,27 @@
             <!-- 動画バナーはモバイル自動再生の互換性問題によりコメントアウト -->
             <!-- <video class="bg-video" autoplay muted loop playsinline webkit-playsinline preload="auto" src="title.mp4"></video> -->
             <!-- <video class="main-video" autoplay muted loop playsinline webkit-playsinline preload="auto" src="title.mp4"></video> -->
-            <!-- 代替: CSSアニメーションバナー（8秒ループ） -->
+            <!-- 代替: スライドショーバナー（16秒ループ / テキスト→画像×2） -->
             <div class="banner-anim" aria-hidden="true">
-                <div class="bp-main">
-                    <div class="bp-cycle-title">FS STRIDERS</div>
-                    <div class="bp-cycle-sub">Player Profile Generator</div>
+                <!-- フェーズA: テキスト -->
+                <div class="bp-slide bp-text-a">
+                    <div class="bp-title">FS STRIDERS</div>
+                    <div class="bp-sub">Player Profile Generator</div>
+                </div>
+                <!-- フェーズB: umahidari -->
+                <div class="bp-slide bp-img-a">
+                    <img class="bp-photo" src="umahidari.jpg" alt="">
+                    <div class="bp-vignette"></div>
+                </div>
+                <!-- フェーズC: テキスト（再） -->
+                <div class="bp-slide bp-text-b">
+                    <div class="bp-title">FS STRIDERS</div>
+                    <div class="bp-sub">Player Profile Generator</div>
+                </div>
+                <!-- フェーズD: umagoal -->
+                <div class="bp-slide bp-img-b">
+                    <img class="bp-photo" src="umagoal.png" alt="">
+                    <div class="bp-vignette"></div>
                 </div>
             </div>
         </div>
