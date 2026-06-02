@@ -1,7 +1,7 @@
 // ========================================
 // FS Striders - Player Profile Generator
-// Ver 1.0 完成
-// 2026年2月12日
+// Ver 1.1
+// 2026年2月12日 / 2026年6月更新
 // フルストライド100万本売れてくれ！！！！！！！！
 //
 // 作成者: Musyn Reagan (ファン制作)
@@ -52,19 +52,21 @@ let userIconImage    = null;
 let updateTimer      = null;
 
 const cardData = {
-    waku:    "3",
-    name:    "JOCKEY NAME",
-    sns:     "@---",
-    exp:     "馬との歩み / Horse History: ---",
-    hard:    "主なハード / Platform: ---",
-    fav:     "---",
-    blood:   "---",
-    bank:    "---",
-    coat:    "---",
-    style:   "---",
-    way:     "---",
-    time:    "---",
-    comment: "...よろしくお願いします"
+    waku:      "3",
+    name:      "JOCKEY NAME",
+    sns:       "@---",
+    exp:       "馬歴 / Horse History: ---",
+    hard:      "主なハード / Platform: ---",
+    favHorse:  "---",
+    favJockey: "---",
+    blood:     "---",
+    bank:      "---",
+    coat:      "---",
+    memorable: "---",
+    style:     "---",
+    way:       "---",
+    time:      "---",
+    comment:   "...よろしくお願いします"
 };
 
 // ========== DOM参照 ==========
@@ -72,34 +74,38 @@ const canvas = document.getElementById('preview-canvas');
 const ctx    = canvas.getContext('2d');
 
 const inputs = {
-    waku:  document.getElementById('in-waku'),
-    icon:  document.getElementById('in-icon'),
-    n:     document.getElementById('in-n'),
-    sns:   document.getElementById('in-sns'),
-    exp:   document.getElementById('in-exp'),
-    hard:  document.getElementById('in-hard'),
-    fav:   document.getElementById('in-fav'),
-    blood: document.getElementById('in-blood'),
-    bank:  document.getElementById('in-bank'),
-    coat:  document.getElementById('in-coat'),
-    style: document.getElementById('in-style'),
-    way:   document.getElementById('in-way'),
-    time:  document.getElementById('in-time'),
-    com:   document.getElementById('in-com')
+    waku:      document.getElementById('in-waku'),
+    icon:      document.getElementById('in-icon'),
+    n:         document.getElementById('in-n'),
+    sns:       document.getElementById('in-sns'),
+    exp:       document.getElementById('in-exp'),
+    hard:      document.getElementById('in-hard'),
+    favHorse:  document.getElementById('in-fav-horse'),
+    favJockey: document.getElementById('in-fav-jockey'),
+    blood:     document.getElementById('in-blood'),
+    bank:      document.getElementById('in-bank'),
+    coat:      document.getElementById('in-coat'),
+    memorable: document.getElementById('in-memorable'),
+    style:     document.getElementById('in-style'),
+    way:       document.getElementById('in-way'),
+    time:      document.getElementById('in-time'),
+    com:       document.getElementById('in-com')
 };
 
 const counters = {
-    n:     document.getElementById('counter-n'),
-    sns:   document.getElementById('counter-sns'),
-    exp:   document.getElementById('counter-exp'),
-    hard:  document.getElementById('counter-hard'),
-    fav:   document.getElementById('counter-fav'),
-    blood: document.getElementById('counter-blood'),
-    bank:  document.getElementById('counter-bank'),
-    coat:  document.getElementById('counter-coat'),
-    way:   document.getElementById('counter-way'),
-    time:  document.getElementById('counter-time'),
-    com:   document.getElementById('counter-com')
+    n:         document.getElementById('counter-n'),
+    sns:       document.getElementById('counter-sns'),
+    exp:       document.getElementById('counter-exp'),
+    hard:      document.getElementById('counter-hard'),
+    favHorse:  document.getElementById('counter-fav-horse'),
+    favJockey: document.getElementById('counter-fav-jockey'),
+    blood:     document.getElementById('counter-blood'),
+    bank:      document.getElementById('counter-bank'),
+    coat:      document.getElementById('counter-coat'),
+    memorable: document.getElementById('counter-memorable'),
+    way:       document.getElementById('counter-way'),
+    time:      document.getElementById('counter-time'),
+    com:       document.getElementById('counter-com')
 };
 
 const saveBtn        = document.getElementById('save-btn');
@@ -263,10 +269,10 @@ function drawCard(targetCtx = ctx) {
     targetCtx.rect(WAKU_BAR_WIDTH, HEADER_HEIGHT + 10, CARD_WIDTH - WAKU_BAR_WIDTH - 20, CARD_HEIGHT - HEADER_HEIGHT - 10 - 60);
     targetCtx.clip();
 
-    // カラーバー付きラベル＋値を描画するローカル関数
-    function drawItem(x, y, label, value, width, height = 60) {
+    // カラーバー付きラベル＋値を描画するローカル関数（28px行高）
+    function drawItem(x, y, label, value, width) {
         targetCtx.fillStyle = theme.bg;
-        targetCtx.fillRect(x, y, 6, height);
+        targetCtx.fillRect(x, y, 6, 26);
 
         targetCtx.fillStyle = '#888888';
         targetCtx.font = '900 10px sans-serif';
@@ -274,31 +280,40 @@ function drawCard(targetCtx = ctx) {
 
         targetCtx.fillStyle = '#000000';
         targetCtx.font = '900 17px sans-serif';
-        wrapText(targetCtx, value, x + 12, y + 16, width - 30, 21, 2);
+        wrapText(targetCtx, value, x + 12, y + 14, width - 30, 20, 1);
     }
 
     // 競馬の好みセクション
+    const SEC1_Y = HEADER_HEIGHT + 15;   // 170
     targetCtx.fillStyle = '#1a1a1a';
-    targetCtx.fillRect(CONTENT_LEFT, HEADER_HEIGHT + 15, CONTENT_WIDTH, 21);
+    targetCtx.fillRect(CONTENT_LEFT, SEC1_Y, CONTENT_WIDTH, 21);
     targetCtx.fillStyle = '#e8e8e8';
     targetCtx.font = '900 13px sans-serif';
-    targetCtx.fillText('競馬の好み / Favorite (Real)', CONTENT_LEFT + 12, HEADER_HEIGHT + 20);
+    targetCtx.fillText('競馬の好み / Favorite (Real)', CONTENT_LEFT + 12, SEC1_Y + 5);
 
-    drawItem(CONTENT_LEFT, 199, '推し馬・騎手 / Fav Horse & Jockey', cardData.fav,   330);
-    drawItem(COL2_X,       199, '好きな血統 / Fav Pedigree',          cardData.blood, 330);
-    drawItem(CONTENT_LEFT, 272, '好きな競馬場 / Fav Racecourse',       cardData.bank,  330);
-    drawItem(COL2_X,       272, '好きな毛色 / Fav Coat',               cardData.coat,  330);
+    const R1 = SEC1_Y + 25;   // 195
+    const R2 = R1 + 30;       // 225
+    const R3 = R2 + 30;       // 255
+    drawItem(CONTENT_LEFT, R1, '推し馬 / Fav Horse',          cardData.favHorse,  330);
+    drawItem(COL2_X,       R1, '推し騎手 / Fav Jockey',        cardData.favJockey, 330);
+    drawItem(CONTENT_LEFT, R2, '好きな血統 / Fav Pedigree',    cardData.blood,     330);
+    drawItem(COL2_X,       R2, '好きな競馬場 / Fav Racecourse', cardData.bank,      330);
+    drawItem(CONTENT_LEFT, R3, '好きな毛色 / Fav Coat',        cardData.coat,      330);
+    drawItem(COL2_X,       R3, '思い出のレース / Memorable',   cardData.memorable, 330);
 
     // プレイの傾向セクション
+    const SEC2_Y = R3 + 35;   // 290
     targetCtx.fillStyle = '#1a1a1a';
-    targetCtx.fillRect(CONTENT_LEFT, 350, CONTENT_WIDTH, 21);
+    targetCtx.fillRect(CONTENT_LEFT, SEC2_Y, CONTENT_WIDTH, 21);
     targetCtx.fillStyle = '#e8e8e8';
     targetCtx.font = '900 13px sans-serif';
-    targetCtx.fillText('プレイの傾向 / Playstyle (Game)', CONTENT_LEFT + 12, 355);
+    targetCtx.fillText('プレイの傾向 / Playstyle (Game)', CONTENT_LEFT + 12, SEC2_Y + 5);
 
-    drawItem(CONTENT_LEFT, 379, '好きな脚質 / Favorite Strategy', cardData.style, 330, 60);
-    drawItem(COL2_X,       379, '騎乗スタイル / Riding Style',    cardData.way,   330, 60);
-    drawItem(CONTENT_LEFT, 420, 'プレイ時間帯 / Usual Play Time', cardData.time,  320, 35);
+    const R4 = SEC2_Y + 25;   // 315
+    const R5 = R4 + 30;       // 345
+    drawItem(CONTENT_LEFT, R4, '好きな脚質 / Favorite Strategy',  cardData.style, 330);
+    drawItem(COL2_X,       R4, 'よく遊ぶ時間帯 / Usual Play Time', cardData.time,  330);
+    drawItem(CONTENT_LEFT, R5, '騎乗スタイル / Riding Style',      cardData.way,   CONTENT_WIDTH);
 
     targetCtx.restore();
 
@@ -333,12 +348,14 @@ function updateCardData() {
     if (!snsVal || snsVal === '@') snsVal = '@---';
     cardData.sns = snsVal;
 
-    cardData.exp     = "馬との歩み / Horse History: " + (inputs.exp.value.trim()   || DEFAULT_PLACEHOLDER);
-    cardData.hard    = "主なハード / Platform: "      + (inputs.hard.value.trim()  || DEFAULT_PLACEHOLDER);
-    cardData.fav     = inputs.fav.value.trim()    || DEFAULT_PLACEHOLDER;
-    cardData.blood   = inputs.blood.value.trim()  || DEFAULT_PLACEHOLDER;
-    cardData.bank    = inputs.bank.value.trim()   || DEFAULT_PLACEHOLDER;
-    cardData.coat    = inputs.coat.value.trim()   || DEFAULT_PLACEHOLDER;
+    cardData.exp       = "馬歴 / Horse History: "   + (inputs.exp.value.trim()       || DEFAULT_PLACEHOLDER);
+    cardData.hard      = "主なハード / Platform: "   + (inputs.hard.value.trim()      || DEFAULT_PLACEHOLDER);
+    cardData.favHorse  = inputs.favHorse.value.trim()  || DEFAULT_PLACEHOLDER;
+    cardData.favJockey = inputs.favJockey.value.trim() || DEFAULT_PLACEHOLDER;
+    cardData.blood     = inputs.blood.value.trim()     || DEFAULT_PLACEHOLDER;
+    cardData.bank      = inputs.bank.value.trim()      || DEFAULT_PLACEHOLDER;
+    cardData.coat      = inputs.coat.value.trim()      || DEFAULT_PLACEHOLDER;
+    cardData.memorable = inputs.memorable.value.trim() || DEFAULT_PLACEHOLDER;
     cardData.style   = inputs.style.value         || "---";
     cardData.way     = inputs.way.value.trim()    || DEFAULT_PLACEHOLDER;
     cardData.time    = inputs.time.value.trim()   || DEFAULT_PLACEHOLDER;
@@ -680,17 +697,19 @@ inputs.waku.addEventListener('change', updateWaku);
 inputs.icon.addEventListener('change', loadImage);
 
 const inputCounterPairs = [
-    { input: inputs.n,     counter: counters.n,     max: 20  },
-    { input: inputs.sns,   counter: counters.sns,   max: 30  },
-    { input: inputs.exp,   counter: counters.exp,   max: 30  },
-    { input: inputs.hard,  counter: counters.hard,  max: 30  },
-    { input: inputs.fav,   counter: counters.fav,   max: 30  },
-    { input: inputs.blood, counter: counters.blood, max: 30  },
-    { input: inputs.bank,  counter: counters.bank,  max: 30  },
-    { input: inputs.coat,  counter: counters.coat,  max: 30  },
-    { input: inputs.way,   counter: counters.way,   max: 30  },
-    { input: inputs.time,  counter: counters.time,  max: 15  },
-    { input: inputs.com,   counter: counters.com,   max: 138 }
+    { input: inputs.n,         counter: counters.n,         max: 20  },
+    { input: inputs.sns,       counter: counters.sns,       max: 30  },
+    { input: inputs.exp,       counter: counters.exp,       max: 30  },
+    { input: inputs.hard,      counter: counters.hard,      max: 30  },
+    { input: inputs.favHorse,  counter: counters.favHorse,  max: 30  },
+    { input: inputs.favJockey, counter: counters.favJockey, max: 30  },
+    { input: inputs.blood,     counter: counters.blood,     max: 30  },
+    { input: inputs.bank,      counter: counters.bank,      max: 30  },
+    { input: inputs.coat,      counter: counters.coat,      max: 30  },
+    { input: inputs.memorable, counter: counters.memorable, max: 30  },
+    { input: inputs.way,       counter: counters.way,       max: 30  },
+    { input: inputs.time,      counter: counters.time,      max: 15  },
+    { input: inputs.com,       counter: counters.com,       max: 138 }
 ];
 
 inputCounterPairs.forEach(({ input, counter, max }) => {
