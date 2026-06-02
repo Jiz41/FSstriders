@@ -145,7 +145,7 @@ function initWatermark() {
     const img = new Image();
     img.onload = () => { watermarkImage = img; drawCard(); };
     img.onerror = () => {};
-    img.src = 'JS.png';
+    img.src = 'js.png';
 }
 
 // 透かしパターン描画: JS.png と「FSS」テキストを45°タイルで全面に敷く
