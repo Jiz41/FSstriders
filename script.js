@@ -47,6 +47,7 @@ const DOT_PITCH         = 12;    // ドット柄の間隔（px）
 
 // ========== 状態変数 ==========
 let dotPatternCanvas = null;
+let watermarkImage   = null;
 let currentWaku      = "3";
 let userIconImage    = null;
 let updateTimer      = null;
@@ -139,6 +140,49 @@ function createDotPattern() {
     dotPatternCanvas = patCanvas;
 }
 
+// JS.png を非同期でプリロードし、読み込み完了後にカードを再描画する
+function initWatermark() {
+    const img = new Image();
+    img.onload = () => { watermarkImage = img; drawCard(); };
+    img.onerror = () => {};
+    img.src = 'JS.png';
+}
+
+// 透かしパターン描画: JS.png と「FSS」テキストを45°タイルで全面に敷く
+function drawWatermarkPattern(targetCtx) {
+    const IMG_SIZE = 68;
+    const STEP     = 120;
+
+    targetCtx.save();
+    targetCtx.globalAlpha = 0.07;
+    targetCtx.translate(CARD_WIDTH / 2, CARD_HEIGHT / 2);
+    targetCtx.rotate(Math.PI / 4);
+
+    const reach = Math.ceil(Math.sqrt(CARD_WIDTH * CARD_WIDTH + CARD_HEIGHT * CARD_HEIGHT) / 2) + STEP;
+    const count = Math.ceil(reach / STEP);
+
+    targetCtx.fillStyle   = '#000000';
+    targetCtx.font        = 'bold 18px sans-serif';
+    targetCtx.textAlign   = 'center';
+    targetCtx.textBaseline = 'middle';
+
+    for (let row = -count; row <= count; row++) {
+        for (let col = -count; col <= count; col++) {
+            const x = col * STEP;
+            const y = row * STEP;
+            if ((row + col) % 2 === 0) {
+                if (watermarkImage) {
+                    targetCtx.drawImage(watermarkImage, x - IMG_SIZE / 2, y - IMG_SIZE / 2, IMG_SIZE, IMG_SIZE);
+                }
+            } else {
+                targetCtx.fillText('FSS', x, y);
+            }
+        }
+    }
+
+    targetCtx.restore();
+}
+
 // ========== 描画 ==========
 
 // カードをキャンバスに描画する
@@ -160,10 +204,8 @@ function drawCard(targetCtx = ctx) {
     targetCtx.closePath();
     targetCtx.fill();
 
-    // ドット柄を重ねる
-    if (dotPatternCanvas) {
-        targetCtx.drawImage(dotPatternCanvas, 0, 0);
-    }
+    // 透かしパターンを重ねる（ドット柄に代わる背景）
+    drawWatermarkPattern(targetCtx);
 
     // カード外枠（ダブルライン）
     targetCtx.strokeStyle = '#000000';
@@ -726,6 +768,7 @@ window.addEventListener('resize', adjustScale);
 // ========== 起動処理 ==========
 window.addEventListener('load', () => {
     createDotPattern();
+    initWatermark();
     adjustScale();
     updateWaku();
     updateCardData();
