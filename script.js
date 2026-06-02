@@ -261,7 +261,7 @@ function drawCard(targetCtx = ctx) {
 
     targetCtx.fillStyle = '#000000';
     targetCtx.font = '900 14px sans-serif';
-    targetCtx.fillText(cardData.sns, TEXT_X, 118);
+    targetCtx.fillText('SNS: ' + cardData.sns, TEXT_X, 118);
 
     // コンテンツエリアのクリップ設定
     targetCtx.save();
