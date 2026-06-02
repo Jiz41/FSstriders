@@ -47,9 +47,9 @@ const DOT_PITCH         = 12;    // ドット柄の間隔（px）
 
 // ========== 状態変数 ==========
 let dotPatternCanvas = null;
-let watermarkImages  = { js: null, ut: null };
+let watermarkImages  = { 騎乗: null, いななき: null };
 let currentWaku      = "3";
-let currentPattern   = "js";
+let currentPattern   = "騎乗";
 let userIconImage    = null;
 let updateTimer      = null;
 
@@ -143,11 +143,11 @@ function createDotPattern() {
 
 // js.png / ut.png を非同期でプリロードし、完了後にカードを再描画する
 function initWatermark() {
-    ['js', 'ut'].forEach(key => {
+    [['騎乗', 'js.png'], ['いななき', 'ut.png']].forEach(([key, src]) => {
         const img = new Image();
         img.onload = () => { watermarkImages[key] = img; drawCard(); };
         img.onerror = () => {};
-        img.src = key + '.png';
+        img.src = src;
     });
 }
 
@@ -160,7 +160,7 @@ function drawWatermarkPattern(targetCtx) {
     targetCtx.save();
     targetCtx.globalAlpha = 0.07;
     targetCtx.translate(CARD_WIDTH / 2, CARD_HEIGHT / 2);
-    targetCtx.rotate(Math.PI / 4);
+    targetCtx.rotate(-Math.PI / 4);
 
     const reach = Math.ceil(Math.sqrt(CARD_WIDTH * CARD_WIDTH + CARD_HEIGHT * CARD_HEIGHT) / 2) + STEP;
     const count = Math.ceil(reach / STEP);
@@ -207,7 +207,7 @@ function drawCard(targetCtx = ctx) {
     targetCtx.fill();
 
     // 背景パターンを重ねる（選択に応じて切り替え）
-    if (currentPattern === 'dot') {
+    if (currentPattern === '無地') {
         if (dotPatternCanvas) targetCtx.drawImage(dotPatternCanvas, 0, 0);
     } else {
         drawWatermarkPattern(targetCtx);
