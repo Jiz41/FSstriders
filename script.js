@@ -1,6 +1,6 @@
 // ========================================
 // FS Striders - Player Profile Generator
-// Ver 1.1
+// Ver 1.2
 // 2026年2月12日 / 2026年6月更新
 // フルストライド100万本売れてくれ！！！！！！！！
 //
@@ -250,18 +250,18 @@ function drawCard(targetCtx = ctx) {
     targetCtx.textBaseline = 'top';
 
     const nameLength   = cardData.name.length;
-    const nameFontSize = nameLength > 15 ? 28 : nameLength > 10 ? 36 : 46;
+    const nameFontSize = nameLength > 15 ? 28 : nameLength > 10 ? 34 : 44;
     targetCtx.font = `900 ${nameFontSize}px sans-serif`;
-    wrapText(targetCtx, cardData.name, TEXT_X, 35, CARD_WIDTH - TEXT_X - 30, nameFontSize * 1.1, 2);
+    wrapText(targetCtx, cardData.name, TEXT_X, 16, CARD_WIDTH - TEXT_X - 30, nameFontSize * 1.1, 2);
 
     targetCtx.font = '800 13px sans-serif';
     targetCtx.fillStyle = '#333333';
-    targetCtx.fillText(cardData.exp,  TEXT_X, 90);
-    targetCtx.fillText(cardData.hard, TEXT_X, 107);
+    targetCtx.fillText(cardData.exp,  TEXT_X, 83);
+    targetCtx.fillText(cardData.hard, TEXT_X, 100);
 
     targetCtx.fillStyle = '#000000';
-    targetCtx.font = '900 13px sans-serif';
-    targetCtx.fillText(cardData.sns, TEXT_X, 124);
+    targetCtx.font = '900 14px sans-serif';
+    targetCtx.fillText(cardData.sns, TEXT_X, 118);
 
     // コンテンツエリアのクリップ設定
     targetCtx.save();
@@ -284,16 +284,16 @@ function drawCard(targetCtx = ctx) {
     }
 
     // 競馬の好みセクション
-    const SEC1_Y = HEADER_HEIGHT + 15;   // 170
+    const SEC1_Y = HEADER_HEIGHT + 22;   // 177
     targetCtx.fillStyle = '#1a1a1a';
     targetCtx.fillRect(CONTENT_LEFT, SEC1_Y, CONTENT_WIDTH, 21);
     targetCtx.fillStyle = '#e8e8e8';
     targetCtx.font = '900 13px sans-serif';
     targetCtx.fillText('競馬の好み / Favorite (Real)', CONTENT_LEFT + 12, SEC1_Y + 5);
 
-    const R1 = SEC1_Y + 25;   // 195
-    const R2 = R1 + 30;       // 225
-    const R3 = R2 + 30;       // 255
+    const R1 = SEC1_Y + 28;   // 205
+    const R2 = R1 + 36;       // 241
+    const R3 = R2 + 36;       // 277
     drawItem(CONTENT_LEFT, R1, '推し馬 / Fav Horse',          cardData.favHorse,  330);
     drawItem(COL2_X,       R1, '推し騎手 / Fav Jockey',        cardData.favJockey, 330);
     drawItem(CONTENT_LEFT, R2, '好きな血統 / Fav Pedigree',    cardData.blood,     330);
@@ -302,15 +302,15 @@ function drawCard(targetCtx = ctx) {
     drawItem(COL2_X,       R3, '思い出のレース / Memorable',   cardData.memorable, 330);
 
     // プレイの傾向セクション
-    const SEC2_Y = R3 + 35;   // 290
+    const SEC2_Y = R3 + 46;   // 323
     targetCtx.fillStyle = '#1a1a1a';
     targetCtx.fillRect(CONTENT_LEFT, SEC2_Y, CONTENT_WIDTH, 21);
     targetCtx.fillStyle = '#e8e8e8';
     targetCtx.font = '900 13px sans-serif';
     targetCtx.fillText('プレイの傾向 / Playstyle (Game)', CONTENT_LEFT + 12, SEC2_Y + 5);
 
-    const R4 = SEC2_Y + 25;   // 315
-    const R5 = R4 + 30;       // 345
+    const R4 = SEC2_Y + 28;   // 351
+    const R5 = R4 + 38;       // 389
     drawItem(CONTENT_LEFT, R4, '好きな脚質 / Favorite Strategy',  cardData.style, 330);
     drawItem(COL2_X,       R4, 'よく遊ぶ時間帯 / Usual Play Time', cardData.time,  330);
     drawItem(CONTENT_LEFT, R5, '騎乗スタイル / Riding Style',      cardData.way,   CONTENT_WIDTH);
