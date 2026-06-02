@@ -154,8 +154,8 @@ function initWatermark() {
 // 透かしパターン描画: 画像と「FSS」テキストを45°タイルで全面に敷く
 function drawWatermarkPattern(targetCtx) {
     const img      = watermarkImages[currentPattern];
-    const IMG_SIZE = 68;
-    const STEP     = 120;
+    const TARGET = 110;  // 画像の収まる正方形ボックスサイズ（アスペクト比維持のための上限）
+    const STEP   = 170;
 
     targetCtx.save();
     targetCtx.globalAlpha = 0.07;
@@ -166,7 +166,7 @@ function drawWatermarkPattern(targetCtx) {
     const count = Math.ceil(reach / STEP);
 
     targetCtx.fillStyle    = '#000000';
-    targetCtx.font         = 'bold 18px sans-serif';
+    targetCtx.font         = 'bold 20px sans-serif';
     targetCtx.textAlign    = 'center';
     targetCtx.textBaseline = 'middle';
 
@@ -175,7 +175,12 @@ function drawWatermarkPattern(targetCtx) {
             const x = col * STEP;
             const y = row * STEP;
             if ((row + col) % 2 === 0) {
-                if (img) targetCtx.drawImage(img, x - IMG_SIZE / 2, y - IMG_SIZE / 2, IMG_SIZE, IMG_SIZE);
+                if (img) {
+                    const scale = Math.min(TARGET / img.naturalWidth, TARGET / img.naturalHeight);
+                    const drawW = img.naturalWidth  * scale;
+                    const drawH = img.naturalHeight * scale;
+                    targetCtx.drawImage(img, x - drawW / 2, y - drawH / 2, drawW, drawH);
+                }
             } else {
                 targetCtx.fillText('FSS', x, y);
             }
