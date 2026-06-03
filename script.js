@@ -47,7 +47,7 @@ const DOT_PITCH         = 12;    // ドット柄の間隔（px）
 
 // ========== 状態変数 ==========
 let dotPatternCanvas = null;
-let watermarkImages  = { 騎乗: null, いななき: null };
+let watermarkImages  = { 騎乗: null, いななき: null, 仔馬: null };
 let currentWaku      = "3";
 let currentPattern   = "騎乗";
 let userIconImage    = null;
@@ -143,7 +143,7 @@ function createDotPattern() {
 
 // js.png / ut.png を非同期でプリロードし、完了後にカードを再描画する
 function initWatermark() {
-    [['騎乗', 'js.png'], ['いななき', 'ut.png']].forEach(([key, src]) => {
+    [['騎乗', 'js.png'], ['いななき', 'ut.png'], ['仔馬', 'ku.png']].forEach(([key, src]) => {
         const img = new Image();
         img.onload = () => { watermarkImages[key] = img; drawCard(); };
         img.onerror = () => {};
