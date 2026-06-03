@@ -805,4 +805,16 @@ window.addEventListener('load', () => {
         updateCounter(input, counter, max);
     });
 
+    // 使い方アコーディオン
+    const howtoToggle = document.getElementById('howto-toggle');
+    const howtoBody   = document.getElementById('howto-body');
+    if (howtoToggle && howtoBody) {
+        howtoToggle.addEventListener('click', () => {
+            const open = howtoToggle.getAttribute('aria-expanded') === 'true';
+            howtoToggle.setAttribute('aria-expanded', String(!open));
+            howtoBody.classList.toggle('open', !open);
+            howtoToggle.querySelector('.howto-arrow').textContent = open ? '▼' : '▲';
+        });
+    }
+
 });

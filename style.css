@@ -594,3 +594,108 @@ textarea:focus {
         padding: 15px;
     }
 }
+
+/* ========== 使い方アコーディオン ========== */
+.howto-accordion {
+    margin: 0 0 4px 0;
+    border-bottom: 1px solid #333;
+}
+
+.howto-toggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    background: #1a1a1a;
+    border: none;
+    color: #e8e8e8;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    text-align: left;
+}
+
+.howto-toggle:hover {
+    background: #222;
+}
+
+.howto-arrow {
+    font-size: 11px;
+    color: var(--k-color);
+    transition: transform 0.2s;
+}
+
+.howto-body {
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    background: #111;
+    padding: 0 16px;
+}
+
+.howto-body.open {
+    display: flex;
+    padding: 12px 16px 16px;
+}
+
+.howto-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 14px;
+    background: #1e1e1e;
+    border-left: 3px solid var(--k-color);
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.howto-num {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--k-color);
+    line-height: 1;
+    min-width: 28px;
+    padding-top: 2px;
+}
+
+.howto-text {
+    flex: 1;
+}
+
+.howto-ja {
+    font-size: 13px;
+    font-weight: 700;
+    color: #e8e8e8;
+    margin: 0 0 2px 0;
+}
+
+.howto-en {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--k-color);
+    margin: 0 0 8px 0;
+    letter-spacing: 0.04em;
+}
+
+.howto-desc {
+    font-size: 12px;
+    color: #aaa;
+    margin: 0 0 2px 0;
+    line-height: 1.5;
+}
+
+.howto-desc.en {
+    color: #888;
+    margin-top: 4px;
+}
+
+.howto-desc a {
+    color: var(--k-color);
+    text-decoration: none;
+}
+
+.howto-desc a:hover {
+    text-decoration: underline;
+}
