@@ -764,7 +764,7 @@ const inputCounterPairs = [
     { input: inputs.blood,     counter: counters.blood,     max: 17  },
     { input: inputs.bank,      counter: counters.bank,      max: 17  },
     { input: inputs.coat,      counter: counters.coat,      max: 17  },
-    { input: inputs.memorable, counter: counters.memorable, max: 30  },
+    { input: inputs.memorable, counter: counters.memorable, max: 17  },
     { input: inputs.way,       counter: counters.way,       max: 17  },
     { input: inputs.time,      counter: counters.time,      max: 15  },
     { input: inputs.com,       counter: counters.com,       max: 130 }
