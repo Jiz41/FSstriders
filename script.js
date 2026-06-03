@@ -431,13 +431,13 @@ function updateWaku() {
     currentWaku = inputs.waku.value;
     const theme = WAKU_COLORS[currentWaku];
 
-    document.documentElement.style.setProperty('--k-color',   theme.bg);
+    const uiColor = (theme.bg === "#ffffff" || theme.bg === "#000000") ? "#ccc" : theme.bg;
+    document.documentElement.style.setProperty('--k-color',   uiColor);
     document.documentElement.style.setProperty('--txt-color', theme.tx);
 
     document.querySelectorAll('.g-title').forEach(el => {
-        const color = (theme.bg === "#ffffff" || theme.bg === "#000000") ? "#ccc" : theme.bg;
-        el.style.color       = color;
-        el.style.borderColor = color;
+        el.style.color       = uiColor;
+        el.style.borderColor = uiColor;
     });
 
     updatePreview();
