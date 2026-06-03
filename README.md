@@ -1,11 +1,16 @@
----
-title: FS Striders
-emoji: 🏇
-colorFrom: gray
-colorTo: indigo
-sdk: static
-pinned: true
-thumbnail: ogp.png
----
+# FS STRIDERS — Player Profile Generator
 
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+Full Stride のプレイヤープロフィールカードを生成するファンメイドツールです。
+
+## 使い方
+
+1. 枠番・背景パターン・各種情報を入力
+2. プレビューを確認
+3. 「画像を保存する」でカードをダウンロード
+
+## 注意
+
+本ツールはファンによる非公式ジェネレータです。  
+『FULL STRIDE』の名称は BLUE BULLET の商標または登録商標です。
+
+Created by ©[Musyn Reagan](https://x.com/Mushyn_Reagan) / [華耀東夷堂](https://x.com/Kayoutouidou01)
