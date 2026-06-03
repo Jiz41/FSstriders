@@ -192,6 +192,14 @@ function drawWatermarkPattern(targetCtx) {
 
 // ========== 描画 ==========
 
+function getShadowColor(hex) {
+    if (hex === "#000000") return "#555555";
+    const r = parseInt(hex.slice(1,3),16);
+    const g = parseInt(hex.slice(3,5),16);
+    const b = parseInt(hex.slice(5,7),16);
+    return `rgb(${Math.floor(r*0.4)},${Math.floor(g*0.4)},${Math.floor(b*0.4)})`;
+}
+
 // カードをキャンバスに描画する
 function drawCard(targetCtx = ctx) {
     const theme = WAKU_COLORS[currentWaku];
@@ -324,8 +332,13 @@ function drawCard(targetCtx = ctx) {
 
     // カラーバー付きラベル＋値を描画するローカル関数（28px行高）
     function drawItem(x, y, label, value, width) {
+        const height = 26;
+        // 影
+        targetCtx.fillStyle = getShadowColor(theme.bg);
+        targetCtx.fillRect(x + 2, y + 2, 6, height);
+        // 本体
         targetCtx.fillStyle = theme.bg;
-        targetCtx.fillRect(x, y, 6, 26);
+        targetCtx.fillRect(x, y, 6, height);
 
         targetCtx.fillStyle = '#888888';
         targetCtx.font = '900 10px sans-serif';
@@ -397,9 +410,7 @@ function updateCardData() {
     cardData.waku = currentWaku;
     cardData.name = inputs.n.value.trim() || "JOCKEY NAME";
 
-    let snsVal = inputs.sns.value.trim().replace(/^@+/, '@');
-    if (!snsVal || snsVal === '@') snsVal = '@---';
-    cardData.sns = snsVal;
+    cardData.sns = inputs.sns.value.trim() || '---';
 
     cardData.exp       = "馬歴 / Horse History: "   + (inputs.exp.value.trim()       || DEFAULT_PLACEHOLDER);
     cardData.hard      = "主なハード / Platform: "   + (inputs.hard.value.trim()      || DEFAULT_PLACEHOLDER);
