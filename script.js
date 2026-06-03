@@ -759,15 +759,15 @@ const inputCounterPairs = [
     { input: inputs.sns,       counter: counters.sns,       max: 30  },
     { input: inputs.exp,       counter: counters.exp,       max: 30  },
     { input: inputs.hard,      counter: counters.hard,      max: 30  },
-    { input: inputs.favHorse,  counter: counters.favHorse,  max: 30  },
-    { input: inputs.favJockey, counter: counters.favJockey, max: 30  },
-    { input: inputs.blood,     counter: counters.blood,     max: 30  },
-    { input: inputs.bank,      counter: counters.bank,      max: 30  },
-    { input: inputs.coat,      counter: counters.coat,      max: 30  },
+    { input: inputs.favHorse,  counter: counters.favHorse,  max: 17  },
+    { input: inputs.favJockey, counter: counters.favJockey, max: 17  },
+    { input: inputs.blood,     counter: counters.blood,     max: 17  },
+    { input: inputs.bank,      counter: counters.bank,      max: 17  },
+    { input: inputs.coat,      counter: counters.coat,      max: 17  },
     { input: inputs.memorable, counter: counters.memorable, max: 30  },
-    { input: inputs.way,       counter: counters.way,       max: 30  },
+    { input: inputs.way,       counter: counters.way,       max: 17  },
     { input: inputs.time,      counter: counters.time,      max: 15  },
-    { input: inputs.com,       counter: counters.com,       max: 138 }
+    { input: inputs.com,       counter: counters.com,       max: 130 }
 ];
 
 inputCounterPairs.forEach(({ input, counter, max }) => {
