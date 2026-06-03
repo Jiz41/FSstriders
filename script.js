@@ -435,7 +435,7 @@ function updateWaku() {
     document.documentElement.style.setProperty('--txt-color', theme.tx);
 
     document.querySelectorAll('.g-title').forEach(el => {
-        const color = theme.bg === "#ffffff" ? "#ccc" : theme.bg;
+        const color = (theme.bg === "#ffffff" || theme.bg === "#000000") ? "#ccc" : theme.bg;
         el.style.color       = color;
         el.style.borderColor = color;
     });
