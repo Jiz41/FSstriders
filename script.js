@@ -56,7 +56,7 @@ let updateTimer      = null;
 const cardData = {
     waku:      "3",
     name:      "JOCKEY NAME",
-    sns:       "@---",
+    sns:       "---",
     exp:       "馬歴 / Horse History: ---",
     hard:      "主なハード / Platform: ---",
     favHorse:  "---",
@@ -444,7 +444,6 @@ function updateWaku() {
 
     const uiColor = (theme.bg === "#ffffff" || theme.bg === "#000000") ? "#ccc" : theme.bg;
     document.documentElement.style.setProperty('--k-color',   uiColor);
-    document.documentElement.style.setProperty('--txt-color', theme.tx);
 
     document.querySelectorAll('.g-title').forEach(el => {
         el.style.color       = uiColor;
@@ -458,10 +457,10 @@ function updateWaku() {
 function loadImage(e) {
     const file = e.target.files[0];
     if (!file) return;
+    e.target.value = '';
 
     if (file.size > 5 * 1024 * 1024) {
         showToast('画像サイズは5MB以下にしてください', 'error');
-        e.target.value = '';
         return;
     }
 
@@ -471,6 +470,7 @@ function loadImage(e) {
         img.onload = function() {
             openCropModal(img);
         };
+        img.onerror = () => showToast('画像の読み込みに失敗しました', 'error');
         img.src = event.target.result;
     };
     reader.onerror = () => showToast('画像の読み込みに失敗しました', 'error');
@@ -658,7 +658,15 @@ function saveImage() {
             const filename = 'fsstriderscard.png';
 
             outputCanvas.toBlob(blob => {
-                if (!blob) throw new Error('画像生成失敗');
+                if (!blob) {
+                    console.error('保存エラー: blob生成失敗');
+                    showToast('画像の保存に失敗しました', 'error');
+                    saveBtn.disabled = false;
+                    saveBtn.classList.remove('saving');
+                    saveBtn.textContent = '画像を保存する / Save Image 📸';
+                    loadingOverlay.classList.remove('active');
+                    return;
+                }
 
                 const url  = URL.createObjectURL(blob);
                 const link = document.createElement('a');
@@ -728,7 +736,7 @@ function updateCounter(input, counter, maxLength) {
 
 // テキストを指定幅で折り返し、最大行数を超えたら省略する
 function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
-    const chars = text.split('');
+    const chars = Array.from(text);
     let line  = '';
     let lines = [];
 
@@ -747,9 +755,9 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
 
     if (lines.length > maxLines) {
         lines = lines.slice(0, maxLines);
-        let last = lines[maxLines - 1];
+        const last = Array.from(lines[maxLines - 1]);
         if (last.length > 3) {
-            lines[maxLines - 1] = last.slice(0, -3) + '...';
+            lines[maxLines - 1] = last.slice(0, -3).join('') + '...';
         }
     }
 
