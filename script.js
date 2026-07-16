@@ -356,7 +356,9 @@ function drawCard(targetCtx = ctx) {
     targetCtx.fillRect(CONTENT_LEFT, SEC1_Y, CONTENT_WIDTH, 21);
     targetCtx.fillStyle = '#e8e8e8';
     targetCtx.font = `900 13px ${CARD_FONT}`;
-    targetCtx.fillText('競馬の好み / Favorite (Real)', CONTENT_LEFT + 12, SEC1_Y + 5);
+    targetCtx.textBaseline = 'middle';
+    targetCtx.fillText('競馬の好み / Favorite (Real)', CONTENT_LEFT + 12, SEC1_Y + 11);
+    targetCtx.textBaseline = 'top';
 
     const R1 = SEC1_Y + 28;   // 205
     const R2 = R1 + 36;       // 241
@@ -374,7 +376,9 @@ function drawCard(targetCtx = ctx) {
     targetCtx.fillRect(CONTENT_LEFT, SEC2_Y, CONTENT_WIDTH, 21);
     targetCtx.fillStyle = '#e8e8e8';
     targetCtx.font = `900 13px ${CARD_FONT}`;
-    targetCtx.fillText('プレイの傾向 / Playstyle (Game)', CONTENT_LEFT + 12, SEC2_Y + 5);
+    targetCtx.textBaseline = 'middle';
+    targetCtx.fillText('プレイの傾向 / Playstyle (Game)', CONTENT_LEFT + 12, SEC2_Y + 11);
+    targetCtx.textBaseline = 'top';
 
     const R4 = SEC2_Y + 28;   // 351
     const R5 = R4 + 38;       // 389
