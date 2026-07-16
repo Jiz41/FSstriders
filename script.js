@@ -23,7 +23,7 @@ const WAKU_COLORS = {
 
 // ========== テキストデフォルト値 ==========
 const DEFAULT_PLACEHOLDER = "---";
-const DEFAULT_COMMENT     = "...よろしくお願いします";
+const DEFAULT_COMMENT     = "ターフで会おう！ / See you on the turf! (｀･ω･´)ゞ";
 
 // ========== カードサイズ ==========
 const CARD_WIDTH  = 850;
@@ -69,7 +69,7 @@ const cardData = {
     style:     "---",
     way:       "---",
     time:      "---",
-    comment:   "...よろしくお願いします"
+    comment:   "ターフで会おう！ / See you on the turf! (｀･ω･´)ゞ"
 };
 
 // ========== DOM参照 ==========
