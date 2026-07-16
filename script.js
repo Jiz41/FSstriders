@@ -28,6 +28,7 @@ const DEFAULT_COMMENT     = "...よろしくお願いします";
 // ========== カードサイズ ==========
 const CARD_WIDTH  = 850;
 const CARD_HEIGHT = 580;
+const CARD_FONT   = "'Noto Sans JP', sans-serif";
 
 // ========== レイアウト定数 ==========
 const WAKU_BAR_WIDTH    = 100;   // 枠番カラーバー幅
@@ -166,7 +167,7 @@ function drawWatermarkPattern(targetCtx) {
     const count = Math.ceil(reach / STEP);
 
     targetCtx.fillStyle    = '#000000';
-    targetCtx.font         = 'bold 20px sans-serif';
+    targetCtx.font         = `bold 20px ${CARD_FONT}`;
     targetCtx.textAlign    = 'center';
     targetCtx.textBaseline = 'middle';
 
@@ -246,7 +247,7 @@ function drawCard(targetCtx = ctx) {
 
     // 枠番数字
     targetCtx.fillStyle = theme.tx;
-    targetCtx.font = '900 85px sans-serif';
+    targetCtx.font = `900 85px ${CARD_FONT}`;
     targetCtx.textAlign = 'center';
     targetCtx.textBaseline = 'middle';
     targetCtx.fillText(currentWaku, WAKU_BAR_WIDTH / 2, CARD_HEIGHT / 2);
@@ -299,7 +300,7 @@ function drawCard(targetCtx = ctx) {
         targetCtx.arc(ICON_X, ICON_Y, ICON_RADIUS_EMPTY, 0, Math.PI * 2);
         targetCtx.fill();
         targetCtx.fillStyle = '#888888';
-        targetCtx.font = 'bold 60px sans-serif';
+        targetCtx.font = `bold 60px ${CARD_FONT}`;
         targetCtx.textAlign = 'center';
         targetCtx.textBaseline = 'middle';
         targetCtx.fillText('?', ICON_X, ICON_Y);
@@ -312,16 +313,16 @@ function drawCard(targetCtx = ctx) {
 
     const nameLength   = cardData.name.length;
     const nameFontSize = nameLength > 15 ? 28 : nameLength > 10 ? 34 : 44;
-    targetCtx.font = `900 ${nameFontSize}px sans-serif`;
+    targetCtx.font = `900 ${nameFontSize}px ${CARD_FONT}`;
     wrapText(targetCtx, cardData.name, TEXT_X, 16, CARD_WIDTH - TEXT_X - 30, nameFontSize * 1.1, 2);
 
-    targetCtx.font = '800 13px sans-serif';
+    targetCtx.font = `800 13px ${CARD_FONT}`;
     targetCtx.fillStyle = '#333333';
     targetCtx.fillText(cardData.exp,  TEXT_X, 83);
     targetCtx.fillText(cardData.hard, TEXT_X, 100);
 
     targetCtx.fillStyle = '#000000';
-    targetCtx.font = '900 14px sans-serif';
+    targetCtx.font = `900 14px ${CARD_FONT}`;
     targetCtx.fillText('SNS: ' + cardData.sns, TEXT_X, 118);
 
     // コンテンツエリアのクリップ設定
@@ -341,11 +342,11 @@ function drawCard(targetCtx = ctx) {
         targetCtx.fillRect(x, y, 6, height);
 
         targetCtx.fillStyle = '#888888';
-        targetCtx.font = '900 10px sans-serif';
+        targetCtx.font = `900 10px ${CARD_FONT}`;
         targetCtx.fillText(label, x + 12, y + 2);
 
         targetCtx.fillStyle = '#000000';
-        targetCtx.font = '900 17px sans-serif';
+        targetCtx.font = `900 17px ${CARD_FONT}`;
         wrapText(targetCtx, value, x + 12, y + 14, width - 30, 20, 1);
     }
 
@@ -354,7 +355,7 @@ function drawCard(targetCtx = ctx) {
     targetCtx.fillStyle = '#1a1a1a';
     targetCtx.fillRect(CONTENT_LEFT, SEC1_Y, CONTENT_WIDTH, 21);
     targetCtx.fillStyle = '#e8e8e8';
-    targetCtx.font = '900 13px sans-serif';
+    targetCtx.font = `900 13px ${CARD_FONT}`;
     targetCtx.fillText('競馬の好み / Favorite (Real)', CONTENT_LEFT + 12, SEC1_Y + 5);
 
     const R1 = SEC1_Y + 28;   // 205
@@ -372,7 +373,7 @@ function drawCard(targetCtx = ctx) {
     targetCtx.fillStyle = '#1a1a1a';
     targetCtx.fillRect(CONTENT_LEFT, SEC2_Y, CONTENT_WIDTH, 21);
     targetCtx.fillStyle = '#e8e8e8';
-    targetCtx.font = '900 13px sans-serif';
+    targetCtx.font = `900 13px ${CARD_FONT}`;
     targetCtx.fillText('プレイの傾向 / Playstyle (Game)', CONTENT_LEFT + 12, SEC2_Y + 5);
 
     const R4 = SEC2_Y + 28;   // 351
@@ -395,12 +396,12 @@ function drawCard(targetCtx = ctx) {
     targetCtx.fillStyle = '#000000';
     const commentLength   = cardData.comment.length;
     const commentFontSize = commentLength > 60 ? 15 : commentLength > 30 ? 18 : 21;
-    targetCtx.font = `900 ${commentFontSize}px sans-serif`;
+    targetCtx.font = `900 ${commentFontSize}px ${CARD_FONT}`;
     wrapText(targetCtx, cardData.comment, CONTENT_LEFT, COMMENT_LINE_Y + 12, CONTENT_WIDTH, commentFontSize * 1.3, 3);
 
     // コピーライト
-    targetCtx.fillStyle = 'rgba(0, 0, 0, 0.18)';
-    targetCtx.font = 'bold 11px sans-serif';
+    targetCtx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+    targetCtx.font = `bold 11px ${CARD_FONT}`;
     targetCtx.textAlign = 'right';
     targetCtx.fillText('© 2026 Musyn Reagan', CARD_WIDTH - 12, CARD_HEIGHT - 12);
 }
@@ -734,6 +735,9 @@ function updateCounter(input, counter, maxLength) {
     }
 }
 
+// 行頭に来てはならない文字（ぶら下げで前行末尾に含める）
+const KINSOKU_HEAD = '、。，．・：；！？!?…‥ー〜～)）]］}｝」』〉》】ゝゞ々ぁぃぅぇぉっゃゅょァィゥェォッャュョ';
+
 // テキストを指定幅で折り返し、最大行数を超えたら省略する
 function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
     const chars = Array.from(text);
@@ -745,13 +749,19 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines) {
         const metrics  = ctx.measureText(testLine);
 
         if (metrics.width > maxWidth && line !== '') {
-            lines.push(line);
-            line = chars[i];
+            if (KINSOKU_HEAD.includes(chars[i])) {
+                // 行頭禁則文字は前行末尾にぶら下げる
+                lines.push(testLine);
+                line = '';
+            } else {
+                lines.push(line);
+                line = chars[i];
+            }
         } else {
             line = testLine;
         }
     }
-    lines.push(line);
+    if (line !== '' || lines.length === 0) lines.push(line);
 
     if (lines.length > maxLines) {
         lines = lines.slice(0, maxLines);
@@ -808,6 +818,9 @@ window.addEventListener('load', () => {
     updateWaku();
     updateCardData();
     drawCard();
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => drawCard());
+    }
 
     inputCounterPairs.forEach(({ input, counter, max }) => {
         updateCounter(input, counter, max);

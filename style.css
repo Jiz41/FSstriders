@@ -23,7 +23,9 @@ body {
 /* ========== レイアウト ========== */
 .card-container {
     width: 100%;
-    height: 50vh;
+    height: auto;
+    aspect-ratio: 858 / 588;
+    max-height: 50vh;
     background: #1a1a1a;
     display: flex;
     justify-content: center;
@@ -592,6 +594,9 @@ textarea:focus {
     }
     .input-block {
         padding: 15px;
+    }
+    .save-btn {
+        letter-spacing: 0.15em;
     }
 }
 
