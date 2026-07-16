@@ -582,6 +582,8 @@ textarea:focus {
         width: 45%;
         height: 100vh;
         height: 100dvh;
+        max-height: none;   /* 縦向け50vh上限の打ち消し */
+        aspect-ratio: auto;
         border-right: 2px solid #333;
         border-bottom: none;
     }
