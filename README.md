@@ -1,6 +1,7 @@
 # FS STRIDERS — Player Profile Generator
 
 Full Stride のプレイヤープロフィールカードを生成するファンメイドツールです。
+スマホでの利用を推奨します（PCでも動作しますが、大画面では表示が間延びします）。
 
 ## 使い方
 
