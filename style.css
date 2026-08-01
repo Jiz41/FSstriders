@@ -383,6 +383,11 @@ textarea:focus {
     transition: opacity 0.2s;
 }
 
+.m-copyright a.hub-link {
+    opacity: 0.85;
+    font-weight: 600;
+}
+
 .m-copyright a:hover {
     opacity: 1;
 }
