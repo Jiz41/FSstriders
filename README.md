@@ -14,4 +14,4 @@ Full Stride のプレイヤープロフィールカードを生成するファ�
 本ツールはファンによる非公式ジェネレータです。  
 『FULL STRIDE』の名称は BLUE BULLET の商標または登録商標です。
 
-Created by ©[Musyn Reagan](https://x.com/Mushyn_Reagan) / [華耀東夷堂](https://x.com/Kayoutouidou01)
+Created by ©[Musyn Reagan](https://x.com/Mushyn_Reagan)
