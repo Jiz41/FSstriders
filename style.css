@@ -395,20 +395,17 @@ textarea:focus {
 .footer-disclaimer {
     margin: 10px auto 0;
     max-width: 40em;
-    text-align: left;
+    text-align: center;
 }
 
 .footer-disclaimer summary {
     cursor: pointer;
     display: inline-block;
     padding: 2px 10px;
-    border: 1px solid #999;
-    color: #555;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #999;
     font-size: 12px;
     font-style: normal;
-    text-align: center;
-    width: 100%;
-    box-sizing: border-box;
 }
 
 .footer-disclaimer[open] summary {
@@ -419,11 +416,12 @@ textarea:focus {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    text-align: left;
 }
 
 .disclaimer-section {
-    background: rgba(0, 0, 0, 0.03);
-    border: 1px solid #ddd;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 6px;
     padding: 8px 10px;
 }
@@ -433,7 +431,7 @@ textarea:focus {
     font-size: 12px;
     font-weight: 600;
     font-style: normal;
-    color: #333;
+    color: #eee;
     border-left: 3px solid var(--k-color);
     padding-left: 6px;
 }
@@ -442,7 +440,7 @@ textarea:focus {
     margin: 0;
     font-size: 11px;
     line-height: 1.6;
-    color: #555;
+    color: #bbb;
     font-style: normal;
     letter-spacing: normal;
 }
@@ -451,7 +449,7 @@ textarea:focus {
     display: block;
     text-align: center;
     font-size: 11px;
-    color: #777;
+    color: #888;
     margin-top: 8px;
 }
 
