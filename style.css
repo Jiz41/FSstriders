@@ -392,6 +392,69 @@ textarea:focus {
     opacity: 1;
 }
 
+.footer-disclaimer {
+    margin: 10px auto 0;
+    max-width: 40em;
+    text-align: left;
+}
+
+.footer-disclaimer summary {
+    cursor: pointer;
+    display: inline-block;
+    padding: 2px 10px;
+    border: 1px solid #999;
+    color: #555;
+    font-size: 12px;
+    font-style: normal;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.footer-disclaimer[open] summary {
+    margin-bottom: 6px;
+}
+
+.disclaimer-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.disclaimer-section {
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px 10px;
+}
+
+.disclaimer-section h4 {
+    margin: 0 0 4px;
+    font-size: 12px;
+    font-weight: 600;
+    font-style: normal;
+    color: #333;
+    border-left: 3px solid var(--k-color);
+    padding-left: 6px;
+}
+
+.disclaimer-section p {
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.6;
+    color: #555;
+    font-style: normal;
+    letter-spacing: normal;
+}
+
+.disclaimer-dates {
+    display: block;
+    text-align: center;
+    font-size: 11px;
+    color: #777;
+    margin-top: 8px;
+}
+
 .loading-overlay {
     display: none;
     position: fixed;
